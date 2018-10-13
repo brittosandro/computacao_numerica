@@ -1,32 +1,161 @@
 import matplotlib.pyplot as plt
 
-def gera_multiplos_plots(cor='r'):
+plt.figure(figsize=(16, 24))     #figsize=(coluna_x, coluna_y)
 
-    '''
-        A função gera_multiplos_plots recebe um argumento opcional que irá
-        descrever a cor do texto dentro da caixa e devolve um gráfico com
-        múltiplas figuras, neste caso com 12 figuras.
-    '''
+# --------------- Primeiro Subplot ------------------------------------------
+plt.subplot(4, 3, 1)                        # subplot(n_linhas, n_colunas, n_plots)
+plt.text(
+          0.5,                              # Ordena posição x
+          0.5,                              # Ordena posição y
+          'Subplot 1 (2, 2, 1)',            # Texto dentro do quadrante
+          horizontalalignment='center',     # Alinha Texto
+          verticalalignment='center',
+          fontsize=20,                      # Tamanho da fonte
+          color='b'
+        )
+#----------------------------------------------------------------------------
 
-    plt.figure(figsize=(16, 10))     #figsize=(coluna_x, coluna_y)
+# -------------- Segundo Subplot --------------------------------------------
+plt.subplot(4, 3, 2)                        # subplot(n_linhas, n_colunas, n_plots)
+plt.text(
+          0.5,
+          0.5,
+          'Subplot 2 (2, 2, 4)',
+          horizontalalignment='center',
+          verticalalignment='center',
+          fontsize=20, color='r'
+        )
+# ---------------------------------------------------------------------------
 
-    for i in range(12):
-        plt.subplot(4, 3, i+1)                                     # subplot(n_linhas, n_colunas, n_plots)
-        plt.text(
-                  0.5,                                             # Ordena posição x
-                  0.5,                                             # Ordena posição y
-                  'Subplot {} (2, 2, {})'.format(i+1, i+1),        # Texto dentro do quadrante
-                  horizontalalignment='center',                    # Alinha Texto
-                  verticalalignment='center',
-                  fontsize=20,                                     # Tamanho da fonte
-                  color = cor                                      # Cor da fonte
-                )
+# -------------- Terceiro Subplot --------------------------------------------
+plt.subplot(4, 3, 3)                        # subplot(n_linhas, n_colunas, n_plots)
+plt.text(
+          0.5,
+          0.5,
+          'Subplot 3 (2, 2, 4)',
+          horizontalalignment='center',
+          verticalalignment='center',
+          fontsize=20,
+          color='#fcb001'
+        )
+# ---------------------------------------------------------------------------
 
-    plt.savefig('Mult_fig_6.png', dpi=300, orientation='portrait', transparent=True, format='png')
-    plt.show()
+# -------------- Quarto Subplot --------------------------------------------
+plt.subplot(4, 3, 4)                        # subplot(n_linhas, n_colunas, n_plots)
+plt.text(
+          0.5,
+          0.5,
+          'Subplot 4 (2, 2, 4)',
+          horizontalalignment='center',
+          verticalalignment='center',
+          fontsize=20,
+          color='#fa5ff7'
+        )
+# ---------------------------------------------------------------------------
 
-if __name__ == '__main__':
+# -------------- Quinto Subplot --------------------------------------------
+plt.subplot(4, 3, 5)                        # subplot(n_linhas, n_colunas, n_plots)
+plt.text(
+          0.5,
+          0.5,
+          'Subplot 5 (2, 2, 4)',
+          horizontalalignment='center',
+          verticalalignment='center',
+          fontsize=20,
+          color='#01a049'
+        )
+# ---------------------------------------------------------------------------
 
-    #cores = ['#0b5509', '#929901', '#01f9c6', '#017a79', '#2000b1']
-    #[gera_multiplos_plots(cor) for cor in cores]
-    gera_multiplos_plots()
+# -------------- Sexto Subplot --------------------------------------------
+plt.subplot(4, 3, 6)                        # subplot(n_linhas, n_colunas, n_plots)
+plt.text(
+          0.5,
+          0.5,
+          'Subplot 6 (2, 2, 4)',
+          horizontalalignment='center',
+          verticalalignment='center',
+          fontsize=20,
+          color='#ff474c'
+        )
+# ---------------------------------------------------------------------------
+
+# -------------- Sétimo Subplot --------------------------------------------
+plt.subplot(4, 3, 7)                        # subplot(n_linhas, n_colunas, n_plots)
+plt.text(
+          0.5,
+          0.5,
+          'Subplot 7 (2, 2, 4)',
+          horizontalalignment='center',
+          verticalalignment='center',
+          fontsize=20,
+          color='#acbf69'
+        )
+# ---------------------------------------------------------------------------
+
+# -------------- Oitavo Subplot --------------------------------------------
+plt.subplot(4, 3, 8)                        # subplot(n_linhas, n_colunas, n_plots)
+plt.text(
+          0.5,
+          0.5,
+          'Subplot 8 (2, 2, 4)',
+          horizontalalignment='center',
+          verticalalignment='center',
+          fontsize=20,
+          color='#7e1e9c'
+        )
+# ---------------------------------------------------------------------------
+
+# -------------- Nono Subplot --------------------------------------------
+plt.subplot(4, 3, 9)                        # subplot(n_linhas, n_colunas, n_plots)
+plt.text(
+          0.5,
+          0.5,
+          'Subplot 9 (2, 2, 4)',
+          horizontalalignment='center',
+          verticalalignment='center',
+          fontsize=20,
+          color='#5b7c99'
+        )
+# ---------------------------------------------------------------------------
+
+# -------------- Décimo Subplot --------------------------------------------
+plt.subplot(4, 3, 10)                        # subplot(n_linhas, n_colunas, n_plots)
+plt.text(
+          0.5,
+          0.5,
+          'Subplot 10 (2, 2, 4)',
+          horizontalalignment='center',
+          verticalalignment='center',
+          fontsize=20,
+          color='#789b73'
+        )
+# ---------------------------------------------------------------------------
+
+# -------------- Décimo Primeiro Subplot ------------------------------------
+plt.subplot(4, 3, 11)                        # subplot(n_linhas, n_colunas, n_plots)
+plt.text(
+          0.5,
+          0.5,
+          'Subplot 11 (2, 2, 4)',
+          horizontalalignment='center',
+          verticalalignment='center',
+          fontsize=20,
+          color='#8c000f'
+        )
+# ---------------------------------------------------------------------------
+
+# -------------- Décimo segundo Subplot ------------------------------------
+plt.subplot(4, 3, 12)                        # subplot(n_linhas, n_colunas, n_plots)
+plt.text(
+          0.5,
+          0.5,
+          'Subplot 12 (2, 2, 4)',
+          horizontalalignment='center',
+          verticalalignment='center',
+          fontsize=20,
+          color='#580f41'
+        )
+# ---------------------------------------------------------------------------
+
+plt.savefig('Mult_fig_5.png', dpi=300, orientation='portrait', transparent=True, format='png')
+plt.show()
