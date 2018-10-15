@@ -14,6 +14,31 @@ dados11 = np.loadtxt('He_c3.dat')
 x11 = dados11[:, 0]
 y11 = dados11[:, 9]
 
+# ------------------niveis bibracionais He ----------------------------------
+dados_vib1 = np.loadtxt('He_c1_v0.txt')
+vib1_x = dados_vib1[:, 0]
+vib1_y = dados_vib1[:, 1]
+
+dados_vib_c2_0 = np.loadtxt('He_c2_v0.txt')
+vib_x_c2_v0 = dados_vib_c2_0[:, 0]
+vib_y_c2_v0 = dados_vib_c2_0[:, 1]
+
+dados_vib_c2_1 = np.loadtxt('He_c2_v1.txt')
+vib_x_c2_v1 = dados_vib_c2_1[:, 0]
+vib_y_c2_v1 = dados_vib_c2_1[:, 1]
+
+dados_vib_c3_0 = np.loadtxt('He_c3_v0.txt')
+vib_x_c3_v0 = dados_vib_c3_0[:, 0]
+vib_y_c3_v0 = dados_vib_c3_0[:, 1]
+
+dados_vib_c3_1 = np.loadtxt('He_c3_v1.txt')
+vib_x_c3_v1 = dados_vib_c3_1[:, 0]
+vib_y_c3_v1 = dados_vib_c3_1[:, 1]
+
+
+# ----------------------------------------------------------------------------
+
+
 dados2 = np.loadtxt('Ne_c1.dat')
 x2 = dados2[:, 0]
 y2 = dados2[:, 9]
@@ -61,17 +86,22 @@ fig.suptitle(
             )
 
 # ------------------- Subplot He Caso 1 --------------------------------------
+ax[0, 0].plot(vib1_x, vib1_y, '#4F2F4F')
 ax[0, 0].plot(x, y*(43.3641), '#8A2BE2', lw=2)
-ax[0, 0].set_xlim(3, 8)
-ax[0, 0].set_ylim(-3.5, 2.5)
+#ax[0, 0].set_xlim(3, 8)
+#ax[0, 0].set_ylim(-3.5, 2.5)
 #ax[0, 0].set_aspect(2.)
 ax[0, 0].set_title('Metanol + He (Caso 1)', fontsize = 'small', fontweight = 'bold')
 
 # ------------------- Subplot He Caso 2 --------------------------------------
-ax[0, 1].plot(x1, y1*(43.3641), lw=2)
+ax[0, 1].plot(vib_x_c2_v0, vib_y_c2_v0, '#4F2F4F')
+ax[0, 1].plot(vib_x_c2_v1, vib_y_c2_v1, '#FF0000')
+ax[0, 1].plot(x1, y1*(43.3641), '#007FFF', lw=2)
 ax[0, 1].set_title('Metanol + He (Caso 2)', fontsize = 'small', fontweight = 'bold')
 
-# ------------------- Subplot He Caso 3 --------------------------------------
+# ------------------- Subplot He Caso 3 -------------------------------------
+ax[0, 2].plot(vib_x_c3_v0, vib_y_c3_v0, '#4F2F4F')
+ax[0, 2].plot(vib_x_c3_v1, vib_y_c3_v1, '#FF0000')
 ax[0, 2].plot(x11, y11*(43.3641), '#006400', lw=2)
 ax[0, 2].set_title('Metanol + He (Caso 3)', fontsize = 'small', fontweight = 'bold')
 
