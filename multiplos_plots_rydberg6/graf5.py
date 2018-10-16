@@ -210,6 +210,53 @@ dados_Ar_vib_c2_v10 = np.loadtxt('Ar_c2_v10.txt')
 vib_x_Ar_c2_v10 = dados_Ar_vib_c2_v10[:, 0]
 vib_y_Ar_c2_v10 = dados_Ar_vib_c2_v10[:, 1]
 # ****** fim Caso 2
+
+# ****** Caso 3
+dados_Ar_vib_c3_v0 = np.loadtxt('Ar_c3_v0.txt')
+vib_x_Ar_c3_v0 = dados_Ar_vib_c3_v0[:, 0]
+vib_y_Ar_c3_v0 = dados_Ar_vib_c3_v0[:, 1]
+
+dados_Ar_vib_c3_v1 = np.loadtxt('Ar_c3_v1.txt')
+vib_x_Ar_c3_v1 = dados_Ar_vib_c3_v1[:, 0]
+vib_y_Ar_c3_v1 = dados_Ar_vib_c3_v1[:, 1]
+
+dados_Ar_vib_c3_v2 = np.loadtxt('Ar_c3_v2.txt')
+vib_x_Ar_c3_v2 = dados_Ar_vib_c3_v2[:, 0]
+vib_y_Ar_c3_v2 = dados_Ar_vib_c3_v2[:, 1]
+
+dados_Ar_vib_c3_v3 = np.loadtxt('Ar_c3_v3.txt')
+vib_x_Ar_c3_v3 = dados_Ar_vib_c3_v3[:, 0]
+vib_y_Ar_c3_v3 = dados_Ar_vib_c3_v3[:, 1]
+
+dados_Ar_vib_c3_v4 = np.loadtxt('Ar_c3_v4.txt')
+vib_x_Ar_c3_v4 = dados_Ar_vib_c3_v4[:, 0]
+vib_y_Ar_c3_v4 = dados_Ar_vib_c3_v4[:, 1]
+
+dados_Ar_vib_c3_v5 = np.loadtxt('Ar_c3_v5.txt')
+vib_x_Ar_c3_v5 = dados_Ar_vib_c3_v5[:, 0]
+vib_y_Ar_c3_v5 = dados_Ar_vib_c3_v5[:, 1]
+
+dados_Ar_vib_c3_v6 = np.loadtxt('Ar_c3_v6.txt')
+vib_x_Ar_c3_v6 = dados_Ar_vib_c3_v6[:, 0]
+vib_y_Ar_c3_v6 = dados_Ar_vib_c3_v6[:, 1]
+
+dados_Ar_vib_c3_v7 = np.loadtxt('Ar_c3_v7.txt')
+vib_x_Ar_c3_v7 = dados_Ar_vib_c3_v7[:, 0]
+vib_y_Ar_c3_v7 = dados_Ar_vib_c3_v7[:, 1]
+
+dados_Ar_vib_c3_v8 = np.loadtxt('Ar_c3_v8.txt')
+vib_x_Ar_c3_v8 = dados_Ar_vib_c3_v8[:, 0]
+vib_y_Ar_c3_v8 = dados_Ar_vib_c3_v8[:, 1]
+
+dados_Ar_vib_c3_v9 = np.loadtxt('Ar_c3_v9.txt')
+vib_x_Ar_c3_v9 = dados_Ar_vib_c3_v9[:, 0]
+vib_y_Ar_c3_v9 = dados_Ar_vib_c3_v9[:, 1]
+
+dados_Ar_vib_c3_v10 = np.loadtxt('Ar_c3_v10.txt')
+vib_x_Ar_c3_v10 = dados_Ar_vib_c3_v10[:, 0]
+vib_y_Ar_c3_v10 = dados_Ar_vib_c3_v10[:, 1]
+
+# ****** fim Caso 3
 # ----------------------------------------------------------------------------
 dados6 = np.loadtxt('Kr_c1.dat')
 x6 = dados6[:, 0]
@@ -314,6 +361,17 @@ ax[2, 1].plot(x5, y5*(43.3641), '#007FFF', lw=2)
 ax[2, 1].set_title('Metanol + Ar (Caso 2)', fontsize = 'small', fontweight = 'bold')
 
 # ------------------- Subplot Ar Caso 3 --------------------------------------
+ax[2, 2].plot(vib_x_Ar_c3_v0, vib_y_Ar_c3_v0, '#4F2F4F')
+ax[2, 2].plot(vib_x_Ar_c3_v1, vib_y_Ar_c3_v1, '#FF0000')
+ax[2, 2].plot(vib_x_Ar_c3_v2, vib_y_Ar_c3_v2, '#191970')
+ax[2, 2].plot(vib_x_Ar_c3_v3, vib_y_Ar_c3_v3, '#FF8C00')
+ax[2, 2].plot(vib_x_Ar_c3_v4, vib_y_Ar_c3_v4, '#696969')
+ax[2, 2].plot(vib_x_Ar_c3_v5, vib_y_Ar_c3_v5)
+ax[2, 2].plot(vib_x_Ar_c3_v6, vib_y_Ar_c3_v6)
+ax[2, 2].plot(vib_x_Ar_c3_v7, vib_y_Ar_c3_v7)
+ax[2, 2].plot(vib_x_Ar_c3_v8, vib_y_Ar_c3_v8)
+ax[2, 2].plot(vib_x_Ar_c3_v9, vib_y_Ar_c3_v9)
+ax[2, 2].plot(vib_x_Ar_c3_v10, vib_y_Ar_c3_v10)
 ax[2, 2].plot(x55, y55*(43.3641), '#006400', lw=2)
 ax[2, 2].set_title('Metanol + Ar (Caso 3)', fontsize = 'small', fontweight = 'bold')
 
