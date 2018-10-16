@@ -127,9 +127,41 @@ x55 = dados55[:, 0]
 y55 = dados55[:, 9]
 
 # ------------------niveis vibracionais Ar -----------------------------------
-#dados_Ar_vib_c1_v0 = np.loadtxt('Ar_c1_v0.txt')
-#vib_x_Ar_c1_v0 = dados_Ar_vib_c1_v0[:, 0]
-#vib_y_Ar_c1_v0 = dados_Ar_vib_c1_v0[:, 1]
+dados_Ar_vib_c1_v0 = np.loadtxt('Ar_c1_v0.txt')
+vib_x_Ar_c1_v0 = dados_Ar_vib_c1_v0[:, 0]
+vib_y_Ar_c1_v0 = dados_Ar_vib_c1_v0[:, 1]
+
+dados_Ar_vib_c1_v1 = np.loadtxt('Ar_c1_v1.txt')
+vib_x_Ar_c1_v1 = dados_Ar_vib_c1_v1[:, 0]
+vib_y_Ar_c1_v1 = dados_Ar_vib_c1_v1[:, 1]
+
+dados_Ar_vib_c1_v2 = np.loadtxt('Ar_c1_v2.txt')
+vib_x_Ar_c1_v2 = dados_Ar_vib_c1_v2[:, 0]
+vib_y_Ar_c1_v2 = dados_Ar_vib_c1_v2[:, 1]
+
+dados_Ar_vib_c1_v3 = np.loadtxt('Ar_c1_v3.txt')
+vib_x_Ar_c1_v3 = dados_Ar_vib_c1_v3[:, 0]
+vib_y_Ar_c1_v3 = dados_Ar_vib_c1_v3[:, 1]
+
+dados_Ar_vib_c1_v4 = np.loadtxt('Ar_c1_v4.txt')
+vib_x_Ar_c1_v4 = dados_Ar_vib_c1_v4[:, 0]
+vib_y_Ar_c1_v4 = dados_Ar_vib_c1_v4[:, 1]
+
+dados_Ar_vib_c1_v5 = np.loadtxt('Ar_c1_v5.txt')
+vib_x_Ar_c1_v5 = dados_Ar_vib_c1_v5[:, 0]
+vib_y_Ar_c1_v5 = dados_Ar_vib_c1_v5[:, 1]
+
+dados_Ar_vib_c1_v6 = np.loadtxt('Ar_c1_v6.txt')
+vib_x_Ar_c1_v6 = dados_Ar_vib_c1_v6[:, 0]
+vib_y_Ar_c1_v6 = dados_Ar_vib_c1_v6[:, 1]
+
+dados_Ar_vib_c1_v7 = np.loadtxt('Ar_c1_v7.txt')
+vib_x_Ar_c1_v7 = dados_Ar_vib_c1_v7[:, 0]
+vib_y_Ar_c1_v7 = dados_Ar_vib_c1_v7[:, 1]
+
+dados_Ar_vib_c1_v8 = np.loadtxt('Ar_c1_v8.txt')
+vib_x_Ar_c1_v8 = dados_Ar_vib_c1_v8[:, 0]
+vib_y_Ar_c1_v8 = dados_Ar_vib_c1_v8[:, 1]
 
 # ----------------------------------------------------------------------------
 dados6 = np.loadtxt('Kr_c1.dat')
@@ -146,7 +178,8 @@ y77 = dados77[:, 9]
 
 #sns.set_style()
 
-fig, ax = plt.subplots(4, 3, figsize=(9.8, 8.5), constrained_layout=True)
+fig, ax = plt.subplots(4, 3, constrained_layout=True)
+
 '''
 fig.suptitle(
                'Demonstração das CEPs para os diferentes casos',
@@ -207,6 +240,14 @@ ax[1, 2].plot(x33, y33*(43.3641), '#006400', lw=2)
 ax[1, 2].set_title('Metanol + Ne (Caso 3)', fontsize = 'small', fontweight = 'bold')
 
 # ------------------- Subplot Ar Caso 1 --------------------------------------
+ax[2, 0].plot(vib_x_Ar_c1_v0, vib_y_Ar_c1_v0, '#4F2F4F')
+ax[2, 0].plot(vib_x_Ar_c1_v1, vib_y_Ar_c1_v1, '#FF0000')
+ax[2, 0].plot(vib_x_Ar_c1_v2, vib_y_Ar_c1_v2, '#191970')
+ax[2, 0].plot(vib_x_Ar_c1_v3, vib_y_Ar_c1_v3, '#FF8C00')
+ax[2, 0].plot(vib_x_Ar_c1_v4, vib_y_Ar_c1_v4, '#696969')
+ax[2, 0].plot(vib_x_Ar_c1_v5, vib_y_Ar_c1_v5)
+ax[2, 0].plot(vib_x_Ar_c1_v6, vib_y_Ar_c1_v6)
+ax[2, 0].plot(vib_x_Ar_c1_v7, vib_y_Ar_c1_v7)
 ax[2, 0].plot(x4, y4*(43.3641), '#8A2BE2', lw=2)
 ax[2, 0].set_title('Metanol + Ar (Caso 1)', fontsize = 'small', fontweight = 'bold')
 
@@ -231,5 +272,5 @@ ax[3, 2].plot(x77, y77*(43.3641), '#006400', lw=2)
 ax[3, 2].set_title('Metanol + Kr (Caso 3)', fontsize = 'small', fontweight = 'bold')
 
 
-plt.savefig('ryd6_teste1.png', dpi=300, orientation='portrait', transparent=True, format='png')
+plt.savefig('ryd6_teste2.png', dpi=300, orientation='portrait', transparent=True, format='png')
 plt.show()
