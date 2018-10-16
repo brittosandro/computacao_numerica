@@ -141,31 +141,37 @@ y77 = dados77[:, 9]
 
 #sns.set_style()
 
-fig, ax = plt.subplots(4, 3, constrained_layout=True)
-
+fig, ax = plt.subplots(4, 3, figsize=(9.8, 8.5), constrained_layout=True)
+'''
 fig.suptitle(
                'Demonstração das CEPs para os diferentes casos',
                fontweight = 'bold',
                fontsize = 14
             )
-
+'''
 # ------------------- Subplot He Caso 1 --------------------------------------
 ax[0, 0].plot(vib1_x, vib1_y, '#4F2F4F')
 ax[0, 0].plot(x, y*(43.3641), '#8A2BE2', lw=2)
-#ax[0, 0].set_xlim(3, 8)
-#ax[0, 0].set_ylim(-3.5, 2.5)
-#ax[0, 0].set_aspect(2.)
+ax[0, 0].tick_params(labelcolor='k', labelsize='small', width=1.1)
+ax[0, 0].set_xlim(3, 9.)
+ax[0, 0].set_ylim(-3.5, 2.5)
 ax[0, 0].set_title('Metanol + He (Caso 1)', fontsize = 'small', fontweight = 'bold')
 
 # ------------------- Subplot He Caso 2 --------------------------------------
 ax[0, 1].plot(vib_x_c2_v0, vib_y_c2_v0, '#4F2F4F')
 ax[0, 1].plot(vib_x_c2_v1, vib_y_c2_v1, '#FF0000')
+ax[0, 1].tick_params(labelcolor='k', labelsize='small', width=1.1)
+ax[0, 1].set_xlim(1.9, 9.)
+ax[0, 1].set_ylim(-5, 3)
 ax[0, 1].plot(x1, y1*(43.3641), '#007FFF', lw=2)
 ax[0, 1].set_title('Metanol + He (Caso 2)', fontsize = 'small', fontweight = 'bold')
 
 # ------------------- Subplot He Caso 3 -------------------------------------
 ax[0, 2].plot(vib_x_c3_v0, vib_y_c3_v0, '#4F2F4F')
 ax[0, 2].plot(vib_x_c3_v1, vib_y_c3_v1, '#FF0000')
+ax[0, 2].tick_params(labelcolor='k', labelsize='small', width=1.1)
+ax[0, 2].set_xlim(2.4, 9.)
+ax[0, 2].set_ylim(-5.9, 5.)
 ax[0, 2].plot(x11, y11*(43.3641), '#006400', lw=2)
 ax[0, 2].set_title('Metanol + He (Caso 3)', fontsize = 'small', fontweight = 'bold')
 
