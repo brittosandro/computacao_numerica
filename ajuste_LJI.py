@@ -102,4 +102,4 @@ ax.set_xlabel(r'R (Å)')
 ax.set_ylabel(r'Energy ($cm^{-1}$)')
 ax.legend(loc='best')
 plt.title(r'Ajuste $H_{2}O - Xe$', fontsize=16)
-plt.show(
+plt.show()
