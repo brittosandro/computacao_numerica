@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 import numpy as np
 #import seaborn as sns
 
@@ -324,12 +325,111 @@ vib_y_Kr_c1_v10 = dados_Kr_vib_c1_v10[:, 1]
 dados_Kr_vib_c1_v11 = np.loadtxt('Kr_c1_v11.txt')
 vib_x_Kr_c1_v11 = dados_Kr_vib_c1_v11[:, 0]
 vib_y_Kr_c1_v11 = dados_Kr_vib_c1_v11[:, 1]
-
 # ****** Fim Caso 1
 
-#sns.set_style()
+# ****** Caso 2
+dados_Kr_vib_c2_v0 = np.loadtxt('Kr_c2_v0.txt')
+vib_x_Kr_c2_v0 = dados_Kr_vib_c2_v0[:, 0]
+vib_y_Kr_c2_v0 = dados_Kr_vib_c2_v0[:, 1]
 
-fig, ax = plt.subplots(4, 3, constrained_layout=True)
+dados_Kr_vib_c2_v1 = np.loadtxt('Kr_c2_v1.txt')
+vib_x_Kr_c2_v1 = dados_Kr_vib_c2_v1[:, 0]
+vib_y_Kr_c2_v1 = dados_Kr_vib_c2_v1[:, 1]
+
+dados_Kr_vib_c2_v2 = np.loadtxt('Kr_c2_v2.txt')
+vib_x_Kr_c2_v2 = dados_Kr_vib_c2_v2[:, 0]
+vib_y_Kr_c2_v2 = dados_Kr_vib_c2_v2[:, 1]
+
+dados_Kr_vib_c2_v3 = np.loadtxt('Kr_c2_v3.txt')
+vib_x_Kr_c2_v3 = dados_Kr_vib_c2_v3[:, 0]
+vib_y_Kr_c2_v3 = dados_Kr_vib_c2_v3[:, 1]
+
+dados_Kr_vib_c2_v4 = np.loadtxt('Kr_c2_v4.txt')
+vib_x_Kr_c2_v4 = dados_Kr_vib_c2_v4[:, 0]
+vib_y_Kr_c2_v4 = dados_Kr_vib_c2_v4[:, 1]
+
+dados_Kr_vib_c2_v5 = np.loadtxt('Kr_c2_v5.txt')
+vib_x_Kr_c2_v5 = dados_Kr_vib_c2_v5[:, 0]
+vib_y_Kr_c2_v5 = dados_Kr_vib_c2_v5[:, 1]
+
+dados_Kr_vib_c2_v6 = np.loadtxt('Kr_c2_v6.txt')
+vib_x_Kr_c2_v6 = dados_Kr_vib_c2_v6[:, 0]
+vib_y_Kr_c2_v6 = dados_Kr_vib_c2_v6[:, 1]
+
+dados_Kr_vib_c2_v7 = np.loadtxt('Kr_c2_v7.txt')
+vib_x_Kr_c2_v7 = dados_Kr_vib_c2_v7[:, 0]
+vib_y_Kr_c2_v7 = dados_Kr_vib_c2_v7[:, 1]
+
+dados_Kr_vib_c2_v8 = np.loadtxt('Kr_c2_v8.txt')
+vib_x_Kr_c2_v8 = dados_Kr_vib_c2_v8[:, 0]
+vib_y_Kr_c2_v8 = dados_Kr_vib_c2_v8[:, 1]
+
+dados_Kr_vib_c2_v9 = np.loadtxt('Kr_c2_v9.txt')
+vib_x_Kr_c2_v9 = dados_Kr_vib_c2_v9[:, 0]
+vib_y_Kr_c2_v9 = dados_Kr_vib_c2_v9[:, 1]
+
+dados_Kr_vib_c2_v10 = np.loadtxt('Kr_c2_v10.txt')
+vib_x_Kr_c2_v10 = dados_Kr_vib_c2_v10[:, 0]
+vib_y_Kr_c2_v10 = dados_Kr_vib_c2_v10[:, 1]
+
+dados_Kr_vib_c2_v11 = np.loadtxt('Kr_c2_v11.txt')
+vib_x_Kr_c2_v11 = dados_Kr_vib_c2_v11[:, 0]
+vib_y_Kr_c2_v11 = dados_Kr_vib_c2_v11[:, 1]
+# ****** Fim Caso 2
+
+# ****** Caso 3
+dados_Kr_vib_c3_v0 = np.loadtxt('Kr_c3_v0.txt')
+vib_x_Kr_c3_v0 = dados_Kr_vib_c3_v0[:, 0]
+vib_y_Kr_c3_v0 = dados_Kr_vib_c3_v0[:, 1]
+
+dados_Kr_vib_c3_v1 = np.loadtxt('Kr_c3_v1.txt')
+vib_x_Kr_c3_v1 = dados_Kr_vib_c3_v1[:, 0]
+vib_y_Kr_c3_v1 = dados_Kr_vib_c3_v1[:, 1]
+
+dados_Kr_vib_c3_v2 = np.loadtxt('Kr_c3_v2.txt')
+vib_x_Kr_c3_v2 = dados_Kr_vib_c3_v2[:, 0]
+vib_y_Kr_c3_v2 = dados_Kr_vib_c3_v2[:, 1]
+
+dados_Kr_vib_c3_v3 = np.loadtxt('Kr_c3_v3.txt')
+vib_x_Kr_c3_v3 = dados_Kr_vib_c3_v3[:, 0]
+vib_y_Kr_c3_v3 = dados_Kr_vib_c3_v3[:, 1]
+
+dados_Kr_vib_c3_v4 = np.loadtxt('Kr_c3_v4.txt')
+vib_x_Kr_c3_v4 = dados_Kr_vib_c3_v4[:, 0]
+vib_y_Kr_c3_v4 = dados_Kr_vib_c3_v4[:, 1]
+
+dados_Kr_vib_c3_v5 = np.loadtxt('Kr_c3_v5.txt')
+vib_x_Kr_c3_v5 = dados_Kr_vib_c3_v5[:, 0]
+vib_y_Kr_c3_v5 = dados_Kr_vib_c3_v5[:, 1]
+
+dados_Kr_vib_c3_v6 = np.loadtxt('Kr_c3_v6.txt')
+vib_x_Kr_c3_v6 = dados_Kr_vib_c3_v6[:, 0]
+vib_y_Kr_c3_v6 = dados_Kr_vib_c3_v6[:, 1]
+
+dados_Kr_vib_c3_v7 = np.loadtxt('Kr_c3_v7.txt')
+vib_x_Kr_c3_v7 = dados_Kr_vib_c3_v7[:, 0]
+vib_y_Kr_c3_v7 = dados_Kr_vib_c3_v7[:, 1]
+
+dados_Kr_vib_c3_v8 = np.loadtxt('Kr_c3_v8.txt')
+vib_x_Kr_c3_v8 = dados_Kr_vib_c3_v8[:, 0]
+vib_y_Kr_c3_v8 = dados_Kr_vib_c3_v8[:, 1]
+
+dados_Kr_vib_c3_v9 = np.loadtxt('Kr_c3_v9.txt')
+vib_x_Kr_c3_v9 = dados_Kr_vib_c3_v9[:, 0]
+vib_y_Kr_c3_v9 = dados_Kr_vib_c3_v9[:, 1]
+
+dados_Kr_vib_c3_v10 = np.loadtxt('Kr_c3_v10.txt')
+vib_x_Kr_c3_v10 = dados_Kr_vib_c3_v10[:, 0]
+vib_y_Kr_c3_v10 = dados_Kr_vib_c3_v10[:, 1]
+
+dados_Kr_vib_c3_v11 = np.loadtxt('Kr_c3_v11.txt')
+vib_x_Kr_c3_v11 = dados_Kr_vib_c3_v11[:, 0]
+vib_y_Kr_c3_v11 = dados_Kr_vib_c3_v11[:, 1]
+# ****** Fim Caso 3
+
+
+#sns.set_style()
+fig, ax = plt.subplots(4, 3, figsize=(9.8, 8.5), constrained_layout=True)
 
 '''
 fig.suptitle(
@@ -339,123 +439,178 @@ fig.suptitle(
             )
 '''
 # ------------------- Subplot He Caso 1 --------------------------------------
-ax[0, 0].plot(vib1_x, vib1_y, '#4F2F4F')
-ax[0, 0].plot(x, y*(43.3641), '#8A2BE2', lw=2)
+ax[0, 0].plot(vib1_x, vib1_y, 'k')
+ax[0, 0].plot(x, y*(43.3641), '#0000ff', lw=2)
 ax[0, 0].tick_params(labelcolor='k', labelsize='small', width=1.1)
-ax[0, 0].set_xlim(3, 9.)
+ax[0, 0].set_xlim(3, 7.)
 ax[0, 0].set_ylim(-3.5, 2.5)
 ax[0, 0].set_title('Metanol + He (Caso 1)', fontsize = 'small', fontweight = 'bold')
 
 # ------------------- Subplot He Caso 2 --------------------------------------
-ax[0, 1].plot(vib_x_c2_v0, vib_y_c2_v0, '#4F2F4F')
-ax[0, 1].plot(vib_x_c2_v1, vib_y_c2_v1, '#FF0000')
+ax[0, 1].plot(vib_x_c2_v0, vib_y_c2_v0, 'k')
+ax[0, 1].plot(vib_x_c2_v1, vib_y_c2_v1, 'k')
 ax[0, 1].tick_params(labelcolor='k', labelsize='small', width=1.1)
-ax[0, 1].set_xlim(1.9, 9.)
+ax[0, 1].set_xlim(1.9, 7.)
 ax[0, 1].set_ylim(-5, 3)
-ax[0, 1].plot(x1, y1*(43.3641), '#007FFF', lw=2)
+ax[0, 1].plot(x1, y1*(43.3641), '#ff0000', lw=2)
 ax[0, 1].set_title('Metanol + He (Caso 2)', fontsize = 'small', fontweight = 'bold')
 
 # ------------------- Subplot He Caso 3 -------------------------------------
-ax[0, 2].plot(vib_x_c3_v0, vib_y_c3_v0, '#4F2F4F')
-ax[0, 2].plot(vib_x_c3_v1, vib_y_c3_v1, '#FF0000')
+ax[0, 2].plot(vib_x_c3_v0, vib_y_c3_v0, 'k')
+ax[0, 2].plot(vib_x_c3_v1, vib_y_c3_v1, 'k')
 ax[0, 2].tick_params(labelcolor='k', labelsize='small', width=1.1)
-ax[0, 2].set_xlim(2.4, 9.)
+ax[0, 2].set_xlim(2.4, 7.)
 ax[0, 2].set_ylim(-5.9, 5.)
-ax[0, 2].plot(x11, y11*(43.3641), '#006400', lw=2)
+ax[0, 2].plot(x11, y11*(43.3641), '#00cc00', lw=2)
 ax[0, 2].set_title('Metanol + He (Caso 3)', fontsize = 'small', fontweight = 'bold')
 
 # ------------------- Subplot Ne Caso 1 --------------------------------------
-ax[1, 0].plot(vib_x_Ne_c1_v0, vib_y_Ne_c1_v0, '#4F2F4F')
-ax[1, 0].plot(vib_x_Ne_c1_v1, vib_y_Ne_c1_v1, '#FF0000')
-ax[1, 0].plot(vib_x_Ne_c1_v2, vib_y_Ne_c1_v2, '#191970')
-ax[1, 0].plot(vib_x_Ne_c1_v3, vib_y_Ne_c1_v3, '#FF8C00')
-ax[1, 0].plot(x2, y2*(43.3641), '#8A2BE2', lw=2)
+ax[1, 0].plot(vib_x_Ne_c1_v0, vib_y_Ne_c1_v0, 'k')
+ax[1, 0].plot(vib_x_Ne_c1_v1, vib_y_Ne_c1_v1, 'k')
+ax[1, 0].plot(vib_x_Ne_c1_v2, vib_y_Ne_c1_v2, 'k')
+ax[1, 0].plot(vib_x_Ne_c1_v3, vib_y_Ne_c1_v3, 'k')
+ax[1, 0].tick_params(labelcolor='k', labelsize='small', width=1.1)
+ax[1, 0].set_xlim(3., 7.)
+ax[1, 0].set_ylim(-6.9, 4.7)
+ax[1, 0].plot(x2, y2*(43.3641), '#0000ff', lw=2)
 ax[1, 0].set_title('Metanol + Ne (Caso 1)', fontsize = 'small', fontweight = 'bold')
+#ax[1, 0].set_ylabel('Energia (meV)', labelpad = 0, fontsize = 'xx-large')
+plt.ylabel('Energia (meV)', labelpad = 0, fontsize = 'xx-large')
 
 # ------------------- Subplot Ne Caso 2 --------------------------------------
-ax[1, 1].plot(vib_x_Ne_c2_v0, vib_y_Ne_c2_v0, '#4F2F4F')
-ax[1, 1].plot(vib_x_Ne_c2_v1, vib_y_Ne_c2_v1, '#FF0000')
-ax[1, 1].plot(vib_x_Ne_c2_v2, vib_y_Ne_c2_v2, '#191970')
-ax[1, 1].plot(vib_x_Ne_c2_v3, vib_y_Ne_c2_v3, '#FF8C00')
-ax[1, 1].plot(vib_x_Ne_c2_v4, vib_y_Ne_c2_v4, '#696969')
-ax[1, 1].plot(x3, y3*(43.3641), '#007FFF', lw=2)
+ax[1, 1].plot(vib_x_Ne_c2_v0, vib_y_Ne_c2_v0, 'k')
+ax[1, 1].plot(vib_x_Ne_c2_v1, vib_y_Ne_c2_v1, 'k')
+ax[1, 1].plot(vib_x_Ne_c2_v2, vib_y_Ne_c2_v2, 'k')
+ax[1, 1].plot(vib_x_Ne_c2_v3, vib_y_Ne_c2_v3, 'k')
+ax[1, 1].plot(vib_x_Ne_c2_v4, vib_y_Ne_c2_v4, 'k')
+ax[1, 1].tick_params(labelcolor='k', labelsize='small', width=1.1)
+ax[1, 1].set_xlim(1.9, 7.)
+ax[1, 1].set_ylim(-10.2, 5.3)
+ax[1, 1].plot(x3, y3*(43.3641), '#ff0000', lw=2)
 ax[1, 1].set_title('Metanol + Ne (Caso 2)', fontsize = 'small', fontweight = 'bold')
 
 # ------------------- Subplot Ne Caso 3 --------------------------------------
-ax[1, 2].plot(vib_x_Ne_c3_v0, vib_y_Ne_c3_v0, '#4F2F4F')
-ax[1, 2].plot(vib_x_Ne_c3_v1, vib_y_Ne_c3_v1, '#FF0000')
-ax[1, 2].plot(vib_x_Ne_c3_v2, vib_y_Ne_c3_v2, '#191970')
-ax[1, 2].plot(vib_x_Ne_c3_v3, vib_y_Ne_c3_v3, '#FF8C00')
-ax[1, 2].plot(vib_x_Ne_c3_v4, vib_y_Ne_c3_v4, '#696969')
-ax[1, 2].plot(x33, y33*(43.3641), '#006400', lw=2)
+ax[1, 2].plot(vib_x_Ne_c3_v0, vib_y_Ne_c3_v0, 'k')
+ax[1, 2].plot(vib_x_Ne_c3_v1, vib_y_Ne_c3_v1, 'k')
+ax[1, 2].plot(vib_x_Ne_c3_v2, vib_y_Ne_c3_v2, 'k')
+ax[1, 2].plot(vib_x_Ne_c3_v3, vib_y_Ne_c3_v3, 'k')
+ax[1, 2].plot(vib_x_Ne_c3_v4, vib_y_Ne_c3_v4, 'k')
+ax[1, 2].tick_params(labelcolor='k', labelsize='small', width=1.1)
+ax[1, 2].set_xlim(2.5, 7.)
+ax[1, 2].set_ylim(-10.2, 5.3)
+ax[1, 2].plot(x33, y33*(43.3641), '#00cc00', lw=2)
 ax[1, 2].set_title('Metanol + Ne (Caso 3)', fontsize = 'small', fontweight = 'bold')
 
 # ------------------- Subplot Ar Caso 1 --------------------------------------
-ax[2, 0].plot(vib_x_Ar_c1_v0, vib_y_Ar_c1_v0, '#4F2F4F')
-ax[2, 0].plot(vib_x_Ar_c1_v1, vib_y_Ar_c1_v1, '#FF0000')
-ax[2, 0].plot(vib_x_Ar_c1_v2, vib_y_Ar_c1_v2, '#191970')
-ax[2, 0].plot(vib_x_Ar_c1_v3, vib_y_Ar_c1_v3, '#FF8C00')
-ax[2, 0].plot(vib_x_Ar_c1_v4, vib_y_Ar_c1_v4, '#696969')
-ax[2, 0].plot(vib_x_Ar_c1_v5, vib_y_Ar_c1_v5)
-ax[2, 0].plot(vib_x_Ar_c1_v6, vib_y_Ar_c1_v6)
-ax[2, 0].plot(vib_x_Ar_c1_v7, vib_y_Ar_c1_v7)
-ax[2, 0].plot(x4, y4*(43.3641), '#8A2BE2', lw=2)
+ax[2, 0].plot(vib_x_Ar_c1_v0, vib_y_Ar_c1_v0, 'k')
+ax[2, 0].plot(vib_x_Ar_c1_v1, vib_y_Ar_c1_v1, 'k')
+ax[2, 0].plot(vib_x_Ar_c1_v2, vib_y_Ar_c1_v2, 'k')
+ax[2, 0].plot(vib_x_Ar_c1_v3, vib_y_Ar_c1_v3, 'k')
+ax[2, 0].plot(vib_x_Ar_c1_v4, vib_y_Ar_c1_v4, 'k')
+ax[2, 0].plot(vib_x_Ar_c1_v5, vib_y_Ar_c1_v5, 'k')
+ax[2, 0].plot(vib_x_Ar_c1_v6, vib_y_Ar_c1_v6, 'k')
+ax[2, 0].plot(vib_x_Ar_c1_v7, vib_y_Ar_c1_v7, 'k')
+ax[2, 0].tick_params(labelcolor='k', labelsize='small', width=1.1)
+ax[2, 0].set_xlim(3.2, 7.)
+ax[2, 0].set_ylim(-17.3, 10.3)
+ax[2, 0].plot(x4, y4*(43.3641), '#0000ff', lw=2)
 ax[2, 0].set_title('Metanol + Ar (Caso 1)', fontsize = 'small', fontweight = 'bold')
 
 # ------------------- Subplot Ar Caso 2 --------------------------------------
-ax[2, 1].plot(vib_x_Ar_c2_v0, vib_y_Ar_c2_v0, '#4F2F4F')
-ax[2, 1].plot(vib_x_Ar_c2_v1, vib_y_Ar_c2_v1, '#FF0000')
-ax[2, 1].plot(vib_x_Ar_c2_v2, vib_y_Ar_c2_v2, '#191970')
-ax[2, 1].plot(vib_x_Ar_c2_v3, vib_y_Ar_c2_v3, '#FF8C00')
-ax[2, 1].plot(vib_x_Ar_c2_v4, vib_y_Ar_c2_v4, '#696969')
-ax[2, 1].plot(vib_x_Ar_c2_v5, vib_y_Ar_c2_v5)
-ax[2, 1].plot(vib_x_Ar_c2_v6, vib_y_Ar_c2_v6)
-ax[2, 1].plot(vib_x_Ar_c2_v7, vib_y_Ar_c2_v7)
-ax[2, 1].plot(vib_x_Ar_c2_v8, vib_y_Ar_c2_v8)
-ax[2, 1].plot(vib_x_Ar_c2_v9, vib_y_Ar_c2_v9)
-ax[2, 1].plot(vib_x_Ar_c2_v10, vib_y_Ar_c2_v10)
-ax[2, 1].plot(x5, y5*(43.3641), '#007FFF', lw=2)
+ax[2, 1].plot(vib_x_Ar_c2_v0, vib_y_Ar_c2_v0, 'k')
+ax[2, 1].plot(vib_x_Ar_c2_v1, vib_y_Ar_c2_v1, 'k')
+ax[2, 1].plot(vib_x_Ar_c2_v2, vib_y_Ar_c2_v2, 'k')
+ax[2, 1].plot(vib_x_Ar_c2_v3, vib_y_Ar_c2_v3, 'k')
+ax[2, 1].plot(vib_x_Ar_c2_v4, vib_y_Ar_c2_v4, 'k')
+ax[2, 1].plot(vib_x_Ar_c2_v5, vib_y_Ar_c2_v5, 'k')
+ax[2, 1].plot(vib_x_Ar_c2_v6, vib_y_Ar_c2_v6, 'k')
+ax[2, 1].plot(vib_x_Ar_c2_v7, vib_y_Ar_c2_v7, 'k')
+ax[2, 1].plot(vib_x_Ar_c2_v8, vib_y_Ar_c2_v8, 'k')
+ax[2, 1].plot(vib_x_Ar_c2_v9, vib_y_Ar_c2_v9, 'k')
+ax[2, 1].plot(vib_x_Ar_c2_v10, vib_y_Ar_c2_v10, 'k')
+ax[2, 1].tick_params(labelcolor='k', labelsize='small', width=1.1)
+ax[2, 1].set_xlim(2., 7.)
+ax[2, 1].set_ylim(-25.1, 10.3)
+ax[2, 1].plot(x5, y5*(43.3641), '#ff0000', lw=2)
 ax[2, 1].set_title('Metanol + Ar (Caso 2)', fontsize = 'small', fontweight = 'bold')
 
 # ------------------- Subplot Ar Caso 3 --------------------------------------
-ax[2, 2].plot(vib_x_Ar_c3_v0, vib_y_Ar_c3_v0, '#4F2F4F')
-ax[2, 2].plot(vib_x_Ar_c3_v1, vib_y_Ar_c3_v1, '#FF0000')
-ax[2, 2].plot(vib_x_Ar_c3_v2, vib_y_Ar_c3_v2, '#191970')
-ax[2, 2].plot(vib_x_Ar_c3_v3, vib_y_Ar_c3_v3, '#FF8C00')
-ax[2, 2].plot(vib_x_Ar_c3_v4, vib_y_Ar_c3_v4, '#696969')
-ax[2, 2].plot(vib_x_Ar_c3_v5, vib_y_Ar_c3_v5)
-ax[2, 2].plot(vib_x_Ar_c3_v6, vib_y_Ar_c3_v6)
-ax[2, 2].plot(vib_x_Ar_c3_v7, vib_y_Ar_c3_v7)
-ax[2, 2].plot(vib_x_Ar_c3_v8, vib_y_Ar_c3_v8)
-ax[2, 2].plot(vib_x_Ar_c3_v9, vib_y_Ar_c3_v9)
-ax[2, 2].plot(vib_x_Ar_c3_v10, vib_y_Ar_c3_v10)
-ax[2, 2].plot(x55, y55*(43.3641), '#006400', lw=2)
+ax[2, 2].plot(vib_x_Ar_c3_v0, vib_y_Ar_c3_v0, 'k')
+ax[2, 2].plot(vib_x_Ar_c3_v1, vib_y_Ar_c3_v1, 'k')
+ax[2, 2].plot(vib_x_Ar_c3_v2, vib_y_Ar_c3_v2, 'k')
+ax[2, 2].plot(vib_x_Ar_c3_v3, vib_y_Ar_c3_v3, 'k')
+ax[2, 2].plot(vib_x_Ar_c3_v4, vib_y_Ar_c3_v4, 'k')
+ax[2, 2].plot(vib_x_Ar_c3_v5, vib_y_Ar_c3_v5, 'k')
+ax[2, 2].plot(vib_x_Ar_c3_v6, vib_y_Ar_c3_v6, 'k')
+ax[2, 2].plot(vib_x_Ar_c3_v7, vib_y_Ar_c3_v7, 'k')
+ax[2, 2].plot(vib_x_Ar_c3_v8, vib_y_Ar_c3_v8, 'k')
+ax[2, 2].plot(vib_x_Ar_c3_v9, vib_y_Ar_c3_v9, 'k')
+ax[2, 2].plot(vib_x_Ar_c3_v10, vib_y_Ar_c3_v10, 'k')
+ax[2, 2].tick_params(labelcolor='k', labelsize='small', width=1.1)
+ax[2, 2].set_xlim(2.7, 7.)
+ax[2, 2].set_ylim(-30., 10.3)
+ax[2, 2].plot(x55, y55*(43.3641), '#00cc00', lw=2)
 ax[2, 2].set_title('Metanol + Ar (Caso 3)', fontsize = 'small', fontweight = 'bold')
 
 # ------------------- Subplot Kr Caso 1 --------------------------------------
-ax[3, 0].plot(vib_x_Kr_c1_v0, vib_y_Kr_c1_v0, '#4F2F4F')
-ax[3, 0].plot(vib_x_Kr_c1_v1, vib_y_Kr_c1_v1, '#FF0000')
-ax[3, 0].plot(vib_x_Kr_c1_v2, vib_y_Kr_c1_v2, '#191970')
-ax[3, 0].plot(vib_x_Kr_c1_v3, vib_y_Kr_c1_v3, '#FF8C00')
-ax[3, 0].plot(vib_x_Kr_c1_v4, vib_y_Kr_c1_v4, '#696969')
-ax[3, 0].plot(vib_x_Kr_c1_v5, vib_y_Kr_c1_v5)
-ax[3, 0].plot(vib_x_Kr_c1_v6, vib_y_Kr_c1_v6)
-ax[3, 0].plot(vib_x_Kr_c1_v7, vib_y_Kr_c1_v7)
-ax[3, 0].plot(vib_x_Kr_c1_v8, vib_y_Kr_c1_v8)
-ax[3, 0].plot(vib_x_Kr_c1_v9, vib_y_Kr_c1_v9)
-ax[3, 0].plot(vib_x_Kr_c1_v10, vib_y_Kr_c1_v10)
-ax[3, 0].plot(vib_x_Kr_c1_v11, vib_y_Kr_c1_v11)
-ax[3, 0].plot(x6, y6*(43.3641), '#8A2BE2', lw=2)
+ax[3, 0].plot(vib_x_Kr_c1_v0, vib_y_Kr_c1_v0, 'k')
+ax[3, 0].plot(vib_x_Kr_c1_v1, vib_y_Kr_c1_v1, 'k')
+ax[3, 0].plot(vib_x_Kr_c1_v2, vib_y_Kr_c1_v2, 'k')
+ax[3, 0].plot(vib_x_Kr_c1_v3, vib_y_Kr_c1_v3, 'k')
+ax[3, 0].plot(vib_x_Kr_c1_v4, vib_y_Kr_c1_v4, 'k')
+ax[3, 0].plot(vib_x_Kr_c1_v5, vib_y_Kr_c1_v5, 'k')
+ax[3, 0].plot(vib_x_Kr_c1_v6, vib_y_Kr_c1_v6, 'k')
+ax[3, 0].plot(vib_x_Kr_c1_v7, vib_y_Kr_c1_v7, 'k')
+ax[3, 0].plot(vib_x_Kr_c1_v8, vib_y_Kr_c1_v8, 'k')
+ax[3, 0].plot(vib_x_Kr_c1_v9, vib_y_Kr_c1_v9, 'k')
+ax[3, 0].plot(vib_x_Kr_c1_v10, vib_y_Kr_c1_v10, 'k')
+ax[3, 0].plot(vib_x_Kr_c1_v11, vib_y_Kr_c1_v11, 'k')
+ax[3, 0].tick_params(labelcolor='k', labelsize='small', width=1.1)
+ax[3, 0].set_xlim(3.3, 7.)
+ax[3, 0].set_ylim(-22., 12.9)
+ax[3, 0].plot(x6, y6*(43.3641), '#0000ff', lw=2)
 ax[3, 0].set_title('Metanol + Kr (Caso 1)', fontsize = 'small', fontweight = 'bold')
 
 # ------------------- Subplot Kr Caso 2 --------------------------------------
-ax[3, 1].plot(x7, y7*(43.3641), '#007FFF', lw=2)
+ax[3, 1].plot(vib_x_Kr_c2_v0, vib_y_Kr_c2_v0, 'k')
+ax[3, 1].plot(vib_x_Kr_c2_v1, vib_y_Kr_c2_v1, 'k')
+ax[3, 1].plot(vib_x_Kr_c2_v2, vib_y_Kr_c2_v2, 'k')
+ax[3, 1].plot(vib_x_Kr_c2_v3, vib_y_Kr_c2_v3, 'k')
+ax[3, 1].plot(vib_x_Kr_c2_v4, vib_y_Kr_c2_v4, 'k')
+ax[3, 1].plot(vib_x_Kr_c2_v5, vib_y_Kr_c2_v5, 'k')
+ax[3, 1].plot(vib_x_Kr_c2_v6, vib_y_Kr_c2_v6, 'k')
+ax[3, 1].plot(vib_x_Kr_c2_v7, vib_y_Kr_c2_v7, 'k')
+ax[3, 1].plot(vib_x_Kr_c2_v8, vib_y_Kr_c2_v8, 'k')
+ax[3, 1].plot(vib_x_Kr_c2_v9, vib_y_Kr_c2_v9, 'k')
+ax[3, 1].plot(vib_x_Kr_c2_v10, vib_y_Kr_c2_v10, 'k')
+ax[3, 1].plot(vib_x_Kr_c2_v11, vib_y_Kr_c2_v11, 'k')
+ax[3, 1].tick_params(labelcolor='k', labelsize='small', width=1.1)
+ax[3, 1].set_xlim(2.2, 7.)
+ax[3, 1].set_ylim(-31.3, 10.5)
+ax[3, 1].plot(x7, y7*(43.3641), '#ff0000', lw=2)
 ax[3, 1].set_title('Metanol + Kr (Caso 2)', fontsize = 'small', fontweight = 'bold')
 
+ax[3, 1].set_xlabel('Distância ($\AA$)', labelpad = 2, fontsize = 'xx-large')
 # ------------------- Subplot Kr Caso 3 --------------------------------------
-ax[3, 2].plot(x77, y77*(43.3641), '#006400', lw=2)
+ax[3, 2].plot(vib_x_Kr_c3_v0, vib_y_Kr_c3_v0, 'k')
+ax[3, 2].plot(vib_x_Kr_c3_v1, vib_y_Kr_c3_v1, 'k')
+ax[3, 2].plot(vib_x_Kr_c3_v2, vib_y_Kr_c3_v2, 'k')
+ax[3, 2].plot(vib_x_Kr_c3_v3, vib_y_Kr_c3_v3, 'k')
+ax[3, 2].plot(vib_x_Kr_c3_v4, vib_y_Kr_c3_v4, 'k')
+ax[3, 2].plot(vib_x_Kr_c3_v5, vib_y_Kr_c3_v5, 'k')
+ax[3, 2].plot(vib_x_Kr_c3_v6, vib_y_Kr_c3_v6, 'k')
+ax[3, 2].plot(vib_x_Kr_c3_v7, vib_y_Kr_c3_v7, 'k')
+ax[3, 2].plot(vib_x_Kr_c3_v8, vib_y_Kr_c3_v8, 'k')
+ax[3, 2].plot(vib_x_Kr_c3_v9, vib_y_Kr_c3_v9, 'k')
+ax[3, 2].plot(vib_x_Kr_c3_v10, vib_y_Kr_c3_v10, 'k')
+ax[3, 2].plot(vib_x_Kr_c3_v11, vib_y_Kr_c3_v11, 'k')
+ax[3, 2].tick_params(labelcolor='k', labelsize='small', width=1.1)
+ax[3, 2].set_xlim(2.9, 7.)
+ax[3, 2].set_ylim(-32.1, 10.5)
+ax[3, 2].plot(x77, y77*(43.3641), '#00cc00', lw=2)
 ax[3, 2].set_title('Metanol + Kr (Caso 3)', fontsize = 'small', fontweight = 'bold')
 
 
-plt.savefig('ryd6_teste3.png', dpi=300, orientation='portrait', transparent=True, format='png')
+
+plt.savefig('ryd6_teste5.png', dpi=300, orientation='portrait', transparent=True, format='png')
 plt.show()
