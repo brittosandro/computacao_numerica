@@ -258,6 +258,7 @@ vib_y_Ar_c3_v10 = dados_Ar_vib_c3_v10[:, 1]
 
 # ****** fim Caso 3
 # ----------------------------------------------------------------------------
+
 dados6 = np.loadtxt('Kr_c1.dat')
 x6 = dados6[:, 0]
 y6 = dados6[:, 9]
@@ -269,6 +270,62 @@ y7 = dados7[:, 9]
 dados77 = np.loadtxt('Kr_c3.dat')
 x77 = dados77[:, 0]
 y77 = dados77[:, 9]
+
+# ------------------niveis vibracionais Kr -----------------------------------
+# ****** Caso 1
+dados_Kr_vib_c1_v0 = np.loadtxt('Kr_c1_v0.txt')
+vib_x_Kr_c1_v0 = dados_Kr_vib_c1_v0[:, 0]
+vib_y_Kr_c1_v0 = dados_Kr_vib_c1_v0[:, 1]
+
+dados_Kr_vib_c1_v1 = np.loadtxt('Kr_c1_v1.txt')
+vib_x_Kr_c1_v1 = dados_Kr_vib_c1_v1[:, 0]
+vib_y_Kr_c1_v1 = dados_Kr_vib_c1_v1[:, 1]
+
+dados_Kr_vib_c1_v2 = np.loadtxt('Kr_c1_v2.txt')
+vib_x_Kr_c1_v2 = dados_Kr_vib_c1_v2[:, 0]
+vib_y_Kr_c1_v2 = dados_Kr_vib_c1_v2[:, 1]
+
+dados_Kr_vib_c1_v3 = np.loadtxt('Kr_c1_v3.txt')
+vib_x_Kr_c1_v3 = dados_Kr_vib_c1_v3[:, 0]
+vib_y_Kr_c1_v3 = dados_Kr_vib_c1_v3[:, 1]
+
+dados_Kr_vib_c1_v4 = np.loadtxt('Kr_c1_v4.txt')
+vib_x_Kr_c1_v4 = dados_Kr_vib_c1_v4[:, 0]
+vib_y_Kr_c1_v4 = dados_Kr_vib_c1_v4[:, 1]
+
+dados_Kr_vib_c1_v4 = np.loadtxt('Kr_c1_v4.txt')
+vib_x_Kr_c1_v4 = dados_Kr_vib_c1_v4[:, 0]
+vib_y_Kr_c1_v4 = dados_Kr_vib_c1_v4[:, 1]
+
+dados_Kr_vib_c1_v5 = np.loadtxt('Kr_c1_v5.txt')
+vib_x_Kr_c1_v5 = dados_Kr_vib_c1_v5[:, 0]
+vib_y_Kr_c1_v5 = dados_Kr_vib_c1_v5[:, 1]
+
+dados_Kr_vib_c1_v6 = np.loadtxt('Kr_c1_v6.txt')
+vib_x_Kr_c1_v6 = dados_Kr_vib_c1_v6[:, 0]
+vib_y_Kr_c1_v6 = dados_Kr_vib_c1_v6[:, 1]
+
+dados_Kr_vib_c1_v7 = np.loadtxt('Kr_c1_v7.txt')
+vib_x_Kr_c1_v7 = dados_Kr_vib_c1_v7[:, 0]
+vib_y_Kr_c1_v7 = dados_Kr_vib_c1_v7[:, 1]
+
+dados_Kr_vib_c1_v8 = np.loadtxt('Kr_c1_v8.txt')
+vib_x_Kr_c1_v8 = dados_Kr_vib_c1_v8[:, 0]
+vib_y_Kr_c1_v8 = dados_Kr_vib_c1_v8[:, 1]
+
+dados_Kr_vib_c1_v9 = np.loadtxt('Kr_c1_v9.txt')
+vib_x_Kr_c1_v9 = dados_Kr_vib_c1_v9[:, 0]
+vib_y_Kr_c1_v9 = dados_Kr_vib_c1_v9[:, 1]
+
+dados_Kr_vib_c1_v10 = np.loadtxt('Kr_c1_v10.txt')
+vib_x_Kr_c1_v10 = dados_Kr_vib_c1_v10[:, 0]
+vib_y_Kr_c1_v10 = dados_Kr_vib_c1_v10[:, 1]
+
+dados_Kr_vib_c1_v11 = np.loadtxt('Kr_c1_v11.txt')
+vib_x_Kr_c1_v11 = dados_Kr_vib_c1_v11[:, 0]
+vib_y_Kr_c1_v11 = dados_Kr_vib_c1_v11[:, 1]
+
+# ****** Fim Caso 1
 
 #sns.set_style()
 
@@ -376,7 +433,19 @@ ax[2, 2].plot(x55, y55*(43.3641), '#006400', lw=2)
 ax[2, 2].set_title('Metanol + Ar (Caso 3)', fontsize = 'small', fontweight = 'bold')
 
 # ------------------- Subplot Kr Caso 1 --------------------------------------
-ax[3, 0].plot(x6, y6*(43.3641), '#8A2BE2')
+ax[3, 0].plot(vib_x_Kr_c1_v0, vib_y_Kr_c1_v0, '#4F2F4F')
+ax[3, 0].plot(vib_x_Kr_c1_v1, vib_y_Kr_c1_v1, '#FF0000')
+ax[3, 0].plot(vib_x_Kr_c1_v2, vib_y_Kr_c1_v2, '#191970')
+ax[3, 0].plot(vib_x_Kr_c1_v3, vib_y_Kr_c1_v3, '#FF8C00')
+ax[3, 0].plot(vib_x_Kr_c1_v4, vib_y_Kr_c1_v4, '#696969')
+ax[3, 0].plot(vib_x_Kr_c1_v5, vib_y_Kr_c1_v5)
+ax[3, 0].plot(vib_x_Kr_c1_v6, vib_y_Kr_c1_v6)
+ax[3, 0].plot(vib_x_Kr_c1_v7, vib_y_Kr_c1_v7)
+ax[3, 0].plot(vib_x_Kr_c1_v8, vib_y_Kr_c1_v8)
+ax[3, 0].plot(vib_x_Kr_c1_v9, vib_y_Kr_c1_v9)
+ax[3, 0].plot(vib_x_Kr_c1_v10, vib_y_Kr_c1_v10)
+ax[3, 0].plot(vib_x_Kr_c1_v11, vib_y_Kr_c1_v11)
+ax[3, 0].plot(x6, y6*(43.3641), '#8A2BE2', lw=2)
 ax[3, 0].set_title('Metanol + Kr (Caso 1)', fontsize = 'small', fontweight = 'bold')
 
 # ------------------- Subplot Kr Caso 2 --------------------------------------
@@ -388,5 +457,5 @@ ax[3, 2].plot(x77, y77*(43.3641), '#006400', lw=2)
 ax[3, 2].set_title('Metanol + Kr (Caso 3)', fontsize = 'small', fontweight = 'bold')
 
 
-plt.savefig('ryd6_teste2.png', dpi=300, orientation='portrait', transparent=True, format='png')
+plt.savefig('ryd6_teste3.png', dpi=300, orientation='portrait', transparent=True, format='png')
 plt.show()
