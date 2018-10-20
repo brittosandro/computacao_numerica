@@ -429,7 +429,16 @@ vib_y_Kr_c3_v11 = dados_Kr_vib_c3_v11[:, 1]
 
 
 #sns.set_style()
-fig, ax = plt.subplots(4, 3, figsize=(10., 8.), constrained_layout=True)
+fig, ax = plt.subplots(4, 3, figsize=(9.9, 8.6))
+
+fig.subplots_adjust(
+                     left=0.08,
+                     right=0.99,         # {Define as distâncias entre os extremos}
+                     bottom=0.08,
+                     top=.94,
+                     hspace=0.27,   # Organiza espaçoes entre os subplots
+                     wspace=0.27    # Organiza espaçoes entre os subplots
+                    )
 
 '''
 fig.suptitle(
@@ -438,6 +447,7 @@ fig.suptitle(
                fontsize = 14
             )
 '''
+
 # ------------------- Subplot He Caso 1 --------------------------------------
 ax[0, 0].plot(vib1_x, vib1_y, 'k')
 ax[0, 0].plot(x, y*(43.3641), '#0000ff', lw=2)
@@ -610,7 +620,7 @@ ax[3, 2].set_title('Metanol + Kr (Caso 3)', fontsize = 'small', fontweight = 'bo
 
 fig.text(
            0.5,                      # Ordena Posição x
-           0.0002,                   # Ordena Posição y
+           0.03,                   # Ordena Posição y
            'Distância ($\AA$)',      # Texto A ser colocado
            ha='center',              # Alinha texto horizontalmente
            va='center',               # Alinha texto verticalmente
@@ -618,7 +628,7 @@ fig.text(
         )
 
 fig.text(
-           0.01,
+           0.03,
            0.5,
            'Energia (meV)',
            ha='center',
@@ -628,5 +638,5 @@ fig.text(
         )
 
 
-plt.savefig('ryd6_teste6.png', dpi=300, orientation='portrait', transparent=True, format='png')
+plt.savefig('ryd6_teste7.png', dpi=300, orientation='portrait', transparent=True, format='png')
 plt.show()
