@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import numpy as np
-#import seaborn as sns
+import seaborn as sns
 
 dados = np.loadtxt('He_c1.dat')
 x = dados[:, 0]
@@ -428,7 +428,7 @@ vib_y_Kr_c3_v11 = dados_Kr_vib_c3_v11[:, 1]
 # ****** Fim Caso 3
 
 
-#sns.set(style="ticks")
+sns.set(style="ticks")
 
 fig, ax = plt.subplots(4, 3, figsize=(9.9, 8.6))
 
