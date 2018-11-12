@@ -5,3 +5,13 @@
     construir três módulos ou arquivos. Os quais são discriminados da </br>
     da seguinte maneira:</br></br>  
 </p>
+
+<p>
+   1) O primeiro módulo que deveremos criar é um arquivo.i; </br>
+      -
+   2) O segundo módulo que deveremos criar é um arquivo de cabeçalho arquivo.h; </br>
+      -
+   3) O terceiro módulo que criaremos é o programa em C. </br>               
+
+</p>
+
