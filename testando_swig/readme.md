@@ -8,9 +8,9 @@
 
 <p>
    1) O primeiro módulo que deveremos criar é um arquivo.i; </br>
-      -
+      - </br>
    2) O segundo módulo que deveremos criar é um arquivo de cabeçalho arquivo.h; </br>
-      -
+      - </br>
    3) O terceiro módulo que criaremos é o programa em C. </br>               
 
 </p>
