@@ -17,8 +17,17 @@
 	      - arq1_wrap.c 
 
    2) O segundo módulo que deveremos criar é um arquivo de cabeçalho arquivo.h; </br>
-      - </br>
+      
    3) O terceiro módulo que criaremos é o programa em C. </br>               
 
 </p>
 
+<p>
+   A execução de um programa deve seguir os seguintes passos: </br>
+   
+   1) swig -python exemplo.i </br>
+   2) gcc -O2 -fPIC -c exemplo.c </br>
+   3) gcc -O2 -fPIC -c exemplo_wrap.c -I/usr/include/python3.6 </br>
+   4) gcc -shared exemplo.o exemplo_wrap.o -o _exemplo.so </br>
+   
+</p>
