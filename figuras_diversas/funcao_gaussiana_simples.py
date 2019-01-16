@@ -19,7 +19,7 @@ plt.xlabel('x', fontdict=fonte)
 plt.ylabel('g(x)', fontdict=fonte)
 
 plt.savefig(
-             'fig_Daniel5.png',
+             'gaussiana.png',
              dpi=300,
              orientation = 'portrait',
              transparent = True,
