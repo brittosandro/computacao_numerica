@@ -1,16 +1,18 @@
 ################################################################################
 #
-# Autor: Sandro F. de Brito
-#
 # Descrição:
 #    Esse script tem como característica ajustar uma curva a partir
 # de um conjunto de pontos de um arquivo, os quais foram calculas previamente
 # por métodos computacionais.
-#    O script usa a função Ridberg de grau 6 para obter os valores das
-#constantes:
+#    O script usa dois modelos de função:
+# 1) A função Ridberg de grau 6 para obter os valores das constantes:
 #    - c1, c2, c3, c4, c5, c6
 #    Bem como os valores de enerdia de dissociação e R de equilíbrio:
-#
+#     - de (enerdia de dissociação)
+#     - req (distância de equilíbrio).
+# 2) A funlção Improved Lenard-Jones (IJL) para obter os valores da constante:
+#    - beta
+#    Bem como os valores de energia de dissociação e R de equilibrío:
 #     - de (enerdia de dissociação)
 #     - req (distância de equilíbrio).
 ################################################################################
