@@ -95,6 +95,28 @@ def coef_virial1(integral):
     B = a * Na * integral
     return B * 1.0e-30
 
+def calc_pontos_pi(dist1, dist2, x):
+    p = (1/2)*(dist1 + dist2) + (1/2)*(dist2 - dist1)*x
+    return p
+
+def quad_gaussian(pi, xi, wi, T):
+    '''
+    A quadratura gaussiana retorna o valor valor em cm³.
+    '''
+
+    kb = 1         #j/K (joule por kelvin)
+    kbT = kb * T
+    ep = 140       #kK (lembre k = 1,38064x10^-23 j/K -> kK = 1,38064x10^-23 j)
+    si = 335       #pm (picometros)
+    potencial = potencial_LJ(pi, ep, si)*(1/1000)
+    # Aqui o potencial esta em kK.
+    #print(potencial)
+    a = -potencial/kbT
+    #print(a)
+    c = wi*(1 - np.exp(a))*(pi**2)
+    return c * 1e-30
+
+
 if __name__ == "__main__":
     distancias = np.arange(3.10, 8.20, 0.01)
 
@@ -111,13 +133,13 @@ if __name__ == "__main__":
     beta = 9.74
     energias1 = [improve_LJ(r, de, req, beta) for r in distancias]
 
-    #Parâmetros para o potencial de Lennard-Jones Ar2.
-    #-------------------------- referência -------------------------------------
-    #nome: Determining Intermolecular Potentials from second virial coefficients
-    #autor: Brian P. Reid
-    #---------------------------------------------------------------------------
+    # Parâmetros para o potencial de Lennard-Jones Ar2.
+    # -------------------------- referência -------------------------------------
+    # nome: Determining Intermolecular Potentials from second virial coefficients
+    # autor: Brian P. Reid
+    # ---------------------------------------------------------------------------
 
-    epsilon1 = 140 #kK lembre k = 1,38064x10^23 j/K -> kK = 1,38064x10^23 j
+    epsilon1 = 140 #kK (lembre k = 1,38064x10^-23 j/K -> kK = 1,38064x10^-23 j)
     sigma1 = 335   #pm (picometros)
     distancias1 = np.arange(305.21, 1303.91)
     energias2 = [potencial_LJ(r, epsilon1, sigma1)*(1/(1000*epsilon1))
@@ -143,7 +165,7 @@ if __name__ == "__main__":
     plt.ylabel(r'Energia ($U=U/\epsilon$)')
     plt.xlabel(r'R ($r/r_{min}$)')
     plt.title(r'Interação $Ar_{2}$')
-    plt.show()
+    #plt.show()
 
     # Para calcular o coeficiente do virial total vamos repartir o coeficiente
     #em quatro partes de acordo com o a distância de interação.
@@ -167,12 +189,107 @@ if __name__ == "__main__":
     # Cálculo de B2(T)
     # Região em que r1 <= r <= r2
     # ---------------------------
+    #  Nesse caso nos vamos resolver a integral:
+    # \int_{r1}^{r2}(1-e^(U(r)/kt))r^{2}dr, pelo método de aproximação conhecido
+    # como quadratura gaussiana. Nesse caso vamos considerar n = 6, ou seja,
+    # seis termos para a aproximação. Teremos então:
+    # \int_{r1}^{r2}(1-e^(U(r)/kt))r^{2}dr ~ \sum_{i=1}^{6}w_i(1-e^(U(p_i)/kt))p_i^{2}.
+    #  Em que p_i = 1/2*(r1+r2) + 1/2*(r2-r1)xi.
+    #  Os valores de x_i e w_i são tabelados e foram retirados do sítio:
+    # https://pomax.github.io/bezierinfo/legendre-gauss.html
+
+    coef_wi_xi_6 = np.loadtxt('dados_coef6.dat', comments='#')
+    wi_6 = coef_wi_xi_6[:, 1]
+    xi_6 = coef_wi_xi_6[:, 2]
+
+    # Pegando o ponto associado a energia mínima do potencial.
+    r2 = r_min1
+    #print(r1, r2)
+    p_i = [calc_pontos_pi(r1, r2, xi) for xi in xi_6]
+    #print(p_i)
+    T = 100  # K (Kelvin)
+    valores_quadratura = [quad_gaussian(pi, xi, wi, T)
+                                       for pi, xi, wi in zip(p_i, xi_6, wi_6)]
+
+    U_para_B2 = [potencial_LJ(r, 140, 335)*(1/1000) for r in p_i]
+    #print(valores_quadratura)
+    Na = 6.022140e23
+    B2 = [2*np.pi*Na*quadratura for quadratura in valores_quadratura]
+    B2tot = sum(B2)
+    #print(B2)
+    #print(soma_B2)
+    xii = 'xi [pm]'
+    wii = 'wi [pm]'
+    r = 'ri [pm]'
+    U = 'U(ri) [kK]'
+    B = 'B2(T) [cm³/mol]'
+    print(f'{xii:^18}  {wii:^10} {r:^20} {U:^16} {B:^29}')
+    for xi, wi, ri, Ui, Bi in zip(xi_6, wi_6, p_i, U_para_B2, B2):
+        print(f'{xi:14.9f}  {wi:14.9f}  {ri:15.7f}   {Ui:15.7f}   {Bi:15.7f}')
+    print(f'B2(T) = {B2tot} cm³/mol')
+
+    # Cálculo de B3(T)
+    # Região em que r2 <= r <= r3
+    # ---------------------------
+    #  Nesse caso nos vamos resolver a integral:
+    # \int_{r1}^{r2}(1-e^(U(r)/kt))r^{2}dr, pelo método de aproximação conhecido
+    # como quadratura gaussiana. Nesse caso vamos considerar n = 10, ou seja,
+    # dez termos para a aproximação. Teremos então:
+    # \int_{r1}^{r2}(1-e^(U(r)/kt))r^{2}dr ~ \sum_{i=1}^{10}w_i(1-e^(U(p_i)/kt))p_i^{2}.
+    #  Em que p_i = 1/2*(r1+r2) + 1/2*(r2-r1)xi.
+    #  Os valores de x_i e w_i são tabelados e foram retirados do sítio:
+    # https://pomax.github.io/bezierinfo/legendre-gauss.html
+
+    r3 = distancias1[-1]
+    coef_wi_xi_10 = np.loadtxt('dados_coef10.dat', comments='#')
+    wi_10 = coef_wi_xi_10[:, 1]
+    xi_10 = coef_wi_xi_10[:, 2]
+
+    #print(r2, r3)
+    p_i = [calc_pontos_pi(r2, r3, xi) for xi in xi_10]
+    #print(p_i)
+    T = 100  # K (Kelvin)
+    valores_quadratura = [quad_gaussian(pi, xi, wi, T)
+                                       for pi, xi, wi in zip(p_i, xi_10, wi_10)]
+
+    U_para_B3 = [potencial_LJ(r, 140, 335)*(1/1000) for r in p_i]
+    #print(valores_quadratura)
+    Na = 6.022140e23
+    B3 = [2*np.pi*Na*quadratura for quadratura in valores_quadratura]
+    B3tot = sum(B3)
+
+    xii = 'xi [pm]'
+    wii = 'wi [pm]'
+    r = 'ri [pm]'
+    U = 'U(ri) [kK]'
+    B = 'B3(T) [cm³/mol]'
+    print(f'{xii:^18}  {wii:^10} {r:^20} {U:^16} {B:^29}')
+    for xi, wi, ri, Ui, Bi in zip(xi_10, wi_10, p_i, U_para_B3, B3):
+        print(f'{xi:14.9f}  {wi:14.9f}  {ri:15.7f}   {Ui:15.7f}   {Bi:15.7f}')
+    print(f'B3(T) = {B3tot} cm³/mol')
 
 
+    # Cálculo de B4(T)
+    # Região em que r3 <= r <= infinito
+    # ---------------------------------
+    # Nessa parte deveremos calcular a integral data pela relação
+    # \int_{r3}^{\inf} U(r)/kT r^2 dr
 
+    kb = 1         #j/K (joule por kelvin)
+    kbT = kb * T
+    r = symbols('r')
+    # Aqui o potencial esta em kK.
+    p = potencial_LJ(r, 140, 335)
+    f = (1/kbT) * p * r**2
 
+    infinito = 1325.0
+    int_B4 = integrate(f, (r, r3, infinito))
+    #print(int_B4)
+    B4 = coef_virial1(int_B4)
+    print(f'B4(T) = {B4} cm³/mol')
 
-
+    Btot = B1 + B2tot + B3tot + B4
+    print(f'Btot(T) = {Btot} cm³/mol')
 
     '''
     minima = 0
