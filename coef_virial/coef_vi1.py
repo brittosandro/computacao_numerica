@@ -80,16 +80,16 @@ def calc_pontos_pi(dist1, dist2, x):
     p = (1/2)*(dist1 + dist2) + (1/2)*(dist2 - dist1)*x
     return p
 
-def quad_gaussian(pi, xi, wi, T, r1, r2):
+def quad_gaussian(potencial, pi, xi, wi, T, r1, r2):
     '''
     A quadratura gaussiana retorna o valor valor em cm³.
     '''
 
     kb = 1         #j/K (joule por kelvin)
     kbT = kb * T
-    ep = 140       #kK (lembre k = 1,38064x10^-23 j/K -> kK = 1,38064x10^-23 j)
-    si = 335       #pm (picometros)
-    potencial = potencial_LJ(pi, ep, si)
+    #ep = 140       #kK (lembre k = 1,38064x10^-23 j/K -> kK = 1,38064x10^-23 j)
+    #si = 335       #pm (picometros)
+    #potencial = potencial_LJ(pi, ep, si)
     # Aqui o potencial esta em kK.
     #print(potencial)
     a = -potencial/kbT
@@ -127,10 +127,18 @@ if __name__ == "__main__":
     # autor: Brian P. Reid
     # ---------------------------------------------------------------------------
 
+    # Parâmetros Lennard Jones
     epsilon1 = 140 #kK (lembre k = 1,38064x10^-23 j/K -> kK = 1,38064x10^-23 j)
     sigma1 = 335   #pm (picometros)
     distancias1 = np.arange(305.21, 1303.91)
     energias2 = [potencial_LJ(r, epsilon1, sigma1)*(1/(epsilon1))
+                                                  for r in distancias1]
+
+    # Parâmetros Improved Lennard Jones
+    beta = 9.74
+    de = 143.2345 #kK
+    req = 376.0   #pm
+    energias3 = [improve_LJ(r, de, req, beta)*(1/(epsilon1))
                                                   for r in distancias1]
     minima = 0
     for i in range(1, len(energias2)):
@@ -145,9 +153,10 @@ if __name__ == "__main__":
     #print(r_min1)
     #print('*****************')
 
-    new_distancias1 = [(r/298) for r in distancias1]
+    new_distancias1 = [(r/376) for r in distancias1]
 
     plt.plot(new_distancias1, energias2, color='b', linewidth=2.5, label='LJ')
+    plt.plot(new_distancias1, energias3, color='r', linewidth=2.5, label='ILJ')
     plt.legend(loc='upper right', shadow=False, fontsize='large',
                bbox_to_anchor=(0.98, 0.98), frameon=False)
     plt.ylabel(r'Energia ($U=U/\epsilon$)')
@@ -163,6 +172,7 @@ if __name__ == "__main__":
 
     # Como buscamos calcular o valor de energia para vária temperaturas, então:
     B_tot = []
+    B_tot_1 = []
     for T in T_exp:
         # Cálculo de B1(T)
         # Região em que r é pequeno
@@ -177,6 +187,7 @@ if __name__ == "__main__":
         #print(f'r inicial = {r1} | rmin = {r_min1}')
         int1 = integrate(r**2, (r, 0, r1))
         #print(f'Integral = {int1}')
+        print()
         B1 = coef_virial1(int1)
         print(f'B1(T) = {B1} cm³/mol')
         print()
@@ -204,26 +215,38 @@ if __name__ == "__main__":
         #print()
         p_i = [calc_pontos_pi(r1, r2, xi) for xi in xi_6]
         #print(p_i)
-        valores_quadratura = [quad_gaussian(pi, xi, wi, T, r1, r2)
+        valores_quadratura = [quad_gaussian(potencial_LJ(pi, epsilon1, sigma1),
+                                       pi, xi, wi, T, r1, r2)
                                        for pi, xi, wi in zip(p_i, xi_6, wi_6)]
 
-        U_para_B2 = [potencial_LJ(r, 119.92, 298) for r in p_i]
+        valores_quadratura1 = [quad_gaussian(improve_LJ(pi, de, req, beta),
+                                       pi, xi, wi, T, r1, r2)
+                                       for pi, xi, wi in zip(p_i, xi_6, wi_6)]
+
+        U_para_B2 = [potencial_LJ(r, epsilon1, sigma1) for r in p_i]
+
+        U_para_B2_1 = [improve_LJ(r, de, req, beta) for r in p_i]
         #print(valores_quadratura)
         Na = 6.022140e23
         B2 = [2*np.pi*Na*quadratura for quadratura in valores_quadratura]
+        B2_1 = [2*np.pi*Na*quadratura for quadratura in valores_quadratura1]
         B2tot = sum(B2)
+        B2tot_1 = sum(B2_1)
         #print(B2)
         #print(soma_B2)
         print()
         xii = 'xi'
         wii = 'ci'
         r = 'ri [pm]'
-        U = 'U(ri) [kK]'
-        B = 'B2(T) [cm³/mol]'
-        print(f'{xii:^18}  {wii:^10} {r:^20} {U:^16} {B:^29}')
-        for xi, wi, ri, Ui, Bi in zip(xi_6, wi_6, p_i, U_para_B2, B2):
-            print(f'{xi:14.9f}  {wi:14.9f}  {ri:15.7f}   {Ui:15.7f}   {Bi:15.7f}')
+        U = 'U_LJ  [kK]'
+        U1 = 'U_ILJ [kK]'
+        B = 'B2_LJ [cm³/mol]'
+        B_1 = 'B2_ILJ [cm³/mol]'
+        print(f'{xii:^18}  {wii:^10} {r:^20} {U:^15} {U1:^16} {B:^10} {B_1:^19}')
+        for xi, wi, ri, Ui, Ui1, Bi, Bi1 in zip(xi_6, wi_6, p_i, U_para_B2, U_para_B2_1, B2, B2_1):
+            print(f'{xi:14.9f}  {wi:14.9f}  {ri:15.7f}   {Ui:15.7f} {Ui1:15.7f}  {Bi:15.7f} {Bi1:15.7f}')
         print(f'B2(T) = {B2tot} cm³/mol')
+        print(f'B2(T) = {B2tot_1} cm³/mol')
 
         # Cálculo de B3(T)
         # Região em que r2 <= r <= r3
@@ -247,24 +270,38 @@ if __name__ == "__main__":
 
         p_i = [calc_pontos_pi(r2, r3, xi) for xi in xi_10]
         #print(p_i)
-        valores_quadratura = [quad_gaussian(pi, xi, wi, T, r2, r3)
+
+        valores_quadratura = [quad_gaussian(potencial_LJ(pi, epsilon1, sigma1),
+                                       pi, xi, wi, T, r2, r3)
                                        for pi, xi, wi in zip(p_i, xi_10, wi_10)]
 
-        U_para_B3 = [potencial_LJ(r, 119.92, 341.1) for r in p_i]
+        valores_quadratura1 = [quad_gaussian(improve_LJ(pi, de, req, beta),
+                                       pi, xi, wi, T, r2, r3)
+                                       for pi, xi, wi in zip(p_i, xi_10, wi_10)]
+
+        U_para_B3 = [potencial_LJ(r, epsilon1, sigma1) for r in p_i]
+
+        U_para_B3_1 = [improve_LJ(r, de, req, beta) for r in p_i]
         #print(valores_quadratura)
         Na = 6.022140e23
         B3 = [2*np.pi*Na*quadratura for quadratura in valores_quadratura]
+        B3_1 = [2*np.pi*Na*quadratura for quadratura in valores_quadratura1]
         B3tot = sum(B3)
+        B3tot_1 = sum(B3_1)
 
         xii = 'xi'
         wii = 'ci'
         r = 'ri [pm]'
-        U = 'U(ri) [kK]'
-        B = 'B3(T) [cm³/mol]'
-        print(f'{xii:^18}  {wii:^10} {r:^20} {U:^16} {B:^29}')
-        for xi, wi, ri, Ui, Bi in zip(xi_10, wi_10, p_i, U_para_B3, B3):
-            print(f'{xi:14.9f}  {wi:14.9f}  {ri:15.7f}   {Ui:15.7f}   {Bi:15.7f}')
+        U = 'U_LJ [kK]'
+        U1 = 'U_ILJ [kK]'
+        B = 'B_LJ [cm³/mol]'
+        B_1 = 'B3_ILJ [cm³/mol]'
+        print(f'{xii:^18}  {wii:^10} {r:^20} {U:^15} {U1:^16} {B:^10} {B_1:^19}')
+        for xi, wi, ri, Ui, Ui1, Bi, Bi1 in zip(xi_10, wi_10, p_i, U_para_B3, U_para_B3_1, B3, B3_1):
+            print(f'{xi:14.9f}  {wi:14.9f}  {ri:15.7f}   {Ui:15.7f} {Ui1:15.7f}  {Bi:15.7f} {Bi1:15.7f}')
+
         print(f'B3(T) = {B3tot} cm³/mol')
+        print(f'B3(T) = {B3tot_1} cm³/mol')
         print()
 
         # Cálculo de B4(T)
@@ -277,26 +314,37 @@ if __name__ == "__main__":
         kbT = kb * T
         r = symbols('r')
         # Aqui o potencial esta em kK.
-        p = potencial_LJ(r, 119.92, 298)
+        p = potencial_LJ(r, epsilon1, sigma1)
         f = (1/kbT) * p * r**2
+
+        p1 = improve_LJ(r, de, req, beta)
+        f1 = (1/kbT) * p1 * r**2
 
         infinito = 1625.0
         int_B4 = integrate(f, (r, r3, infinito))
+        #int_B4_1 = integrate(f1, (r, r3, infinito))
         #print(int_B4)
         B4 = coef_virial1(int_B4)
+        #B4_1 = coef_virial1(int_B4_1)
         print(f'B4(T) = {B4} cm³/mol')
+        #print(f'B4(T) = {B4_1} cm³/mol')
         print()
 
         Btot = B1 + B2tot + B3tot + B4
+        Btot1 = B1 + B2tot_1 + B3tot_1
         print(f'Btot(T) = {Btot} cm³/mol')
+        print(f'Btot(T) = {Btot1} cm³/mol')
 
         B_tot.append(Btot)
+        B_tot_1.append(Btot1)
 
     # Plot do coeficiente do virial experimental com calculado
     plt.scatter(T_exp, B_exp_Ar, marker='o', color='b', linewidth=2.5,
              label='B(T) Experimental')
-    plt.plot(T_exp, B_tot, color='red', linewidth=2.5,
-             label='B(T) Calculado')
+    plt.scatter(T_exp, B_tot, marker='^', color='red', linewidth=2.5,
+             label='B(T) Calculado | LJ')
+    plt.scatter(T_exp, B_tot_1, marker='*', color='y', linewidth=2.5,
+             label='B(T) Calculado | ILJ')
     plt.legend(loc='upper right', shadow=False, fontsize='large',
                bbox_to_anchor=(0.98, 0.28), frameon=False)
     plt.ylabel(r'B(T)')
