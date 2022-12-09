@@ -30,11 +30,17 @@ def LJ_Inprove(r, de, req, beta):
     n_r = (beta + 4*((r/req)**2))
     return ((de/(n_r - 6)) * ((6 * ((req/r)**(n_r))) - (n_r * ((req/r)**6))))
 
+def LJ(r, epsilon, sigma):
+    e = epsilon
+    s = sigma
+    return 4 * e * ((s/r)**12 - (s/r)**6)
+
 # Definindo Ryd 6 potential
 def rydberg6(x, de, xe, c1, c2, c3, c4, c5, c6):
     potential = -de*(1 + c1*(x-xe) + c2*(x-xe)**2 + c3*(x-xe)**3
     + c4*(x-xe)**4 + c5*(x-xe)**5 + c6*(x-xe)**6)*np.exp(-c1*(x-xe))
     return potential
+
 
 # Lendo os valores da função ruido afim de obter um ajuste um ajuste pelo método
 # fit do módulo lmfitself.
