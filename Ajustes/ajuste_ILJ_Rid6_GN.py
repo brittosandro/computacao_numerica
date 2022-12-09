@@ -26,7 +26,7 @@ import seaborn as sns
 
 
 # A função abaixo define o potencial Lennard - Jones Improve.
-def LJ_Inprove(r, de, req, beta):
+def ILJ(r, de, req, beta):
     n_r = (beta + 4*((r/req)**2))
     return ((de/(n_r - 6)) * ((6 * ((req/r)**(n_r))) - (n_r * ((req/r)**6))))
 
@@ -48,18 +48,22 @@ dados = np.loadtxt('medias_Kr_amonia.dat')
 x1 = dados[:, 0]
 y1 = dados[:, 1]
 
-chut_inicial = [-15.88, 4.01, 8.60,] # chute inicial do ajuste com scipy
-melhor_variavel, covar = curve_fit(LJ_Inprove, x1, y1, chut_inicial, maxfev=200000)
+# chute inicial do ajuste com scipy para ILJ
+#chut_inicial = [-15.88, 4.01, 8.60,]
+
+# chute inicial do ajuste com scipy para IL
+chut_inicial = [-15.88, 4.01]
+melhor_variavel, covar = curve_fit(LJ, x1, y1, chut_inicial, maxfev=200000)
 
 print('---------------------------------------')
 print('  Valores de Ajuste Scipy. curve_fit \n')
-print('# de = {}'.format(melhor_variavel[0]))
-print('# req = {}'.format(melhor_variavel[1]))
-print('# BETA = {}'.format(melhor_variavel[2]))
+print('# epsilon = {}'.format(melhor_variavel[0]))
+print('# sigma = {}'.format(melhor_variavel[1]))
+#print('# BETA = {}'.format(melhor_variavel[2]))
 print('---------------------------------------\n')
 
-novo_ajuste = Model(LJ_Inprove) # definimos o modelo de ajuste com Model
-resultado_ajuste = novo_ajuste.fit(y1, r=x1, de=-15.816, req=4.005, beta=8.60)
+novo_ajuste = Model(LJ) # definimos o modelo de ajuste com Model
+resultado_ajuste = novo_ajuste.fit(y1, r=x1, epsilon=-15.816, sigma=4.005)
 
 print('---------------------------------------------------')
 print('      Valores de Ajuste LmFit. Fit Report \n')
@@ -74,7 +78,7 @@ d.write('- A unidade de medida para De é dada em MEV     -\n')
 d.write('--------------------------------------------------\n\n')
 d.write('# de = {} \n'.format(melhor_variavel[0]))
 d.write('# req = {} \n'.format(melhor_variavel[1]))
-d.write('# BETA = {} \n'.format(melhor_variavel[2]))
+#d.write('# BETA = {} \n'.format(melhor_variavel[2]))
 d.write('-------------------------------------------------- \n\n')
 
 d.write('--------------------------------------------------\n')
