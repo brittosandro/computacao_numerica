@@ -46,6 +46,11 @@ def improve_LJ(r, de, req, beta):
     E = ((de/(n_r - 6)) * ((6 * ((req/r)**(n_r))) - (n_r * ((req/r)**6))))
     return E
 
+def rydberg6(x, de, xe, c1, c2, c3, c4, c5, c6):
+    potential = -de*(1 + c1*(x-xe) + c2*(x-xe)**2 + c3*(x-xe)**3
+    + c4*(x-xe)**4 + c5*(x-xe)**5 + c6*(x-xe)**6)*np.exp(-c1*(x-xe))
+    return potential
+
 def integra_potencial(r_min, r_max):
     r = symbols('r')
     return integrate(pot, (r, r_min, r_max))
@@ -136,10 +141,25 @@ if __name__ == "__main__":
 
     # Parâmetros Improved Lennard Jones
     beta = 9.74
-    de = 143.2345 #kK
+    de_ILJ = 143.2345 #kK
     req = 376.0   #pm
-    energias3 = [improve_LJ(r, de, req, beta)*(1/(epsilon1))
+    energias3 = [improve_LJ(r, de_ILJ, req, beta)*(1/(epsilon1))
                                                   for r in distancias1]
+
+    #Parâmetros para o potencial de Rydberg6 Ar2
+    #ref: Eu mesmo! Os valores das constantes foram ajustados a partir
+    #do nível de cálculo CCSD(T)/aug-cc-pvqz.
+    de = 103.461366 #kbK
+    re = 389.109864
+    c1 = 0.01737841
+    c2 = -1.2778e-4
+    c3 = 9.5772e-7
+    c4 = -2.8262e-9
+    c5 = 4.3451e-12
+    c6 = 2.1196e-18
+    energias4 = [rydberg6(r, de, re, c1, c2, c3, c4, c5, c6)*(1/(epsilon1))
+                                                      for r in distancias1]
+
     minima = 0
     for i in range(1, len(energias2)):
         if energias2[minima] > energias2[i]:
@@ -157,12 +177,14 @@ if __name__ == "__main__":
 
     plt.plot(new_distancias1, energias2, color='b', linewidth=2.5, label='LJ')
     plt.plot(new_distancias1, energias3, color='r', linewidth=2.5, label='ILJ')
+    plt.plot(new_distancias1, energias4, color='y', linewidth=2.5, label='Ryd6')
     plt.legend(loc='upper right', shadow=False, fontsize='large',
                bbox_to_anchor=(0.98, 0.98), frameon=False)
     plt.ylabel(r'Energia ($U=U/\epsilon$)')
     plt.xlabel(r'R ($r/r_{min}$)')
     plt.title(r'Interação $Ar_{2}$')
     plt.show()
+
 
     # Para calcular o coeficiente do virial total vamos repartir o coeficiente
     #em quatro partes de acordo com o a distância de interação.
@@ -174,11 +196,14 @@ if __name__ == "__main__":
     B_tot = []
     B_tot_1 = []
     for T in T_exp:
+
         # Cálculo de B1(T)
         # Região em que r é pequeno
         # -------------------------
         # Se r varia de 0 até r1, então podemos calcular B1(T) assumindo que a
         #integral que devemos resolver é \int_{0}^{r1}r^{2}dr.
+        # Note que essa integral é a mesma para qualquer potencial, seja ele:
+        # Lennard-Jones, Impove Lennard-Jones ou Rydberb 6.
 
         r = symbols('r')
         #r1 = distancias1[0]
@@ -189,8 +214,10 @@ if __name__ == "__main__":
         #print(f'Integral = {int1}')
         print()
         B1 = coef_virial1(int1)
-        print(f'B1(T) = {B1} cm³/mol')
+        print(f'B1({T}) = {B1} cm³/mol')
         print()
+
+
         # Cálculo de B2(T)
         # Região em que r1 <= r <= r2
         # ---------------------------
@@ -219,19 +246,28 @@ if __name__ == "__main__":
                                        pi, xi, wi, T, r1, r2)
                                        for pi, xi, wi in zip(p_i, xi_6, wi_6)]
 
-        valores_quadratura1 = [quad_gaussian(improve_LJ(pi, de, req, beta),
+        valores_quadratura1 = [quad_gaussian(improve_LJ(pi, de_ILJ, req, beta),
                                        pi, xi, wi, T, r1, r2)
                                        for pi, xi, wi in zip(p_i, xi_6, wi_6)]
 
+        valores_quadratura2 = [quad_gaussian(rydberg6(pi, de, re, c1, c2, c3, c4, c5, c6),
+                                       pi, xi, wi, T, r1, r2)
+                                       for pi, xi, wi in zip(p_i, xi_6, wi_6)]
+
+
         U_para_B2 = [potencial_LJ(r, epsilon1, sigma1) for r in p_i]
 
-        U_para_B2_1 = [improve_LJ(r, de, req, beta) for r in p_i]
-        #print(valores_quadratura)
+        U_para_B2_1 = [improve_LJ(r, de_ILJ, req, beta) for r in p_i]
+
+        U_para_B2_2 = [rydberg6(r, de, re, c1, c2, c3, c4, c5, c6) for r in p_i]
+
         Na = 6.022140e23
         B2 = [2*np.pi*Na*quadratura for quadratura in valores_quadratura]
         B2_1 = [2*np.pi*Na*quadratura for quadratura in valores_quadratura1]
+        B2_2 = [2*np.pi*Na*quadratura for quadratura in valores_quadratura2]
         B2tot = sum(B2)
         B2tot_1 = sum(B2_1)
+        B2tot_2 = sum(B2_2)
         #print(B2)
         #print(soma_B2)
         print()
@@ -240,13 +276,19 @@ if __name__ == "__main__":
         r = 'ri [pm]'
         U = 'U_LJ  [kK]'
         U1 = 'U_ILJ [kK]'
+        U2 = 'U_Ryd6 [kK]'
         B = 'B2_LJ [cm³/mol]'
         B_1 = 'B2_ILJ [cm³/mol]'
-        print(f'{xii:^18}  {wii:^10} {r:^20} {U:^15} {U1:^16} {B:^10} {B_1:^19}')
-        for xi, wi, ri, Ui, Ui1, Bi, Bi1 in zip(xi_6, wi_6, p_i, U_para_B2, U_para_B2_1, B2, B2_1):
-            print(f'{xi:14.9f}  {wi:14.9f}  {ri:15.7f}   {Ui:15.7f} {Ui1:15.7f}  {Bi:15.7f} {Bi1:15.7f}')
-        print(f'B2(T) = {B2tot} cm³/mol')
-        print(f'B2(T) = {B2tot_1} cm³/mol')
+        B_2 = 'B2_Ryd6 [cm³/mol]'
+        print(f'{xii:^11}  {wii:^13} {r:^15} {U:^15} {U1:^10} {U2:^11} {B:^11} {B_1:^10} {B_2:^10}')
+        for xi, wi, ri, Ui, Ui1, Ui2, Bi, Bi1, Bi2 in zip(xi_6, wi_6, p_i, U_para_B2, U_para_B2_1, U_para_B2_2, B2, B2_1, B2_2):
+            print(f'{xi:12.9f}  {wi:12.9f}  {ri:12.7f}  {Ui:12.7f} {Ui1:12.7f} {Ui2:12.7f} {Bi:12.7f} {Bi1:12.7f} {Bi2:12.7f}')
+        print()
+        print(f'B2({T}) LJ = {B2tot} cm³/mol')
+        print(f'B2({T}) ILJ = {B2tot_1} cm³/mol')
+        print(f'B2({T}) Ryd6 = {B2tot_2} cm³/mol')
+        print()
+
 
         # Cálculo de B3(T)
         # Região em que r2 <= r <= r3
@@ -275,35 +317,47 @@ if __name__ == "__main__":
                                        pi, xi, wi, T, r2, r3)
                                        for pi, xi, wi in zip(p_i, xi_10, wi_10)]
 
-        valores_quadratura1 = [quad_gaussian(improve_LJ(pi, de, req, beta),
+        valores_quadratura1 = [quad_gaussian(improve_LJ(pi, de_ILJ, req, beta),
+                                       pi, xi, wi, T, r2, r3)
+                                       for pi, xi, wi in zip(p_i, xi_10, wi_10)]
+
+        valores_quadratura2 = [quad_gaussian(rydberg6(pi, de, re, c1, c2, c3, c4, c5, c6),
                                        pi, xi, wi, T, r2, r3)
                                        for pi, xi, wi in zip(p_i, xi_10, wi_10)]
 
         U_para_B3 = [potencial_LJ(r, epsilon1, sigma1) for r in p_i]
 
         U_para_B3_1 = [improve_LJ(r, de, req, beta) for r in p_i]
-        #print(valores_quadratura)
+
+        U_para_B3_2 = [rydberg6(r, de, re, c1, c2, c3, c4, c5, c6) for r in p_i]
+
         Na = 6.022140e23
         B3 = [2*np.pi*Na*quadratura for quadratura in valores_quadratura]
         B3_1 = [2*np.pi*Na*quadratura for quadratura in valores_quadratura1]
+        B3_2 = [2*np.pi*Na*quadratura for quadratura in valores_quadratura2]
         B3tot = sum(B3)
         B3tot_1 = sum(B3_1)
+        B3tot_2 = sum(B3_2)
 
         xii = 'xi'
         wii = 'ci'
         r = 'ri [pm]'
         U = 'U_LJ [kK]'
         U1 = 'U_ILJ [kK]'
+        U2 = 'U_Ryd6 [kK]'
         B = 'B_LJ [cm³/mol]'
         B_1 = 'B3_ILJ [cm³/mol]'
-        print(f'{xii:^18}  {wii:^10} {r:^20} {U:^15} {U1:^16} {B:^10} {B_1:^19}')
-        for xi, wi, ri, Ui, Ui1, Bi, Bi1 in zip(xi_10, wi_10, p_i, U_para_B3, U_para_B3_1, B3, B3_1):
-            print(f'{xi:14.9f}  {wi:14.9f}  {ri:15.7f}   {Ui:15.7f} {Ui1:15.7f}  {Bi:15.7f} {Bi1:15.7f}')
-
-        print(f'B3(T) = {B3tot} cm³/mol')
-        print(f'B3(T) = {B3tot_1} cm³/mol')
+        B_2 = 'B3_Ryd6 [cm³/mol]'
+        print(f'{xii:^11}  {wii:^13} {r:^15} {U:^15} {U1:^10} {U2:^11} {B:^11} {B_1:^10} {B_2:^10}')
+        for xi, wi, ri, Ui, Ui1, Ui2, Bi, Bi1, Bi2 in zip(xi_10, wi_10, p_i, U_para_B3, U_para_B3_1, U_para_B3_2, B3, B3_1, B3_2):
+            print(f'{xi:12.9f}  {wi:12.9f}  {ri:12.7f}  {Ui:12.7f} {Ui1:12.7f} {Ui2:12.7f} {Bi:12.7f} {Bi1:12.7f} {Bi2:12.7f}')
+        print()
+        print(f'B3({T}) LJ = {B3tot} cm³/mol')
+        print(f'B3({T}) ILJ = {B3tot_1} cm³/mol')
+        print(f'B3({T}) Ryd6 = {B3tot_2} cm³/mol')
         print()
 
+        '''
         # Cálculo de B4(T)
         # Região em que r3 <= r <= infinito
         # ---------------------------------
@@ -351,3 +405,4 @@ if __name__ == "__main__":
     plt.xlabel(r'Temperatura ($K$)')
     plt.title(r'Coeficiente do Virial $Ar_{2}$')
     plt.show()
+    '''
