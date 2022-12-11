@@ -305,8 +305,8 @@ if __name__ == "__main__":
         #r3 = distancias1[-1]
         r3 = 1303.91
         coef_wi_xi_10 = np.loadtxt('dados_coef10.dat', comments='#')
-        wi_10 = coef_wi_xi_10[:, 1]
-        xi_10 = coef_wi_xi_10[:, 2]
+        wi_10 = coef_wi_xi_10[:, 2]
+        xi_10 = coef_wi_xi_10[:, 1]
 
         #print(r2, r3)
 
@@ -367,25 +367,44 @@ if __name__ == "__main__":
         kb = 1         #j/K (joule por kelvin)
         kbT = kb * T
         r = symbols('r')
+        infinito = 1625.0
+
         # Aqui o potencial esta em kK.
+        # Essa é a função Lennard Jones e podemos resolver a integral de forma
+        # analítica
         p = potencial_LJ(r, epsilon1, sigma1)
         f = (1/kbT) * p * r**2
-
-        p1 = improve_LJ(r, de, req, beta)
-        f1 = (1/kbT) * p1 * r**2
-
-        infinito = 1625.0
         int_B4 = integrate(f, (r, r3, infinito))
-        #int_B4_1 = integrate(f1, (r, r3, infinito))
-        #print(int_B4)
         B4 = coef_virial1(int_B4)
-        #B4_1 = coef_virial1(int_B4_1)
         print(f'B4(T) = {B4} cm³/mol')
-        #print(f'B4(T) = {B4_1} cm³/mol')
         print()
 
+        # Para função improve Lennard Jones não conseguimos resolver a integral
+        # de maneira analítica, portando vamos usar o método de quadratura
+        # gaussiana nessa parte. Nesse caso a quadratura que melhor se ajustou
+        # aos pontos foi uma quadratura de 24 pontos
+        #p1 = improve_LJ(r, de, req, beta)
+        #f1 = (1/kbT) * p1 * r**2
+        #int_B4_1 = integrate(f1, (r, r3, infinito))
+        #print(int_B4)
+        #B4_1 = coef_virial1(int_B4_1)
+        coef_wi_xi_24 = np.loadtxt('dados_coef24.dat', comments='#')
+        wi_24 = coef_wi_xi_24[:, 1]
+        xi_24 = coef_wi_xi_24[:, 2]
+        valores_quadratura2 = [quad_gaussian(improve_LJ(pi, de, req, beta),
+                                       pi, xi, wi, T, r3, infinito)
+                                       for pi, xi, wi in zip(p_i, xi_24, wi_24)]
+
+        U_para_B4_1 = [improve_LJ(r, de, req, beta) for r in p_i]
+        Na = 6.022140e23
+        B4_1 = [2*np.pi*Na*quadratura for quadratura in valores_quadratura2]
+        B4tot_1 = sum(B4_1)
+        print(f'B4(T) ILJ = {B4tot_1} cm³/mol')
+
+
+
         Btot = B1 + B2tot + B3tot + B4
-        Btot1 = B1 + B2tot_1 + B3tot_1
+        Btot1 = B1 + B2tot_1 + B3tot_1 + B4tot_1
         print(f'Btot(T) = {Btot} cm³/mol')
         print(f'Btot(T) = {Btot1} cm³/mol')
 
