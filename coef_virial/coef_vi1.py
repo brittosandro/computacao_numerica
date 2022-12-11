@@ -46,9 +46,14 @@ def improve_LJ(r, de, req, beta):
     E = ((de/(n_r - 6)) * ((6 * ((req/r)**(n_r))) - (n_r * ((req/r)**6))))
     return E
 
-def rydberg6(x, de, xe, c1, c2, c3, c4, c5, c6):
-    potential = -de*(1 + c1*(x-xe) + c2*(x-xe)**2 + c3*(x-xe)**3
-    + c4*(x-xe)**4 + c5*(x-xe)**5 + c6*(x-xe)**6)*np.exp(-c1*(x-xe))
+def rydberg6(r, de, re, c1, c2, c3, c4, c5, c6):
+    potential = -de*(1 + c1*(r-re) + c2*(r-re)**2 + c3*(r-re)**3
+    + c4*(r-re)**4 + c5*(r-re)**5 + c6*(r-re)**6)*np.exp(-c1*(r-re))
+    return potential
+
+def rydberg6_sympy(r, de, re, c1, c2, c3, c4, c5, c6):
+    potential = -de*(1 + c1*(r-re) + c2*(r-re)**2 + c3*(r-re)**3
+    + c4*(r-re)**4 + c5*(r-re)**5 + c6*(r-re)**6)*exp(-c1*(r-re))
     return potential
 
 def integra_potencial(r_min, r_max):
@@ -195,6 +200,7 @@ if __name__ == "__main__":
     # Como buscamos calcular o valor de energia para vária temperaturas, então:
     B_tot = []
     B_tot_1 = []
+    B_tot_2 = []
     for T in T_exp:
 
         # Cálculo de B1(T)
@@ -357,7 +363,7 @@ if __name__ == "__main__":
         print(f'B3({T}) Ryd6 = {B3tot_2} cm³/mol')
         print()
 
-        '''
+
         # Cálculo de B4(T)
         # Região em que r3 <= r <= infinito
         # ---------------------------------
@@ -366,18 +372,17 @@ if __name__ == "__main__":
 
         kb = 1         #j/K (joule por kelvin)
         kbT = kb * T
-        r = symbols('r')
         infinito = 1625.0
 
         # Aqui o potencial esta em kK.
         # Essa é a função Lennard Jones e podemos resolver a integral de forma
         # analítica
+        r = symbols('r')
         p = potencial_LJ(r, epsilon1, sigma1)
         f = (1/kbT) * p * r**2
         int_B4 = integrate(f, (r, r3, infinito))
         B4 = coef_virial1(int_B4)
-        print(f'B4(T) = {B4} cm³/mol')
-        print()
+        print(f'B4({T}) LJ = {B4} cm³/mol')
 
         # Para função improve Lennard Jones não conseguimos resolver a integral
         # de maneira analítica, portando vamos usar o método de quadratura
@@ -395,21 +400,32 @@ if __name__ == "__main__":
                                        pi, xi, wi, T, r3, infinito)
                                        for pi, xi, wi in zip(p_i, xi_24, wi_24)]
 
-        U_para_B4_1 = [improve_LJ(r, de, req, beta) for r in p_i]
+        U_para_B4_1 = [improve_LJ(r, de_ILJ, req, beta) for r in p_i]
         Na = 6.022140e23
         B4_1 = [2*np.pi*Na*quadratura for quadratura in valores_quadratura2]
         B4tot_1 = sum(B4_1)
-        print(f'B4(T) ILJ = {B4tot_1} cm³/mol')
+        print(f'B4({T}) ILJ = {B4tot_1} cm³/mol')
 
+        # Vamos calcular a região 4 para o potencial de Rydber 6
+        r = symbols('r')
+        p1 = rydberg6_sympy(r, de, re, c1, c2, c3, c4, c5, c6)
+        f1 = (1/kbT) * p1 * r**2
+        int_B4_2 = integrate(f1, (r, r3, infinito))
+        B4_2 = coef_virial1(int_B4_2)
+        print(f'B4({T}) Ryd 6 = {B4_2} cm³/mol')
+        print()
 
 
         Btot = B1 + B2tot + B3tot + B4
         Btot1 = B1 + B2tot_1 + B3tot_1 + B4tot_1
-        print(f'Btot(T) = {Btot} cm³/mol')
-        print(f'Btot(T) = {Btot1} cm³/mol')
+        Btot2 = B1 + B2tot_2 + B3tot_2 + B4_2
+        print(f'Btot({T}) = {Btot} cm³/mol')
+        print(f'Btot({T}) = {Btot1} cm³/mol')
+        print(f'Btot({T}) = {Btot2} cm³/mol')
 
         B_tot.append(Btot)
         B_tot_1.append(Btot1)
+        B_tot_2.append(Btot2)
 
     # Plot do coeficiente do virial experimental com calculado
     plt.scatter(T_exp, B_exp_Ar, marker='o', color='b', linewidth=2.5,
@@ -418,10 +434,11 @@ if __name__ == "__main__":
              label='B(T) Calculado | LJ')
     plt.scatter(T_exp, B_tot_1, marker='*', color='y', linewidth=2.5,
              label='B(T) Calculado | ILJ')
+    plt.scatter(T_exp, B_tot_2, marker='d', color='black', linewidth=2.5,
+             label='B(T) Calculado | Ryd 6')
     plt.legend(loc='upper right', shadow=False, fontsize='large',
-               bbox_to_anchor=(0.98, 0.28), frameon=False)
+               bbox_to_anchor=(0.98, 0.38), frameon=False)
     plt.ylabel(r'B(T)')
     plt.xlabel(r'Temperatura ($K$)')
     plt.title(r'Coeficiente do Virial $Ar_{2}$')
     plt.show()
-    '''
