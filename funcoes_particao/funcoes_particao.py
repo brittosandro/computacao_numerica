@@ -31,13 +31,13 @@ def massa_reduzida(massa1, massa2):
 
     return (produto / soma) * fator_conversao
 
+
 def soma_de_massas(massa1, massa2):
     # Esse fator converte de 1 au = 1.660540199E-27
     fator_conversao = 1.660540199E-27
     soma = massa1 + massa2
 
     return soma * fator_conversao
-
 
 
 def const_rot_eq(massa_reduzida, re):
@@ -54,10 +54,13 @@ def const_rot_eq(massa_reduzida, re):
     # Momento de inércia
     I = mu * (re**2)
     Be = (h**2) / (8 * np.pi**2 * I)
+
     return Be
+
 
 def convert_cm_to_joule(medida):
     fator_conversao = 1.98630e-23
+
     return medida * fator_conversao
 
 
@@ -71,6 +74,7 @@ def energia_rovib_tot(we, wexe, weye, Be, alfa_e, gama_e, n_quant_vib, j):
     b = (Be - vib*alfa_e + (vib**2)*gama_e) * (j*(j+1))
 
     return np.abs(a + b)
+
 
 def temperatura_rotacional(massa_reduzida, re):
     '''
@@ -92,6 +96,7 @@ def temperatura_rotacional(massa_reduzida, re):
     theta_rot = (h**2) / (8 * np.pi**2 * I * k)
 
     return theta_rot
+
 
 def funcao_part_Mcquarie(massa_elementos, Temperatura, pressao, temperatura_rotacional,
                          we, gel, de):
@@ -132,6 +137,7 @@ def funcao_part_Mcquarie(massa_elementos, Temperatura, pressao, temperatura_rota
 
     return Q_Mcquarie
 
+
 def funcao_part_harmonica_Allison(massa_elementos, Temperatura, pressao, we, wexe, Be,
                                  alfa_e, gel, de):
     '''
@@ -169,6 +175,7 @@ def funcao_part_harmonica_Allison(massa_elementos, Temperatura, pressao, we, wex
     Q_Allison = a * b * c * d * e
 
     return Q_Allison
+
 
 def func_particao_Allison(massa_elementos, Temperatura, pressao, we, wexe, Be,
                                  alfa_e, gel, de, nu):
@@ -236,6 +243,57 @@ def funcao_particao_Foglia(massa_elementos, Temperatura, pressao, we, wexe, Be,
 
     return Q_Foglia
 
+
+def funcao_particao_Heibbe_Scalabrini(massa_elementos, Temperatura, pressao, we,
+                                     wexe, weye, Be, alfa_e, gama_e, gel, de, nu):
+    # Constante de Planck 6.62607015e-34 J Hz^-1
+    h = 6.62607015e-34
+    # Constante de Boltzmann 1.380649x10-23 J K-1
+    k = 1.380649e-23
+    T = Temperatura
+    p = pressao
+    M = massa_elementos
+
+    a = ((2 * np.pi * M * k * T) / h**2) ** (3/2)
+    b = (k * T) / p
+    c = 0
+    for i in range(1, nu):
+        c += (np.exp( -((we - wexe + (3/4)*weye)*i + (-wexe + (2/3)*weye)*i**2 + (weye)*i**3) / (k*T))) * \
+             (1/3 + ((k*T) / (Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2)) + \
+             ((Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2) / (15*k*T)) + \
+             (1/720)*((12*((Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2)**2)) / ((k*T)**2)) - \
+              (1/720)*(((Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2)**3) / ((k*T)**3)))
+    d = gel * np.exp(de/(k*T))
+    Q_HS_tot = a * b * c * d
+
+    return Q_HS_tot
+
+
+def funcao_particao_Heibbe_Scalabrini_truncada(massa_elementos, Temperatura, pressao,
+                                     we, wexe, weye, Be, alfa_e, gama_e, gel, de, nu):
+    '''
+    A distinção ente a função de partição Heibbe Scalabrini e Heibbe Scalabrini
+    truncada, consiste no fato de que a última foi truncada na soma de
+    Euler-Mclaurin na parte rotacional.
+    '''
+    # Constante de Planck 6.62607015e-34 J Hz^-1
+    h = 6.62607015e-34
+    # Constante de Boltzmann 1.380649x10-23 J K-1
+    k = 1.380649e-23
+    T = Temperatura
+    p = pressao
+    M = massa_elementos
+
+    a = ((2 * np.pi * M * k * T) / h**2) ** (3/2)
+    b = (k * T) / p
+    c = 0
+    for i in range(1, nu):
+        c += (np.exp( -((we - wexe + (3/4)*weye)*i + (-wexe + (2/3)*weye)*i**2 + (weye)*i**3) / (k*T))) * \
+             (1/3 + ((k*T) / (Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2)))
+    d = gel * np.exp(de/(k*T))
+    Q_HS_truncada = a * b * c * d
+
+    return Q_HS_truncada
 
 if __name__ == '__main__':
 
@@ -344,3 +402,9 @@ if __name__ == '__main__':
 
     func_part_Foglia = funcao_particao_Foglia(M, T, p, we, wexe, Be, alfa_e, gel, de, nu)
     print(f'Função de Partição Vibracional de Foglia {func_part_Foglia}')
+
+    func_part_HS_tot = funcao_particao_Heibbe_Scalabrini(M, T, p, we, wexe, weye, Be, alfa_e, gama_e, gel, de, nu)
+    print(f'Função de Partição Heibbe Scalabrini Total {func_part_HS_tot}')
+
+    func_part_HS_truc = funcao_particao_Heibbe_Scalabrini_truncada(M, T, p, we, wexe, weye, Be, alfa_e, gama_e, gel, de, nu)
+    print(f'Função de Partição Heibbe Scalabrini Truncada {func_part_HS_truc}')
