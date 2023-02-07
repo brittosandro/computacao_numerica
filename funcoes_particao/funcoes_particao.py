@@ -468,7 +468,7 @@ if __name__ == '__main__':
 
     T = 298
 
-    '''
+
     func_part_Macquarie = funcao_part_Mcquarie(M, T, p, theta_rot, we, gel, de)
     print(f'Função Partição Mcquarrie {func_part_Macquarie}')
 
@@ -489,6 +489,6 @@ if __name__ == '__main__':
 
     func_part_scalabrini_rot_rig = funcao_particao_Scalabrini_Rotor_Rigido(M, T, p, we, wexe, weye, gel, de, nu, theta_rot)
     print(f'Função de Partição Scalabrini Rotor Rígido {func_part_scalabrini_rot_rig}')
-    '''
-    func_part_tietz = funcao_particao_tietz(mu, T, we, de, re, alfa_e)
-    print(f'Função de Partição Tietz {func_part_tietz}')
+
+    #func_part_tietz = funcao_particao_tietz(mu, T, we, de, re, alfa_e)
+    #print(f'Função de Partição Tietz {func_part_tietz}')
