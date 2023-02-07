@@ -1,6 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
+import math
+import warnings
+# suppress warnings
+warnings.filterwarnings('ignore')
 
 def pega_dados():
     with open('dados_rovib.txt', 'r') as f:
@@ -319,6 +322,54 @@ def funcao_particao_Scalabrini_Rotor_Rigido(massa_elementos, Temperatura, pressa
     return Q_S_rr
 
 
+def funcao_particao_tietz(massa_reduzida, Temperatura, we, de, re, alfa_e):
+
+    # Constante de Planck 6.62607015e-34 J Hz^-1
+    h = 6.62607015e-34
+    # Constante de Boltzmann 1.380649x10-23 J K-1
+    k = 1.380649e-23
+    # Constante velocidade da luz
+    c = 3.0e8
+
+    mu = massa_reduzida
+    T = Temperatura
+
+    a = (2 * np.pi * c * we * ((2*mu/de)**0.5)) - ((32 * np.pi**4 * c**2 * mu**2 * re**3 * alfa_e * we) / (3*h**2)) + 1/re
+    print(a)
+
+    b = ((a/(np.pi*c*we)) * ((de / (2*np.pi))**0.5) - 1) * np.exp(a*re)
+    print(b)
+
+    c1 = ((mu*de) / ((h/2*np.pi)**2 * a**2 * b**2)) * (np.exp(2*a*re) - b**2)
+    print(c1)
+
+    d = 0.5 * (1 + (1 + ((8*np.pi*de*(np.exp(a*re)+b)**2) / (((h/2*np.pi)**2 * a**2 * b**2))))**0.5)
+    print(d)
+
+    e = c1/d - d/2
+    print(e)
+
+    f = (c1/(84 + 1 + d)) - ((84 + 1 + d)/2)
+    print(f)
+
+    g = ((h/(2*np.pi))**2 * a**2) / (2*mu)
+    print(g)
+
+    l = np.exp((g * e**2) / (k*T))
+    print(l)
+    m = np.exp((g*f**2)/(k*T))
+
+    #   comp é uma variável para trabalhar somente com a parte real do número complexo
+    # raiz(-1).
+    comp = ((-1)**0.5).real
+
+    n = (comp * ((g) / (k*T))**0.5)
+    #print(n)
+
+    Qtietz = 0.5 * np.exp((-de) / (k*T)) * (l - m)#* (l - m + (((np.pi*k*T)/g)**0.5) *  0.1)
+
+    # (-comp * math.erf(n * e) + comp * math.erf(n * f))
+    return Qtietz
 
 
 if __name__ == '__main__':
@@ -417,6 +468,7 @@ if __name__ == '__main__':
 
     T = 298
 
+    '''
     func_part_Macquarie = funcao_part_Mcquarie(M, T, p, theta_rot, we, gel, de)
     print(f'Função Partição Mcquarrie {func_part_Macquarie}')
 
@@ -437,3 +489,6 @@ if __name__ == '__main__':
 
     func_part_scalabrini_rot_rig = funcao_particao_Scalabrini_Rotor_Rigido(M, T, p, we, wexe, weye, gel, de, nu, theta_rot)
     print(f'Função de Partição Scalabrini Rotor Rígido {func_part_scalabrini_rot_rig}')
+    '''
+    func_part_tietz = funcao_particao_tietz(mu, T, we, de, re, alfa_e)
+    print(f'Função de Partição Tietz {func_part_tietz}')
