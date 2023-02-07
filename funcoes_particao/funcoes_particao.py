@@ -295,6 +295,32 @@ def funcao_particao_Heibbe_Scalabrini_truncada(massa_elementos, Temperatura, pre
 
     return Q_HS_truncada
 
+
+def funcao_particao_Scalabrini_Rotor_Rigido(massa_elementos, Temperatura, pressao,
+                                            we, wexe, weye, gel, de, nu, theta_rot):
+    # Constante de Planck 6.62607015e-34 J Hz^-1
+    h = 6.62607015e-34
+    # Constante de Boltzmann 1.380649x10-23 J K-1
+    k = 1.380649e-23
+    T = Temperatura
+    p = pressao
+    M = massa_elementos
+
+    a = ((2 * np.pi * M * k * T) / h**2) ** (3/2)
+    b = (k * T) / p
+    c = T / theta_rot
+    d = np.exp(-(we/2 - wexe/4 + weye/8) / (k*T))
+    e = 0
+    for i in range(0, nu):
+        e += np.exp(-((we - wexe + 3/4*weye)*i + (-wexe + 3/2*weye)*i**2) / (k*T))
+    f = gel * np.exp(de/(k*T))
+    Q_S_rr = a * b * c * d * e * f
+
+    return Q_S_rr
+
+
+
+
 if __name__ == '__main__':
 
     dados = pega_dados()
@@ -408,3 +434,6 @@ if __name__ == '__main__':
 
     func_part_HS_truc = funcao_particao_Heibbe_Scalabrini_truncada(M, T, p, we, wexe, weye, Be, alfa_e, gama_e, gel, de, nu)
     print(f'Função de Partição Heibbe Scalabrini Truncada {func_part_HS_truc}')
+
+    func_part_scalabrini_rot_rig = funcao_particao_Scalabrini_Rotor_Rigido(M, T, p, we, wexe, weye, gel, de, nu, theta_rot)
+    print(f'Função de Partição Scalabrini Rotor Rígido {func_part_scalabrini_rot_rig}')
