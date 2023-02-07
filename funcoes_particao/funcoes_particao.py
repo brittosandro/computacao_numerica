@@ -188,7 +188,7 @@ def func_particao_Allison(massa_elementos, Temperatura, pressao, we, wexe, Be,
     - de: Joule (j).
     - nu: número quantico vibracional.
 
-    Retorno#* (1/3 + (k*T)/(Be-(alfa_e/2)-alfa_e*i) + ((8 * Be**3 * (k*T)**2) / (we**2 * (Be - (alfa_e/2) - alfa_e*i))**3)
+    Retorno
     --------
     Retorna a função de partição adimencional.
     '''
@@ -213,17 +213,26 @@ def func_particao_Allison(massa_elementos, Temperatura, pressao, we, wexe, Be,
 
     return Q_Allison
 
-def funcao_particao_vibracional_Foglia(Temperatura, we, wexe, Be, alfa_e, nu):
+def funcao_particao_Foglia(massa_elementos, Temperatura, pressao, we, wexe, Be,
+                                 alfa_e, gel, de, nu):
+    # Constante de Planck 6.62607015e-34 J Hz^-1
+    h = 6.62607015e-34
     # Constante de Boltzmann 1.380649x10-23 J K-1
     k = 1.380649e-23
+    T = Temperatura
+    p = pressao
+    M = massa_elementos
 
     a = (k*T) / Be
     b = alfa_e / Be
     c = 0
     for i in range(0, nu):
         c += (np.exp((-(we*(i + 0.5) - wexe*(i + 0.5)**2))/(k*T))) * a * (1 + b*(i + 0.5)*(1 - np.exp(-(we*(i + 0.5) - wexe*(i + 0.5)**2)/(k*T))))
-
-    Q_Foglia = c
+    d = ((2 * np.pi * M * k * T) / h**2) ** (3/2)
+    e = (k * T) / p
+    f = gel * np.exp(de/(k*T))
+    print(f'Valor C = {c}')
+    Q_Foglia = d * e * c * f
 
     return Q_Foglia
 
@@ -333,5 +342,5 @@ if __name__ == '__main__':
     func_part_Allison = func_particao_Allison(M, T, p, we, wexe, Be, alfa_e, gel, de, nu)
     print(f'Função de Partição de Allison {func_part_Allison}')
 
-    func_part_vib_Foglia = funcao_particao_vibracional_Foglia(T, we, wexe, Be, alfa_e, nu)
-    print(f'Função de Partição Vibracional de Foglia {func_part_vib_Foglia}')
+    func_part_Foglia = funcao_particao_Foglia(M, T, p, we, wexe, Be, alfa_e, gel, de, nu)
+    print(f'Função de Partição Vibracional de Foglia {func_part_Foglia}')
