@@ -260,12 +260,13 @@ def funcao_particao_Heibbe_Scalabrini(massa_elementos, Temperatura, pressao, we,
     a = ((2 * np.pi * M * k * T) / h**2) ** (3/2)
     b = (k * T) / p
     c = 0
-    for i in range(1, nu):
-        c += (np.exp( -((we - wexe + (3/4)*weye)*i + (-wexe + (2/3)*weye)*i**2 + (weye)*i**3) / (k*T))) * \
+    for i in range(0, nu):
+        c += (np.exp(-((we - wexe + (3/4)*weye)*i + (-wexe + (2/3)*weye)*i**2 + (weye)*i**3) / (k*T))) * \
              (1/3 + ((k*T) / (Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2)) + \
              ((Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2) / (15*k*T)) + \
              (1/720)*((12*((Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2)**2)) / ((k*T)**2)) - \
-              (1/720)*(((Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2)**3) / ((k*T)**3)))
+             (1/720)*(((Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2)**3) / ((k*T)**3)))
+
     d = gel * np.exp(de/(k*T))
     Q_HS_tot = a * b * c * d
 
@@ -290,7 +291,7 @@ def funcao_particao_Heibbe_Scalabrini_truncada(massa_elementos, Temperatura, pre
     a = ((2 * np.pi * M * k * T) / h**2) ** (3/2)
     b = (k * T) / p
     c = 0
-    for i in range(1, nu):
+    for i in range(0, nu):
         c += (np.exp( -((we - wexe + (3/4)*weye)*i + (-wexe + (2/3)*weye)*i**2 + (weye)*i**3) / (k*T))) * \
              (1/3 + ((k*T) / (Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2)))
     d = gel * np.exp(de/(k*T))
