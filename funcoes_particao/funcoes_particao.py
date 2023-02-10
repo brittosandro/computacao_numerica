@@ -1,6 +1,8 @@
+from sympy import *
 import numpy as np
 import matplotlib.pyplot as plt
 import math
+import scipy.constants as const
 import warnings
 # suppress warnings
 warnings.filterwarnings('ignore')
@@ -139,6 +141,48 @@ def funcao_part_Mcquarie(massa_elementos, Temperatura, pressao, temperatura_rota
     Q_Mcquarie = a * b * c * d
 
     return Q_Mcquarie
+
+
+def funcao_part_Mcquarie_sympy(massa_elementos, T, pressao, temperatura_rotacional,
+                         we, gel, de):
+    '''
+    Essa é a função de partição de Mcquarie.
+
+    Parâmetros
+    ----------
+    - massa_elementos: A soma das massas dos elementos em Kg.
+    - Temperatura: A temperatura em K (kelvin).
+    - pressao: A pressão em Pa (pascal).
+    - temperatura_rotacional: Temperatura rotacional em K (kelvin).
+    - we: Omega_e em Joule (j).
+    - gel: degenerescência sem dimensão.
+    - de: Joule (j).
+
+    Retorno
+    --------
+    Retorna a função de partição adimencional.
+    '''
+    # Constante de Planck 6.62607015e-34 J Hz^-1
+    h = 6.62607015e-34
+    # Constante de Boltzmann 1.380649x10-23 J K-1
+    k = 1.380649e-23
+    p = pressao
+    theta_rot = temperatura_rotacional
+    M = massa_elementos
+
+    a = ((2 * pi * M * k * T) / h**2) ** (3/2)
+    b = (k * T**2) / (p * theta_rot)
+    c = 1 / (1 - exp(-we/(k*T)))
+    d = gel * exp(de/(k*T))
+    Q_Mcquarie = a * b * c * d
+
+    return log(Q_Mcquarie)
+
+def energia_interna(derivada, Temperatura):
+    R = const.gas_constant
+    T = Temperatura
+
+    return R * T**2 * derivada
 
 
 def funcao_part_harmonica_Allison(massa_elementos, Temperatura, pressao, we, wexe, Be,
@@ -330,12 +374,16 @@ def funcao_particao_tietz(massa_reduzida, Temperatura, we, de, re, alfa_e):
     # Constante de Boltzmann 1.380649x10-23 J K-1
     k = 1.380649e-23
     # Constante velocidade da luz
-    c = 3.0e8
+    c = const.speed_of_light
+    print(c)
 
     mu = massa_reduzida
     T = Temperatura
 
-    a = (2 * np.pi * c * we * ((2*mu/de)**0.5)) - ((32 * np.pi**4 * c**2 * mu**2 * re**3 * alfa_e * we) / (3*h**2)) + 1/re
+    a1 = 2 * np.pi * c * we
+    a2 = ((2*mu)/de)**0.5
+    a3 = (32 * np.pi**4 * c**2 * mu**2 * re**3 * alfa_e * we) / (3 * h**2)
+    a = (a1 * a2) - a3 + 1/re
     print(a)
 
     b = ((a/(np.pi*c*we)) * ((de / (2*np.pi))**0.5) - 1) * np.exp(a*re)
@@ -467,29 +515,56 @@ if __name__ == '__main__':
     plt.ylabel(r"$E(\nu, j=0)$")
     plt.show()
 
-    T = 298
+    Temp = 298
+    T = symbols('T')
 
-
-    func_part_Macquarie = funcao_part_Mcquarie(M, T, p, theta_rot, we, gel, de)
+    func_part_Macquarie = funcao_part_Mcquarie(M, Temp, p, theta_rot, we, gel, de)
     print(f'Função Partição Mcquarrie {func_part_Macquarie}')
+    print('\n\n')
 
-    func_part_harm_Allison = funcao_part_harmonica_Allison(M, T, p, we, wexe, Be, alfa_e, gel, de)
+    func_part_Macquarie_sympy = funcao_part_Mcquarie_sympy(M, T, p, theta_rot, we, gel, de)
+    pprint(func_part_Macquarie_sympy)
+    print('\n\n')
+
+    df_func_part_Macquarie_sympy = diff(func_part_Macquarie_sympy, T)
+    pprint(df_func_part_Macquarie_sympy)
+
+    #df_func_part_Macquarie_sympy = diff(func_part_Macquarie_sympy, T).evalf()
+    #pprint(df_func_part_Macquarie_sympy)
+
+    df_func_part_Macquarie_sympy = diff(func_part_Macquarie_sympy, T).evalf(subs={T: Temp})
+    print(f'Derivada Mcquarie = {df_func_part_Macquarie_sympy}')
+
+    U_Mcquarie = energia_interna(df_func_part_Macquarie_sympy, Temp)
+    print(f'Energia interna Mcquarie = {U_Mcquarie}')
+
+    '''
+    func_part_harm_Allison = funcao_part_harmonica_Allison(M, Temp, p, we, wexe, Be, alfa_e, gel, de)
     print(f'Função Partição Hamônica de Allison {func_part_harm_Allison}')
 
-    func_part_Allison = func_particao_Allison(M, T, p, we, wexe, Be, alfa_e, gel, de, nu)
+    func_part_Allison = func_particao_Allison(M, Temp, p, we, wexe, Be, alfa_e, gel, de, nu)
     print(f'Função de Partição de Allison {func_part_Allison}')
 
-    func_part_Foglia = funcao_particao_Foglia(M, T, p, we, wexe, Be, alfa_e, gel, de, nu)
+    func_part_Foglia = funcao_particao_Foglia(M, Temp, p, we, wexe, Be, alfa_e, gel, de, nu)
     print(f'Função de Partição Vibracional de Foglia {func_part_Foglia}')
 
-    func_part_HS_tot = funcao_particao_Heibbe_Scalabrini(M, T, p, we, wexe, weye, Be, alfa_e, gama_e, gel, de, nu)
+    func_part_HS_tot = funcao_particao_Heibbe_Scalabrini(M, Temp, p, we, wexe, weye, Be, alfa_e, gama_e, gel, de, nu)
     print(f'Função de Partição Heibbe Scalabrini Total {func_part_HS_tot}')
 
-    func_part_HS_truc = funcao_particao_Heibbe_Scalabrini_truncada(M, T, p, we, wexe, weye, Be, alfa_e, gama_e, gel, de, nu)
+    func_part_HS_truc = funcao_particao_Heibbe_Scalabrini_truncada(M, Temp, p, we, wexe, weye, Be, alfa_e, gama_e, gel, de, nu)
     print(f'Função de Partição Heibbe Scalabrini Truncada {func_part_HS_truc}')
 
-    func_part_scalabrini_rot_rig = funcao_particao_Scalabrini_Rotor_Rigido(M, T, p, we, wexe, weye, gel, de, nu, theta_rot)
+    func_part_scalabrini_rot_rig = funcao_particao_Scalabrini_Rotor_Rigido(M, Temp, p, we, wexe, weye, gel, de, nu, theta_rot)
     print(f'Função de Partição Scalabrini Rotor Rígido {func_part_scalabrini_rot_rig}')
 
-    #func_part_tietz = funcao_particao_tietz(mu, T, we, de, re, alfa_e)
-    #print(f'Função de Partição Tietz {func_part_tietz}')
+
+
+    we = 2169.8129
+    de = 1.801e-18
+    alfa_e = 0.01750406
+    wexe = 13.2883176
+    weye = 0
+
+    func_part_tietz = funcao_particao_tietz(mu, T, we, de, re, alfa_e)
+    print(f'Função de Partição Tietz {func_part_tietz}')
+    '''
