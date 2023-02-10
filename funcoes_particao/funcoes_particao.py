@@ -224,6 +224,44 @@ def funcao_part_harmonica_Allison(massa_elementos, Temperatura, pressao, we, wex
     return Q_Allison
 
 
+def funcao_part_harmonica_Allison_sympy(massa_elementos, T, pressao, we, wexe,
+                                        Be, alfa_e, gel, de):
+    '''
+    Essa é a função de partição Harmônica de Allison.
+
+    Parâmetros mu = massa_reduzida(massa1, massa2)
+    ----------
+    - massa_elementos: A soma das massas dos elementos em Kg.
+    - Temperatura: A temperatura em K (kelvin).
+    - pressao: A pressão em Pa (pascal).
+    - temperatura_rotacional: Temperatura rotacional em K (kelvin).
+    - we: Omega_e em Joule (j).
+    - wexe: Omega_e xe em Joule (j).
+    - Be
+    - gel: degenerescência sem dimensão.
+    - de: Joule (j).
+
+    Retorno
+    --------
+    Retorna a função de partição adimencional.
+    '''
+    # Constante de Planck 6.62607015e-34 J Hz^-1
+    h = 6.62607015e-34
+    # Constante de Boltzmann 1.380649x10-23 J K-1
+    k = 1.380649e-23
+    p = pressao
+    M = massa_elementos
+
+    a = ((2 * np.pi * M * k * T) / h**2) ** (3/2)
+    b = (k * T) / p
+    c = 1 / (1 - exp(-(we-wexe)/(k*T)))
+    d = (k * T) / (Be - (alfa_e/2))
+    e = gel * exp(de/(k*T))
+    Q_Allison = a * b * c * d * e
+
+    return log(Q_Allison)
+
+
 def func_particao_Allison(massa_elementos, Temperatura, pressao, we, wexe, Be,
                                  alfa_e, gel, de, nu):
     '''
@@ -516,29 +554,12 @@ if __name__ == '__main__':
     plt.show()
 
     Temp = 298
-    T = symbols('T')
 
+    '''
     func_part_Macquarie = funcao_part_Mcquarie(M, Temp, p, theta_rot, we, gel, de)
     print(f'Função Partição Mcquarrie {func_part_Macquarie}')
     print('\n\n')
 
-    func_part_Macquarie_sympy = funcao_part_Mcquarie_sympy(M, T, p, theta_rot, we, gel, de)
-    pprint(func_part_Macquarie_sympy)
-    print('\n\n')
-
-    df_func_part_Macquarie_sympy = diff(func_part_Macquarie_sympy, T)
-    pprint(df_func_part_Macquarie_sympy)
-
-    #df_func_part_Macquarie_sympy = diff(func_part_Macquarie_sympy, T).evalf()
-    #pprint(df_func_part_Macquarie_sympy)
-
-    df_func_part_Macquarie_sympy = diff(func_part_Macquarie_sympy, T).evalf(subs={T: Temp})
-    print(f'Derivada Mcquarie = {df_func_part_Macquarie_sympy}')
-
-    U_Mcquarie = energia_interna(df_func_part_Macquarie_sympy, Temp)
-    print(f'Energia interna Mcquarie = {U_Mcquarie}')
-
-    '''
     func_part_harm_Allison = funcao_part_harmonica_Allison(M, Temp, p, we, wexe, Be, alfa_e, gel, de)
     print(f'Função Partição Hamônica de Allison {func_part_harm_Allison}')
 
@@ -557,8 +578,6 @@ if __name__ == '__main__':
     func_part_scalabrini_rot_rig = funcao_particao_Scalabrini_Rotor_Rigido(M, Temp, p, we, wexe, weye, gel, de, nu, theta_rot)
     print(f'Função de Partição Scalabrini Rotor Rígido {func_part_scalabrini_rot_rig}')
 
-
-
     we = 2169.8129
     de = 1.801e-18
     alfa_e = 0.01750406
@@ -568,3 +587,41 @@ if __name__ == '__main__':
     func_part_tietz = funcao_particao_tietz(mu, T, we, de, re, alfa_e)
     print(f'Função de Partição Tietz {func_part_tietz}')
     '''
+
+    T = symbols('T')
+
+    # Mcquarie
+
+    func_part_Macquarie_sympy = funcao_part_Mcquarie_sympy(M, T, p, theta_rot, we, gel, de)
+    pprint(func_part_Macquarie_sympy)
+    print('\n\n')
+
+    df_func_part_Macquarie_sympy = diff(func_part_Macquarie_sympy, T)
+    #pprint(df_func_part_Macquarie_sympy)
+
+    #df_func_part_Macquarie_sympy = diff(func_part_Macquarie_sympy, T).evalf()
+    #pprint(df_func_part_Macquarie_sympy)
+
+    df_func_part_Macquarie_sympy = diff(func_part_Macquarie_sympy, T).evalf(subs={T: Temp})
+    print(f'Derivada Mcquarie = {df_func_part_Macquarie_sympy}')
+
+    U_Mcquarie = energia_interna(df_func_part_Macquarie_sympy, Temp)
+    print(f'Energia interna Mcquarie = {U_Mcquarie}')
+    print('-'*55)
+    print('\n')
+
+    ### Allison
+
+    func_part_Allison_sympy = funcao_part_harmonica_Allison_sympy(M, T, p, we, wexe,
+                                                                  Be, alfa_e, gel, de)
+    pprint(func_part_Allison_sympy)
+    print('\n\n')
+
+    #df_func_part_Allison = diff(func_part_Allison_sympy, T)
+    df_func_part_Allison = diff(func_part_Allison_sympy, T).evalf(subs={T: Temp})
+    print(f'Derivada Allison = {df_func_part_Allison}')
+
+    U_Allison = energia_interna(df_func_part_Allison, Temp)
+    print(f'Energia interna Allison = {U_Allison}')
+    print('-'*55)
+    print('\n')
