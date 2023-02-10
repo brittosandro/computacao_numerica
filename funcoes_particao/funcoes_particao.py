@@ -298,7 +298,9 @@ def func_particao_Allison(massa_elementos, Temperatura, pressao, we, wexe, Be,
     c = 0
 
     for i in range(0, nu):
-        c += (np.exp(-((we - wexe)*i - wexe*i**2) / (k*T))) * (1/3 + (k*T)/(Be-(alfa_e/2)-alfa_e*i) + ( (8 * Be**3 * (k*T)**2) / (we**2 * (Be - (alfa_e/2) - alfa_e*i)**3) ) )
+        c += (np.exp(-((we - wexe)*i - wexe*i**2) / (k*T))) * \
+             (1/3 + (k*T)/(Be-(alfa_e/2)-alfa_e*i) + \
+             ((8 * Be**3 * (k*T)**2) / (we**2 * (Be - (alfa_e/2) - alfa_e*i)**3)))
 
     d = gel * np.exp(de/(k*T))
     Q_Allison = a * b * c * d
@@ -610,18 +612,20 @@ if __name__ == '__main__':
     print('-'*55)
     print('\n')
 
-    ### Allison
+    ### Allison Harmonica
 
-    func_part_Allison_sympy = funcao_part_harmonica_Allison_sympy(M, T, p, we, wexe,
+    func_part_harm_Allison_sympy = funcao_part_harmonica_Allison_sympy(M, T, p, we, wexe,
                                                                   Be, alfa_e, gel, de)
-    pprint(func_part_Allison_sympy)
+    pprint(func_part_harm_Allison_sympy)
     print('\n\n')
 
     #df_func_part_Allison = diff(func_part_Allison_sympy, T)
-    df_func_part_Allison = diff(func_part_Allison_sympy, T).evalf(subs={T: Temp})
-    print(f'Derivada Allison = {df_func_part_Allison}')
+    df_func_part_Allison_harm = diff(func_part_harm_Allison_sympy, T).evalf(subs={T: Temp})
+    print(f'Derivada Allison = {df_func_part_Allison_harm}')
 
-    U_Allison = energia_interna(df_func_part_Allison, Temp)
+    U_Allison = energia_interna(df_func_part_Allison_harm, Temp)
     print(f'Energia interna Allison = {U_Allison}')
     print('-'*55)
     print('\n')
+
+    ### Allison
