@@ -427,6 +427,31 @@ def funcao_particao_Heibbe_Scalabrini(massa_elementos, Temperatura, pressao, we,
     return Q_HS_tot
 
 
+def funcao_particao_Heibbe_Scalabrini_sympy(massa_elementos, T, pressao, we,
+                                     wexe, weye, Be, alfa_e, gama_e, gel, de, nu):
+    # Constante de Planck 6.62607015e-34 J Hz^-1
+    h = 6.62607015e-34
+    # Constante de Boltzmann 1.380649x10-23 J K-1
+    k = 1.380649e-23
+    p = pressao
+    M = massa_elementos
+
+    a = ((2 * pi * M * k * T) / h**2) ** (3/2)
+    b = (k * T) / p
+    c = 0
+    for i in range(0, nu):
+        c += (exp(-((we - wexe + (3/4)*weye)*i + (-wexe + (2/3)*weye)*i**2 + (weye)*i**3) / (k*T))) * \
+             (1/3 + ((k*T) / (Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2)) + \
+             ((Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2) / (15*k*T)) + \
+             (1/720)*((12*((Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2)**2)) / ((k*T)**2)) - \
+             (1/720)*(((Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2)**3) / ((k*T)**3)))
+
+    d = gel * exp(de/(k*T))
+    Q_HS_tot = a * b * c * d
+
+    return log(Q_HS_tot)
+
+
 def funcao_particao_Heibbe_Scalabrini_truncada(massa_elementos, Temperatura, pressao,
                                      we, wexe, weye, Be, alfa_e, gama_e, gel, de, nu):
     '''
@@ -452,6 +477,34 @@ def funcao_particao_Heibbe_Scalabrini_truncada(massa_elementos, Temperatura, pre
     Q_HS_truncada = a * b * c * d
 
     return Q_HS_truncada
+
+
+def funcao_particao_Heibbe_Scalabrini_truncada_sympy(massa_elementos, T, pressao,
+                                     we, wexe, weye, Be, alfa_e, gama_e, gel, de, nu):
+    '''
+    A distinção ente a função de partição Heibbe Scalabrini e Heibbe Scalabrini
+    truncada, consiste no fato de que a última foi truncada na soma de
+    Euler-Mclaurin na parte rotacional.
+    '''
+    # Constante de Planck 6.62607015e-34 J Hz^-1
+    h = 6.62607015e-34
+    # Constante de Boltzmann 1.380649x10-23 J K-1
+    k = 1.380649e-23
+    p = pressao
+    M = massa_elementos
+
+    a = ((2 * pi * M * k * T) / h**2) ** (3/2)
+    b = (k * T) / p
+    c = 0
+    for i in range(0, nu):
+        c += (exp( -((we - wexe + (3/4)*weye)*i + (-wexe + (2/3)*weye)*i**2 + (weye)*i**3) / (k*T))) * \
+             (1/3 + ((k*T) / (Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2)))
+    d = gel * exp(de/(k*T))
+    Q_HS_truncada = a * b * c * d
+
+    return log(Q_HS_truncada)
+
+
 
 
 def funcao_particao_Scalabrini_Rotor_Rigido(massa_elementos, Temperatura, pressao,
@@ -679,7 +732,7 @@ if __name__ == '__main__':
 
     U_Mcquarie = energia_interna(df_func_part_Macquarie_sympy, Temp)
     print(f'Energia interna Mcquarie = {U_Mcquarie}')
-    print('-'*55)
+    print('-'*60)
     print('\n')
 
     ### Allison Harmonica
@@ -695,7 +748,7 @@ if __name__ == '__main__':
 
     U_Allison = energia_interna(df_func_part_Allison_harm, Temp)
     print(f'Energia interna Allison Harm = {U_Allison}')
-    print('-'*55)
+    print('-'*60)
     print('\n')
 
     ### Allison
@@ -711,7 +764,7 @@ if __name__ == '__main__':
 
     U_Allison = energia_interna(df_func_part_Allison, Temp)
     print(f'Energia interna Allison = {U_Allison}')
-    print('-'*55)
+    print('-'*60)
     print('\n')
 
     ### Foglia
@@ -726,5 +779,37 @@ if __name__ == '__main__':
 
     U_Foglia = energia_interna(df_func_part_Foglia, Temp)
     print(f'Energia interna Foglia = {U_Foglia}')
-    print('-'*55)
+    print('-'*60)
+    print('\n')
+
+    ### Heibbe Scalabrini
+
+    func_part_H_S = funcao_particao_Heibbe_Scalabrini_sympy(M, T, pressao, we,
+                                         wexe, weye, Be, alfa_e, gama_e, gel, de, nu)
+
+    #pprint(func_part_H_S)
+    print('\n')
+
+    df_func_part_H_S = diff(func_part_H_S, T).evalf(subs={T: Temp})
+    print(f'Derivada Heibbe-Scalabrini = {df_func_part_Foglia}')
+
+    U_H_S = energia_interna(df_func_part_H_S, Temp)
+    print(f'Energia interna Heibbe-Scalabrini = {U_H_S}')
+    print('-'*60)
+    print('\n')
+
+    ### Heibbe Scalabrini Truncada
+
+    func_part_H_S_trunc = funcao_particao_Heibbe_Scalabrini_truncada_sympy(M, T,
+                                         pressao, we, wexe, weye, Be, alfa_e, gama_e, gel, de, nu)
+
+    #pprint(func_part_H_S_trunc)
+    print('\n')
+
+    df_func_part_H_S_trunc = diff(func_part_H_S_trunc, T).evalf(subs={T: Temp})
+    print(f'Derivada Heibbe-Scalabrini Truncada = {df_func_part_H_S_trunc}')
+
+    U_H_S_trunc = energia_interna(df_func_part_H_S_trunc, Temp)
+    print(f'Energia interna Heibbe-Scalabrini Truncada = {U_H_S_trunc}')
+    print('-'*60)
     print('\n')
