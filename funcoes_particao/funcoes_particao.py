@@ -307,6 +307,51 @@ def func_particao_Allison(massa_elementos, Temperatura, pressao, we, wexe, Be,
 
     return Q_Allison
 
+def func_particao_Allison_sympy(massa_elementos, T, pressao, we, wexe, Be,
+                                 alfa_e, gel, de, nu):
+    '''
+    Essa é a função de pa M = massa_elementosrtição Harmônica de Allison.
+
+    Parâmetros
+    ----------
+    - massa_elementos: A soma das massas dos elementos em Kg.
+    - Temperatura: A temperatura em K (kelvin).
+    - pressao: A pressão em Pa (pascal).
+    - temperatura_rotacional: Temperatura rotacional em K (kelvin).
+    - we: Omega_e em Joul M = massa_elementose (j).
+    - wexe: Omega_e xe em Joule (j).
+    - Be
+    - gel: degenerescência sem dimensão.
+    - de: Joule (j).
+    - nu: número quantico vibracional.
+
+    Retorno
+    --------
+    Retorna a função de partição adimencional.
+    '''
+    # Constante de Planck 6.62607015e-34 J Hz^-1
+    h = 6.62607015e-34
+    # Constante de Boltzm 1.380649x10-23 J K-1
+    k = 1.380649e-23
+
+    p = pressao
+    M = massa_elementos
+
+    a = ((2 * pi * M * k * T) / h**2) ** (3/2)
+    b = (k * T) / p
+    c = 0
+
+    for i in range(0, nu):
+        c += (exp(-((we - wexe)*i - wexe*i**2) / (k*T))) * \
+             (1/3 + (k*T)/(Be-(alfa_e/2)-alfa_e*i) + \
+             ((8 * Be**3 * (k*T)**2) / (we**2 * (Be - (alfa_e/2) - alfa_e*i)**3)))
+
+    d = gel * exp(de/(k*T))
+    Q_Allison = a * b * c * d
+
+    return log(Q_Allison)
+
+
 def funcao_particao_Foglia(massa_elementos, Temperatura, pressao, we, wexe, Be,
                                  alfa_e, gel, de, nu):
     # Constante de Planck 6.62607015e-34 J Hz^-1
@@ -321,7 +366,8 @@ def funcao_particao_Foglia(massa_elementos, Temperatura, pressao, we, wexe, Be,
     b = alfa_e / Be
     c = 0
     for i in range(0, nu):
-        c += (np.exp((-(we*(i + 0.5) - wexe*(i + 0.5)**2))/(k*T))) * a * (1 + b*(i + 0.5)*(1 - np.exp(-(we*(i + 0.5) - wexe*(i + 0.5)**2)/(k*T))))
+        c += (np.exp((-(we*(i + 0.5) - wexe*(i + 0.5)**2))/(k*T))) * a * \
+             (1 + b*(i + 0.5)*(1 - np.exp(-(we*(i + 0.5) - wexe*(i + 0.5)**2)/(k*T))))
     d = ((2 * np.pi * M * k * T) / h**2) ** (3/2)
     e = (k * T) / p
     f = gel * np.exp(de/(k*T))
@@ -329,6 +375,30 @@ def funcao_particao_Foglia(massa_elementos, Temperatura, pressao, we, wexe, Be,
     Q_Foglia = d * e * c * f
 
     return Q_Foglia
+
+
+def funcao_particao_Foglia_sympy(massa_elementos, T, pressao, we, wexe, Be,
+                                 alfa_e, gel, de, nu):
+    # Constante de Planck 6.62607015e-34 J Hz^-1
+    h = 6.62607015e-34
+    # Constante de Boltzmann 1.380649x10-23 J K-1
+    k = 1.380649e-23
+    p = pressao
+    M = massa_elementos
+
+    a = (k*T) / Be
+    b = alfa_e / Be
+    c = 0
+    for i in range(0, nu):
+        c += (exp((-(we*(i + 0.5) - wexe*(i + 0.5)**2))/(k*T))) * a * \
+             (1 + b*(i + 0.5)*(1 - exp(-(we*(i + 0.5) - wexe*(i + 0.5)**2)/(k*T))))
+    d = ((2 * pi * M * k * T) / h**2) ** (3/2)
+    e = (k * T) / p
+    f = gel * exp(de/(k*T))
+    #print(f'Valor C = {c}')
+    Q_Foglia = d * e * c * f
+
+    return log(Q_Foglia)
 
 
 def funcao_particao_Heibbe_Scalabrini(massa_elementos, Temperatura, pressao, we,
@@ -595,8 +665,8 @@ if __name__ == '__main__':
     # Mcquarie
 
     func_part_Macquarie_sympy = funcao_part_Mcquarie_sympy(M, T, p, theta_rot, we, gel, de)
-    pprint(func_part_Macquarie_sympy)
-    print('\n\n')
+    #pprint(func_part_Macquarie_sympy)
+    print('\n')
 
     df_func_part_Macquarie_sympy = diff(func_part_Macquarie_sympy, T)
     #pprint(df_func_part_Macquarie_sympy)
@@ -616,16 +686,45 @@ if __name__ == '__main__':
 
     func_part_harm_Allison_sympy = funcao_part_harmonica_Allison_sympy(M, T, p, we, wexe,
                                                                   Be, alfa_e, gel, de)
-    pprint(func_part_harm_Allison_sympy)
-    print('\n\n')
+    #pprint(func_part_harm_Allison_sympy)
+    print('\n')
 
     #df_func_part_Allison = diff(func_part_Allison_sympy, T)
     df_func_part_Allison_harm = diff(func_part_harm_Allison_sympy, T).evalf(subs={T: Temp})
-    print(f'Derivada Allison = {df_func_part_Allison_harm}')
+    print(f'Derivada Allison Harm = {df_func_part_Allison_harm}')
 
     U_Allison = energia_interna(df_func_part_Allison_harm, Temp)
-    print(f'Energia interna Allison = {U_Allison}')
+    print(f'Energia interna Allison Harm = {U_Allison}')
     print('-'*55)
     print('\n')
 
     ### Allison
+
+    func_part_Allison_sympy = func_particao_Allison_sympy(M, T, pressao, we, wexe,
+                                                          Be, alfa_e, gel, de, nu)
+    #pprint(func_part_Allison_sympy)
+    print('\n')
+
+    #df_func_part_Allison = diff(func_part_Allison_sympy, T)
+    df_func_part_Allison = diff(func_part_Allison_sympy, T).evalf(subs={T: Temp})
+    print(f'Derivada Allison = {df_func_part_Allison}')
+
+    U_Allison = energia_interna(df_func_part_Allison, Temp)
+    print(f'Energia interna Allison = {U_Allison}')
+    print('-'*55)
+    print('\n')
+
+    ### Foglia
+
+    func_part_Foglia_sympy = funcao_particao_Foglia_sympy(M, T, pressao, we, wexe, Be,
+                                                          alfa_e, gel, de, nu)
+    #pprint(func_part_Foglia_sympy)
+    print('\n')
+
+    df_func_part_Foglia = diff(func_part_Foglia_sympy, T).evalf(subs={T: Temp})
+    print(f'Derivada Foglia = {df_func_part_Foglia}')
+
+    U_Foglia = energia_interna(df_func_part_Foglia, Temp)
+    print(f'Energia interna Foglia = {U_Foglia}')
+    print('-'*55)
+    print('\n')
