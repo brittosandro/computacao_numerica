@@ -103,6 +103,27 @@ def temperatura_rotacional(massa_reduzida, re):
     return theta_rot
 
 
+def energia_interna(derivada, Temperatura):
+    R = const.gas_constant
+    T = Temperatura
+
+    return R * T**2 * derivada
+
+
+def entalpia(energia_interna, Temperatura):
+    '''
+    A função calcula a entalpia do sistema a partir
+    da energia interna e temperatura retornando
+    o valor da entalpia em joule / mol.
+    H = U + RT + 1084.65x10^3 J/mol
+    '''
+    U = energia_interna
+    T = Temperatura
+    R = const.gas_constant
+    H = U + R*T + 1084.65e3
+
+    return H    
+
 def funcao_part_Mcquarie(massa_elementos, Temperatura, pressao, temperatura_rotacional,
                          we, gel, de):
     '''
@@ -177,13 +198,6 @@ def funcao_part_Mcquarie_sympy(massa_elementos, T, pressao, temperatura_rotacion
     Q_Mcquarie = a * b * c * d
 
     return log(Q_Mcquarie)
-
-def energia_interna(derivada, Temperatura):
-    R = const.gas_constant
-    T = Temperatura
-
-    return R * T**2 * derivada
-
 
 def funcao_part_harmonica_Allison(massa_elementos, Temperatura, pressao, we, wexe, Be,
                                  alfa_e, gel, de):
