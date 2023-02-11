@@ -505,8 +505,6 @@ def funcao_particao_Heibbe_Scalabrini_truncada_sympy(massa_elementos, T, pressao
     return log(Q_HS_truncada)
 
 
-
-
 def funcao_particao_Scalabrini_Rotor_Rigido(massa_elementos, Temperatura, pressao,
                                             we, wexe, weye, gel, de, nu, theta_rot):
     # Constante de Planck 6.62607015e-34 J Hz^-1
@@ -528,6 +526,28 @@ def funcao_particao_Scalabrini_Rotor_Rigido(massa_elementos, Temperatura, pressa
     Q_S_rr = a * b * c * d * e * f
 
     return Q_S_rr
+
+
+def funcao_particao_Scalabrini_Rotor_Rigido_sympy(massa_elementos, T, pressao,
+                                            we, wexe, weye, gel, de, nu, theta_rot):
+    # Constante de Planck 6.62607015e-34 J Hz^-1
+    h = 6.62607015e-34
+    # Constante de Boltzmann 1.380649x10-23 J K-1
+    k = 1.380649e-23
+    p = pressao
+    M = massa_elementos
+
+    a = ((2 * pi * M * k * T) / h**2) ** (3/2)
+    b = (k * T) / p
+    c = T / theta_rot
+    d = exp(-(we/2 - wexe/4 + weye/8) / (k*T))
+    e = 0
+    for i in range(0, nu):
+        e += exp(-((we - wexe + 3/4*weye)*i + (-wexe + 3/2*weye)*i**2) / (k*T))
+    f = gel * exp(de/(k*T))
+    Q_S_rr = a * b * c * d * e * f
+
+    return log(Q_S_rr)
 
 
 def funcao_particao_tietz(massa_reduzida, Temperatura, we, de, re, alfa_e):
@@ -811,5 +831,21 @@ if __name__ == '__main__':
 
     U_H_S_trunc = energia_interna(df_func_part_H_S_trunc, Temp)
     print(f'Energia interna Heibbe-Scalabrini Truncada = {U_H_S_trunc}')
+    print('-'*60)
+    print('\n')
+
+    ### Heibbe - Scalabrino Rotor rígido
+
+    func_part_H_S_rot_rig = funcao_particao_Scalabrini_Rotor_Rigido_sympy(M, T, pressao,
+                                                we, wexe, weye, gel, de, nu, theta_rot)
+
+    #pprint(func_part_H_S_rot_rig)
+    print('\n')
+
+    df_func_part_H_S_rot_rig = diff(func_part_H_S_rot_rig, T).evalf(subs={T: Temp})
+    print(f'Derivada Heibbe-Scalabrini Rotor Rigido = {df_func_part_H_S_rot_rig}')
+
+    U_H_S_rot_rig = energia_interna(df_func_part_H_S_rot_rig, Temp)
+    print(f'Energia interna Heibbe-Scalabrini Rotor Rigido = {U_H_S_rot_rig}')
     print('-'*60)
     print('\n')
