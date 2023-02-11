@@ -120,9 +120,17 @@ def entalpia(energia_interna, Temperatura):
     U = energia_interna
     T = Temperatura
     R = const.gas_constant
-    H = U + R*T + 1084.65e3
+    H = U + R * T + 1084.65e3
 
     return H
+
+def entropia(derivada, Temperatura, funcao_particao):
+    R = const.gas_constant
+    T = Temperatura
+    S = R * T * derivada + R * funcao_particao
+
+    return S
+
 
 def funcao_part_Mcquarie(massa_elementos, Temperatura, pressao, temperatura_rotacional,
                          we, gel, de):
