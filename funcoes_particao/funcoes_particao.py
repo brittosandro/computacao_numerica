@@ -725,6 +725,7 @@ if __name__ == '__main__':
     Temp_final = 6000
 
     faixa_Temp = []
+    
     dados_entropia_Macquarie = []
     dados_entropia_Allison_harm = []
     dados_entropia_Allison = []
@@ -958,3 +959,15 @@ if __name__ == '__main__':
 
         print('-'*60)
         print('\n')
+
+    plt.plot(faixa_Temp, dados_entropia_Macquarie, label='Macquarie')
+    plt.plot(faixa_Temp, dados_entropia_Allison_harm, label='Allison - Harm')
+    plt.plot(faixa_Temp, dados_entropia_Allison, label='Allison')
+    plt.plot(faixa_Temp, dados_entropia_Foglia, label='Foglia')
+    plt.plot(faixa_Temp, dados_entropia_H_S, label='Heibbe-Scalabrini')
+    plt.plot(faixa_Temp, dados_entropia_H_S_trunc, label='Heibbe-Scalabrini-Truc')
+    plt.plot(faixa_Temp, dados_entropia_H_S_rot_rig, label='Scalabrini-Rot-Rig')
+    plt.xlabel(r"$Temperatura [K]$")
+    plt.ylabel(r"$Entropia (J/K mol)$")
+    plt.legend()
+    plt.show()
