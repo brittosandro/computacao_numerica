@@ -724,7 +724,17 @@ if __name__ == '__main__':
     Temp_inicial = 298
     Temp_final = 6000
 
-    for Temp in range(Temp_inicial, Temp_final, 100):
+    faixa_Temp = []
+    dados_entropia_Macquarie = []
+    dados_entropia_Allison_harm = []
+    dados_entropia_Allison = []
+    dados_entropia_Foglia = []
+    dados_entropia_H_S = []
+    dados_entropia_H_S_trunc = []
+    dados_entropia_H_S_rot_rig = []
+
+    for Temp in range(Temp_inicial, Temp_final, 200):
+        faixa_Temp.append(Temp)
         '''
         func_part_Macquarie = funcao_part_Mcquarie(M, Temp, p, theta_rot, we, gel, de)
         print(f'Função Partição Mcquarrie {func_part_Macquarie}')
@@ -784,6 +794,7 @@ if __name__ == '__main__':
         S_Mcquarie = entropia(df_func_part_Macquarie_sympy, Temp,
                               funcao_part_Mcquarie_sympy(M, T, p, theta_rot,
                               we, gel, de).evalf(subs={T: Temp}))
+        dados_entropia_Macquarie.append(S_Mcquarie)
         print(f'Entropia Mcquarie = {S_Mcquarie}')
 
         print('-'*60)
@@ -809,6 +820,7 @@ if __name__ == '__main__':
         S_Allison_harm = entropia(df_func_part_Allison_harm, Temp,
                                  funcao_part_harmonica_Allison_sympy(M, T, p, we,
                                  wexe, Be, alfa_e, gel, de).evalf(subs={T: Temp}))
+        dados_entropia_Allison_harm.append(S_Allison)
         print(f'Entropia Allison Harm = {S_Allison_harm}')
 
         print('-'*60)
@@ -834,6 +846,7 @@ if __name__ == '__main__':
         S_Allison = entropia(df_func_part_Allison, Temp,
                              func_particao_Allison_sympy(M, T, pressao, we, wexe,
                              Be, alfa_e, gel, de, nu).evalf(subs={T: Temp}))
+        dados_entropia_Allison.append(S_Allison)
         print(f'Entropia Allison  = {S_Allison}')
 
         print('-'*60)
@@ -858,6 +871,7 @@ if __name__ == '__main__':
         S_Foglia = entropia(df_func_part_Foglia, Temp,
                             funcao_particao_Foglia_sympy(M, T, pressao, we, wexe, Be,
                             alfa_e, gel, de, nu).evalf(subs={T: Temp}))
+        dados_entropia_Foglia.append(S_Foglia)
         print(f'Entropia Foglia  = {S_Foglia}')
 
         print('-'*60)
@@ -884,6 +898,7 @@ if __name__ == '__main__':
         S_H_S = entropia(df_func_part_H_S, Temp,
                          funcao_particao_Heibbe_Scalabrini_sympy(M, T, pressao, we,
                          wexe, weye, Be, alfa_e, gama_e, gel, de, nu).evalf(subs={T: Temp}))
+        dados_entropia_H_S.append(S_H_S)
         print(f'Entropia Heibbe-Scalabrini  = {S_H_S}')
 
         print('-'*60)
@@ -911,6 +926,7 @@ if __name__ == '__main__':
                               funcao_particao_Heibbe_Scalabrini_truncada_sympy(M, T,
                               pressao, we, wexe, weye, Be, alfa_e, gama_e, gel, de,
                               nu).evalf(subs={T: Temp}))
+        dados_entropia_H_S_trunc.append(S_H_S_trunc)
         print(f'Entropia Heibbe-Scalabrini Truncada = {S_H_S_trunc}')
 
         print('-'*60)
@@ -937,7 +953,10 @@ if __name__ == '__main__':
                                  funcao_particao_Scalabrini_Rotor_Rigido_sympy(M, T,
                                  pressao, we, wexe, weye, gel, de, nu,
                                  theta_rot).evalf(subs={T: Temp}))
+        dados_entropia_H_S_rot_rig.append(S_H_S_rot_rig)
         print(f'Entropia Heibbe-Scalabrini Rotor Rigido = {S_H_S_rot_rig}')
 
         print('-'*60)
         print('\n')
+
+    
