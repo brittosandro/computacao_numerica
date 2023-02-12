@@ -124,6 +124,7 @@ def entalpia(energia_interna, Temperatura):
 
     return H
 
+
 def entropia(derivada, Temperatura, funcao_particao):
     R = const.gas_constant
     T = Temperatura
@@ -776,6 +777,8 @@ if __name__ == '__main__':
     print(f'Energia interna Mcquarie = {U_Mcquarie}')
     H_Mcquarie = entalpia(U_Mcquarie, Temp)
     print(f'Entalpia Mcquarie = {H_Mcquarie}')
+    S_Mcquarie = entropia(df_func_part_Macquarie_sympy, Temp, funcao_part_Mcquarie_sympy(M, T, p, theta_rot, we, gel, de).evalf(subs={T: Temp}))
+    print(f'Entropia Mcquarie = {S_Mcquarie}')
     print('-'*60)
     print('\n')
 
@@ -794,6 +797,9 @@ if __name__ == '__main__':
     print(f'Energia interna Allison Harm = {U_Allison}')
     H_Allison_harm = entalpia(U_Allison, Temp)
     print(f'Entalpia Allison Harm = {H_Allison_harm}')
+    S_Allison_harm = entropia(df_func_part_Allison_harm, Temp, funcao_part_harmonica_Allison_sympy(M, T, p, we, wexe,
+                                                                  Be, alfa_e, gel, de).evalf(subs={T: Temp}))
+    print(f'Entropia Allison Harm = {S_Allison_harm}')
     print('-'*60)
     print('\n')
 
@@ -812,6 +818,9 @@ if __name__ == '__main__':
     print(f'Energia interna Allison = {U_Allison}')
     H_Allison = entalpia(U_Allison, Temp)
     print(f'Entalpia Allison = {H_Allison}')
+    S_Allison = entropia(df_func_part_Allison, Temp, func_particao_Allison_sympy(M, T, pressao, we, wexe,
+                                                          Be, alfa_e, gel, de, nu).evalf(subs={T: Temp}))
+    print(f'Entropia Allison  = {S_Allison}')
     print('-'*60)
     print('\n')
 
@@ -829,6 +838,9 @@ if __name__ == '__main__':
     print(f'Energia interna Foglia = {U_Foglia}')
     H_Foglia = entalpia(U_Foglia, Temp)
     print(f'Entalpia Foglia = {H_Foglia}')
+    S_Foglia = entropia(df_func_part_Foglia, Temp, funcao_particao_Foglia_sympy(M, T, pressao, we, wexe, Be,
+                                                          alfa_e, gel, de, nu).evalf(subs={T: Temp}))
+    print(f'Entropia Foglia  = {S_Foglia}')
     print('-'*60)
     print('\n')
 
@@ -847,6 +859,9 @@ if __name__ == '__main__':
     print(f'Energia interna Heibbe-Scalabrini = {U_H_S}')
     H_H_S = entalpia(U_H_S, Temp)
     print(f'Entalpia Heibbe-Scalabrini = {H_H_S}')
+    S_H_S = entropia(df_func_part_H_S, Temp, funcao_particao_Heibbe_Scalabrini_sympy(M, T, pressao, we,
+                                                                    wexe, weye, Be, alfa_e, gama_e, gel, de, nu).evalf(subs={T: Temp}))
+    print(f'Entropia Heibbe-Scalabrini  = {S_H_S}')
     print('-'*60)
     print('\n')
 
@@ -863,8 +878,13 @@ if __name__ == '__main__':
 
     U_H_S_trunc = energia_interna(df_func_part_H_S_trunc, Temp)
     print(f'Energia interna Heibbe-Scalabrini Truncada = {U_H_S_trunc}')
+
     H_H_S_trunc = entalpia(U_H_S_trunc, Temp)
     print(f'Entalpia Heibbe-Scalabrini Truncada = {H_H_S_trunc}')
+
+    S_H_S_trunc = entropia(df_func_part_H_S_trunc, Temp, funcao_particao_Heibbe_Scalabrini_truncada_sympy(M, T,
+                                                                 pressao, we, wexe, weye, Be, alfa_e, gama_e, gel, de, nu).evalf(subs={T: Temp}))
+    print(f'Entropia Heibbe-Scalabrini Truncada = {S_H_S_trunc}')
     print('-'*60)
     print('\n')
 
@@ -882,6 +902,9 @@ if __name__ == '__main__':
     U_H_S_rot_rig = energia_interna(df_func_part_H_S_rot_rig, Temp)
     print(f'Energia interna Heibbe-Scalabrini Rotor Rigido = {U_H_S_rot_rig}')
     H_H_S_rot_rig = entalpia(U_H_S_rot_rig, Temp)
-    print(f'Entalpia Heibbe-Scalabrini Truncada = {H_H_S_rot_rig}')
+    print(f'Entalpia Heibbe-Scalabrini Rotor Rigido = {H_H_S_rot_rig}')
+    S_H_S_rot_rig = entropia(df_func_part_H_S_rot_rig, Temp, funcao_particao_Scalabrini_Rotor_Rigido_sympy(M, T, pressao,
+                                                                              we, wexe, weye, gel, de, nu, theta_rot).evalf(subs={T: Temp}))
+    print(f'Entropia Heibbe-Scalabrini Rotor Rigido = {S_H_S_rot_rig}')
     print('-'*60)
     print('\n')
