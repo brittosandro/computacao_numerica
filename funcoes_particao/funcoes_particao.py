@@ -820,7 +820,7 @@ if __name__ == '__main__':
         S_Allison_harm = entropia(df_func_part_Allison_harm, Temp,
                                  funcao_part_harmonica_Allison_sympy(M, T, p, we,
                                  wexe, Be, alfa_e, gel, de).evalf(subs={T: Temp}))
-        dados_entropia_Allison_harm.append(S_Allison)
+        dados_entropia_Allison_harm.append(S_Allison_harm)
         print(f'Entropia Allison Harm = {S_Allison_harm}')
 
         print('-'*60)
@@ -958,5 +958,3 @@ if __name__ == '__main__':
 
         print('-'*60)
         print('\n')
-
-    
