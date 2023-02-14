@@ -125,6 +125,13 @@ def entalpia(energia_interna, Temperatura):
     return H
 
 
+def energia_Gibbs(entalpia, entropia, Temperatura):
+    T = Temperatura
+    G = entalpia - T * entropia
+
+    return G
+
+
 def entropia(derivada, Temperatura, funcao_particao):
     R = const.gas_constant
     T = Temperatura
@@ -245,7 +252,7 @@ def funcao_part_harmonica_Allison(massa_elementos, Temperatura, pressao, we, wex
     Q_Allison = a * b * c * d * e
 
     return Q_Allison
-
+Cp_H_S_rot_rid
 
 def funcao_part_harmonica_Allison_sympy(massa_elementos, T, pressao, we, wexe,
                                         Be, alfa_e, gel, de):
@@ -750,6 +757,14 @@ if __name__ == '__main__':
     dados_cp_H_S_trunc = []
     dados_cp_H_S_rot_rig = []
 
+    dados_G_Mcquarie = []
+    dados_G_Allison_harm = []
+    dados_G_Allison = []
+    dados_G_Foglia = []
+    dados_G_H_S = []
+    dados_G_H_S_trunc = []
+    dados_G_H_S_rot_rig = []
+
 
     with open('energia_interna.csv', 'w') as f1, \
          open('entalpia.csv', 'w') as f2, \
@@ -857,10 +872,14 @@ if __name__ == '__main__':
             dados_entropia_Macquarie.append(S_Mcquarie)
             print(f'Entropia Mcquarie = {S_Mcquarie}')
 
+            G_Mcquarie = energia_Gibbs(H_Mcquarie, S_Mcquarie, Temp)
+            dados_G_Mcquarie.append(G_Mcquarie)
+            print(f'Energia de Gibbs = {G_Mcquarie}')
+
             print('-'*60)
             print('\n')
 
-
+            '''
             ### Allison Harmonica
 
             func_part_harm_Allison_sympy = funcao_part_harmonica_Allison_sympy(M, T, p, we, wexe,
@@ -922,7 +941,7 @@ if __name__ == '__main__':
                 dados_entalpia_Allison.append(H_Allison - H_Allison_298)
                 print(f'Entalpia Allison Harm = {H_Allison}')
             else:
-                H_Allison = entalpia(U_Allison, Temp)
+            Cp_H_S_rot_rid    H_Allison = entalpia(U_Allison, Temp)
                 dados_entalpia_Allison.append(H_Allison - H_Allison_298)
                 print(f'Entalpia Allison Harm = {H_Allison}')
 
@@ -1048,7 +1067,7 @@ if __name__ == '__main__':
 
             Cp_H_S_trunc = diff(entalpia(U_H_S_trunc_nao_aval, T)).evalf(subs={T: Temp})
             dados_cp_H_S_trunc.append(Cp_H_S_trunc)
-            print(f'Cp Heibbe-Scalabrini Truncada = {Cp_H_S_trunc}')
+            prinCp_H_S_rot_ridt(f'Cp Heibbe-Scalabrini Truncada = {Cp_H_S_trunc}')
 
             S_H_S_trunc = entropia(df_func_part_H_S_trunc, Temp,
                                   funcao_particao_Heibbe_Scalabrini_truncada_sympy(M, T,
@@ -1104,7 +1123,7 @@ if __name__ == '__main__':
             print(f'{Temp},{H_Mcquarie},{H_Allison_harm},{H_Allison},{H_Foglia},{H_H_S},{H_H_S_trunc},{H_H_S_rot_rig}', end='\n', file=f2)
             print(f'{Temp},{S_Mcquarie},{S_Allison_harm},{S_Allison},{S_Foglia},{S_H_S},{S_H_S_trunc},{S_H_S_rot_rig}', end='\n', file=f3)
             print(f'{Temp},{Cp_Mcquarie},{Cp_Allison_harm},{Cp_Allison},{Cp_Foglia},{Cp_H_S},{Cp_H_S_trunc},{Cp_H_S_rot_rid}', end='\n', file=f4)
-
+            '''
     '''
     plt.plot(faixa_Temp, dados_entropia_Macquarie, label='Macquarie')
     plt.plot(faixa_Temp, dados_entropia_Allison_harm, label='Allison - Harm')
@@ -1129,7 +1148,7 @@ if __name__ == '__main__':
     plt.ylabel(r"$Entalpia$ $(J/mol)$")
     plt.legend()
     plt.show()
-    '''
+
 
     plt.plot(faixa_Temp, dados_cp_Mcquarie, label='Macquarie')
     plt.plot(faixa_Temp, dados_cp_Allison_harm, label='Allison - Harm')
@@ -1140,5 +1159,11 @@ if __name__ == '__main__':
     plt.plot(faixa_Temp, dados_cp_H_S_rot_rig, label='Scalabrini-Rot-Rig')
     plt.xlabel(r"$Temperatura [K]$")
     plt.ylabel(r"$Cp$")
+    plt.legend()
+    plt.show()
+    '''
+    plt.plot(faixa_Temp, dados_G_Mcquarie, label='Macquarie')
+    plt.xlabel(r"$Temperatura [K]$")
+    plt.ylabel(r"$Energia Gibbs$")
     plt.legend()
     plt.show()
