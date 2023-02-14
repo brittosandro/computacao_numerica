@@ -746,11 +746,24 @@ if __name__ == '__main__':
          open('entalpia.csv', 'w') as f2, \
          open('entropia.csv', 'w') as f3:
 
-         print(f'Temperatura,U_Mcquarie,U_Allison_Harmonica,U_Allison,\
-            U_Foglia,U_Heibbe_Scalabrini,U_Heibbe_Scalabrini_Trunc,\
-            U_Heibbe_Scalabrini_ROTOR-RIG', end='\n', file=f1)
+         cabecalho_U = 'Temperatura,U_Mcquarie,U_Allison_Harmonica,U_Allison,\
+         U_Foglia,U_Heibbe_Scalabrini,U_Heibbe_Scalabrini_Trunc,\
+         U_Heibbe_Scalabrini_ROTOR-RIG'
 
-         for Temp in range(Temp_inicial, Temp_final, 500):
+         cabecalho_H = 'Temperatura,H_Mcquarie,H_Allison_Harmonica,H_Allison,\
+         H_Foglia,H_Heibbe_Scalabrini,H_Heibbe_Scalabrini_Trunc,\
+         H_Heibbe_Scalabrini_ROTOR-RIG'
+
+         cabecalho_S = 'Temperatura,S_Mcquarie,S_Allison_Harmonica,S_Allison,\
+         S_Foglia,S_Heibbe_Scalabrini,S_Heibbe_Scalabrini_Trunc,\
+         S_Heibbe_Scalabrini_ROTOR-RIG'
+
+
+         print(cabecalho_U, end='\n', file=f1)
+         print(cabecalho_H, end='\n', file=f2)
+         print(cabecalho_S, end='\n', file=f3)
+
+         for Temp in range(Temp_inicial, Temp_final, 600):
             faixa_Temp.append(Temp)
             '''
             func_part_Macquarie = funcao_part_Mcquarie(M, Temp, p, theta_rot, we, gel, de)
@@ -1035,6 +1048,8 @@ if __name__ == '__main__':
             print('\n')
 
             print(f'{Temp},{U_Mcquarie},{U_Allison_harm},{U_Allison},{U_Foglia},{U_H_S},{U_H_S_trunc},{U_H_S_rot_rig}', end='\n', file=f1)
+            print(f'{Temp},{H_Mcquarie},{H_Allison_harm},{H_Allison},{H_Foglia},{H_H_S},{H_H_S_trunc},{H_H_S_rot_rig}', end='\n', file=f2)
+            print(f'{Temp},{S_Mcquarie},{S_Allison_harm},{S_Allison},{S_Foglia},{S_H_S},{S_H_S_trunc},{S_H_S_rot_rig}', end='\n', file=f3)
 
 
     plt.plot(faixa_Temp, dados_entropia_Macquarie, label='Macquarie')
