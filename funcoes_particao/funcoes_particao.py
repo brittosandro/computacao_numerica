@@ -765,11 +765,11 @@ if __name__ == '__main__':
     dados_G_H_S_trunc = []
     dados_G_H_S_rot_rig = []
 
-
     with open('energia_interna.csv', 'w') as f1, \
          open('entalpia.csv', 'w') as f2, \
          open('entropia.csv', 'w') as f3, \
-         open('capacidade_calorifica.csv', 'w') as f4:
+         open('capacidade_calorifica.csv', 'w') as f4, \
+         open('energia_de_gibs.csv', 'w') as f5:
 
          cabecalho_U = 'Temperatura,U_Mcquarie,U_Allison_Harmonica,U_Allison,\
          U_Foglia,U_Heibbe_Scalabrini,U_Heibbe_Scalabrini_Trunc,\
@@ -787,11 +787,16 @@ if __name__ == '__main__':
          Cp_Foglia,S_Heibbe_Scalabrini,Cp_Heibbe_Scalabrini_Trunc,\
          Cp_Heibbe_Scalabrini_ROTOR-RIG'
 
+         cabecalho_G = 'Temperatura,G_Mcquarie,G_Allison_Harmonica,G_Allison,\
+         G_Foglia,G_Heibbe_Scalabrini,G_Heibbe_Scalabrini_Trunc,\
+         G_Heibbe_Scalabrini_ROTOR-RIG'
+
 
          print(cabecalho_U, end='\n', file=f1)
          print(cabecalho_H, end='\n', file=f2)
          print(cabecalho_S, end='\n', file=f3)
          print(cabecalho_Cp, end='\n', file=f4)
+         print(cabecalho_G, end='\n', file=f5)
 
          for Temp in range(Temp_inicial, Temp_final, 600):
             faixa_Temp.append(Temp)
@@ -1149,6 +1154,7 @@ if __name__ == '__main__':
             print(f'{Temp},{H_Mcquarie},{H_Allison_harm},{H_Allison},{H_Foglia},{H_H_S},{H_H_S_trunc},{H_H_S_rot_rig}', end='\n', file=f2)
             print(f'{Temp},{S_Mcquarie},{S_Allison_harm},{S_Allison},{S_Foglia},{S_H_S},{S_H_S_trunc},{S_H_S_rot_rig}', end='\n', file=f3)
             print(f'{Temp},{Cp_Mcquarie},{Cp_Allison_harm},{Cp_Allison},{Cp_Foglia},{Cp_H_S},{Cp_H_S_trunc},{Cp_H_S_rot_rid}', end='\n', file=f4)
+            print(f'{Temp},{G_Mcquarie},{G_Allison_harm},{G_Allison},{G_Foglia},{G_H_S},{G_H_S_trunc},{G_H_S_rot_rig}', end='\n', file=f5)
 
     '''
     plt.plot(faixa_Temp, dados_entropia_Macquarie, label='Macquarie')
