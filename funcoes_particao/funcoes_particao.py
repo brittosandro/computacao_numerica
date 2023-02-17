@@ -215,6 +215,39 @@ def funcao_part_Mcquarie_sympy(massa_elementos, T, pressao, temperatura_rotacion
 
     return log(Q_Mcquarie)
 
+
+def funcao_part_Mcquarie_monomero_sympy(massa_elemento, T, pressao, gel, de=0):
+    '''
+    Essa é a função de partição de Mcquarie.
+
+    Parâmetros
+    ----------
+    - massa_elementos: A soma das massas dos elementos em Kg.
+    - Temperatura: A temperatura em K (kelvin).
+    - pressao: A pressão em Pa (pascal).
+    - temperatura_rotacional: Temperatura rotacional em K (kelvin).
+    - we: Omega_e em Joule (j).
+    - gel: degenerescência sem dimensão.
+    - de: Joule (j).
+
+    Retorno
+    --------
+    Retorna a função de partição adimencional.
+    '''
+    # Constante de Planck 6.62607015e-34 J Hz^-1
+    h = 6.62607015e-34
+    # Constante de Boltzmann 1.380649x10-23 J K-1
+    k = 1.380649e-23
+    p = pressao
+    M = massa_elemento
+
+    a = ((2 * pi * M * k * T) / h**2) ** (3/2)
+    b = gel * exp(de/(k*T))
+    Q_Mcquarie = a * b
+
+    return log(Q_Mcquarie)
+
+
 def funcao_part_harmonica_Allison(massa_elementos, Temperatura, pressao, we, wexe, Be,
                                  alfa_e, gel, de):
     '''
@@ -838,21 +871,38 @@ if __name__ == '__main__':
             # Mcquarie
 
             func_part_Macquarie_sympy = funcao_part_Mcquarie_sympy(M, T, p, theta_rot, we, gel, de)
+            func_part_Mcquarie_monomero1_sympy = funcao_part_Mcquarie_monomero_sympy(massa1, T, p)
+            func_part_Mcquarie_monomero2_sympy = funcao_part_Mcquarie_monomero_sympy(massa2, T, p)
             #pprint(func_part_Macquarie_sympy)
             #print('\n')
 
             df_func_part_Macquarie_sympy_nao_aval = diff(func_part_Macquarie_sympy, T)
+            df_func_part_Macquarie_sympy_nao_aval_mono1 = diff(func_part_Mcquarie_monomero1_sympy, T)
+            df_func_part_Macquarie_sympy_nao_aval_mono2 = diff(func_part_Mcquarie_monomero2_sympy, T)
+
             #pprint(df_func_part_Macquarie_sympy_nao_aval)
 
             #df_func_part_Macquarie_sympy = diff(func_part_Macquarie_sympy, T).evalf()
             #pprint(df_func_part_Macquarie_sympy)
 
             df_func_part_Macquarie_sympy = diff(func_part_Macquarie_sympy, T).evalf(subs={T: Temp})
+            df_func_part_Macquarie_sympy_mono1 = diff(func_part_Mcquarie_monomero1_sympy, T).evalf(subs={T: Temp})
+            df_func_part_Macquarie_sympy_mono2 = diff(func_part_Mcquarie_monomero2_sympy, T).evalf(subs={T: Temp})
             print(f'Derivada Mcquarie = {df_func_part_Macquarie_sympy}')
+            print(f'Derivada Mcquarie Mono 1 = {df_func_part_Macquarie_sympy_mono1}')
+            print(f'Derivada Mcquarie Mono 2 = {df_func_part_Macquarie_sympy_mono2}')
 
             U_Mcquarie = energia_interna(df_func_part_Macquarie_sympy, Temp)
+            U_Mcquarie_mono1 = energia_interna(df_func_part_Macquarie_sympy_mono1, Temp)
+            U_Mcquarie_mono2 = energia_interna(df_func_part_Macquarie_sympy_mono2, Temp)
+
             U_Mcquarie_nao_aval =  energia_interna(df_func_part_Macquarie_sympy_nao_aval, T)
+            U_Mcquarie_nao_aval_mono1 =  energia_interna(df_func_part_Macquarie_sympy_nao_aval_mono1, T)
+            U_Mcquarie_nao_aval_mono2 =  energia_interna(df_func_part_Macquarie_sympy_nao_aval_mono2, T)
+
             print(f'Energia interna Mcquarie = {U_Mcquarie}')
+            print(f'Energia interna Mcquarie Mono1 = {U_Mcquarie_mono1}')
+            print(f'Energia interna Mcquarie Mono2 = {U_Mcquarie_mono2}')
 
             # Essa condição é realizada para computar o valor da variável
             # H_Mcquarie em 298 somente uma vez. Pois precisamos do dado
