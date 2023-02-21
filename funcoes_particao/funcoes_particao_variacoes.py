@@ -216,18 +216,16 @@ def funcao_part_Mcquarie_sympy(massa_elementos, T, pressao, temperatura_rotacion
     return log(Q_Mcquarie)
 
 
-def funcao_part_Mcquarie_monomero_sympy(massa_elemento, T, pressao, gel, de=0):
+def funcao_part_monomero_sympy(massa_elemento, T, pressao, gel, de=0):
     '''
     Essa é a função de partição de Mcquarie.
 
     Parâmetros
     ----------
-    - massa_elementos: A soma das massas dos elementos em Kg.
+    - massa_elementos: A massas dos elementos em Kg.
     - Temperatura: A temperatura em K (kelvin).
     - pressao: A pressão em Pa (pascal).
-    - temperatura_rotacional: Temperatura rotacional em K (kelvin).
-    - we: Omega_e em Joule (j).
-    - gel: degenerescência sem dimensão.
+    - gel: degenerescência eletrônica sem dimensão.
     - de: Joule (j).
 
     Retorno
@@ -689,8 +687,10 @@ if __name__ == '__main__':
         elif 'gama_e' in dado:
             gama_e = pega_dado_como_float(dado)
         elif 'De' in dado:
+            # O valor de entrada da energia de deve ser em joule.
             de = pega_dado_como_float(dado)
         elif 'Re' in dado:
+            # O valor de entrada de re dever ser angstrom.
             re = pega_dado_como_float(dado)
         elif 'gel' in dado:
             gel = pega_dado_como_float(dado)
@@ -717,7 +717,7 @@ if __name__ == '__main__':
     theta_rot = temperatura_rotacional(mu, re)
     print(f'Temperatura Rotacional\ntheta_rot = {theta_rot} K')
     Be = const_rot_eq(mu, re)
-    print(f'Be = {Be}')
+    print(f'Be = {Be} J')
     print('-------------------------------')
     print()
 
@@ -732,7 +732,7 @@ if __name__ == '__main__':
     # Números quânticos vibracionais para nu e nu + 1
     nu = 0
     nu1 = 1
-    # Energias rovibracionais para nu e nu + 1~
+    # Energias rovibracionais para nu e nu + 1
     en_nu_j = 0
     en_nu1_j = 0
     # Lista de energias rovibracionais
@@ -749,9 +749,12 @@ if __name__ == '__main__':
         nu1 += 1
         #print(nu)
 
-    with open('Energia_rovib.txt', 'w') as f:
+    with open('Energia_rovib.txt', 'w') as f1, \
+         open('niveis_vibracionais.txt', 'w') as f2:
         for energia in lista_en_nu_j:
-            print(energia, file=f)
+            print(energia, file=f1)
+        for niveis_vib in lista_nu:
+            print(niveis_vib, file=f2)
     #print(en_nu_j)
     #print(nu)
 
@@ -871,38 +874,44 @@ if __name__ == '__main__':
             ### Mcquarie
             # Nas linhas abaixo vamos definir as funções de partição desiginadas por Mcquarie
             func_part_Mcquarie_sympy = funcao_part_Mcquarie_sympy(M, T, p, theta_rot, we, gel, de)
-            func_part_Mcquarie_monomero1_sympy = funcao_part_Mcquarie_monomero_sympy(massa1, T, p, gel)
-            func_part_Mcquarie_monomero2_sympy = funcao_part_Mcquarie_monomero_sympy(massa2, T, p, gel)
 
+            # Funcoes de particao para os monomeros
+            func_part_monomero1_sympy = funcao_part_monomero_sympy(massa1, T, p, gel)
+            func_part_monomero2_sympy = funcao_part_monomero_sympy(massa2, T, p, gel)
+
+            # derivadas para as funcoes de particao de Mcquarie não avaliadas
             df_func_part_Mcquarie_sympy_nao_aval = diff(func_part_Mcquarie_sympy, T)
-            df_func_part_Mcquarie_sympy_nao_aval_mono1 = diff(func_part_Mcquarie_monomero1_sympy, T)
-            df_func_part_Mcquarie_sympy_nao_aval_mono2 = diff(func_part_Mcquarie_monomero2_sympy, T)
+
+            # Derivadas das funcoes de particao dos monomeros não avaliadas
+            df_func_part_sympy_nao_aval_mono1 = diff(func_part_monomero1_sympy, T)
+            df_func_part_sympy_nao_aval_mono2 = diff(func_part_monomero2_sympy, T)
 
             #pprint(df_func_part_Macquarie_sympy_nao_aval)
 
             #df_func_part_Macquarie_sympy = diff(func_part_Macquarie_sympy, T).evalf()
             #pprint(df_func_part_Macquarie_sympy)
 
+            # Derivadas avaliadas
             df_func_part_Mcquarie_sympy = diff(func_part_Mcquarie_sympy, T).evalf(subs={T: Temp})
-            df_func_part_Mcquarie_sympy_mono1 = diff(func_part_Mcquarie_monomero1_sympy, T).evalf(subs={T: Temp})
-            df_func_part_Mcquarie_sympy_mono2 = diff(func_part_Mcquarie_monomero2_sympy, T).evalf(subs={T: Temp})
+            df_func_part_sympy_mono1 = diff(func_part_monomero1_sympy, T).evalf(subs={T: Temp})
+            df_func_part_sympy_mono2 = diff(func_part_monomero2_sympy, T).evalf(subs={T: Temp})
 
             print(f'Derivada Mcquarie = {df_func_part_Mcquarie_sympy}')
-            print(f'Derivada Mcquarie Mono 1 = {df_func_part_Mcquarie_sympy_mono1}')
-            print(f'Derivada Mcquarie Mono 2 = {df_func_part_Mcquarie_sympy_mono2}')
+            print(f'Derivada Mcquarie Mono 1 = {df_func_part_sympy_mono1}')
+            print(f'Derivada Mcquarie Mono 2 = {df_func_part_sympy_mono2}')
             print()
 
             U_Mcquarie = energia_interna(df_func_part_Mcquarie_sympy, Temp)
-            U_Mcquarie_mono1 = energia_interna(df_func_part_Mcquarie_sympy_mono1, Temp)
-            U_Mcquarie_mono2 = energia_interna(df_func_part_Mcquarie_sympy_mono2, Temp)
+            U_mono1 = energia_interna(df_func_part_sympy_mono1, Temp)
+            U_mono2 = energia_interna(df_func_part_sympy_mono2, Temp)
 
             U_Mcquarie_nao_aval =  energia_interna(df_func_part_Mcquarie_sympy_nao_aval, T)
-            U_Mcquarie_nao_aval_mono1 =  energia_interna(df_func_part_Mcquarie_sympy_nao_aval_mono1, T)
-            U_Mcquarie_nao_aval_mono2 =  energia_interna(df_func_part_Mcquarie_sympy_nao_aval_mono2, T)
+            U_nao_aval_mono1 =  energia_interna(df_func_part_sympy_nao_aval_mono1, T)
+            U_nao_aval_mono2 =  energia_interna(df_func_part_sympy_nao_aval_mono2, T)
 
-            delta_U_Mcquarie = U_Mcquarie - (U_Mcquarie_mono1 + U_Mcquarie_mono2)
+            delta_U_Mcquarie = U_Mcquarie - (U_mono1 + U_mono2)
 
-            delta_U_Mcquarie_nao_aval = U_Mcquarie_nao_aval - (U_Mcquarie_nao_aval_mono1 + U_Mcquarie_nao_aval_mono2)
+            delta_U_Mcquarie_nao_aval = U_Mcquarie_nao_aval - (U_nao_aval_mono1 + U_nao_aval_mono2)
 
             #print(f'Energia interna Mcquarie = {U_Mcquarie}')
             #print(f'Energia interna Mcquarie Mono1 = {U_Mcquarie_mono1}')
@@ -910,18 +919,18 @@ if __name__ == '__main__':
             print(f'Variação Energia interna Mcquarie = {delta_U_Mcquarie}')
 
             H_Mcquarie = entalpia(U_Mcquarie, Temp)
-            H_Mcquarie_mono1 = entalpia(U_Mcquarie_mono1, Temp)
-            H_Mcquarie_mono2 = entalpia(U_Mcquarie_mono2, Temp)
-            delta_H_Mcquarie = H_Mcquarie - (H_Mcquarie_mono1 + H_Mcquarie_mono2)
+            H_mono1 = entalpia(U_mono1, Temp)
+            H_mono2 = entalpia(U_mono2, Temp)
+            delta_H_Mcquarie = H_Mcquarie - (H_mono1 + H_mono2)
 
             dados_entalpia_Macquarie.append(delta_H_Mcquarie)
 
             print(f'Variação Entalpia Mcquarie = {delta_H_Mcquarie}')
 
             Cp_Mcquarie = diff(entalpia(U_Mcquarie_nao_aval, T)).evalf(subs={T: Temp})
-            Cp_Mcquarie_mono1 = diff(entalpia(U_Mcquarie_mono1, T)).evalf(subs={T: Temp})
-            Cp_Mcquarie_mono2 = diff(entalpia(U_Mcquarie_mono2, T)).evalf(subs={T: Temp})
-            delta_Cp_Mcquarie = Cp_Mcquarie - (Cp_Mcquarie_mono1 + Cp_Mcquarie_mono2)
+            Cp_mono1 = diff(entalpia(U_mono1, T)).evalf(subs={T: Temp})
+            Cp_mono2 = diff(entalpia(U_mono2, T)).evalf(subs={T: Temp})
+            delta_Cp_Mcquarie = Cp_Mcquarie - (Cp_mono1 + Cp_mono2)
             dados_cp_Mcquarie.append(delta_Cp_Mcquarie)
             print(f'Variação Cp Mcquarie = {delta_Cp_Mcquarie}')
 
@@ -929,26 +938,24 @@ if __name__ == '__main__':
                                   funcao_part_Mcquarie_sympy(M, T, p, theta_rot,
                                   we, gel, de).evalf(subs={T: Temp}))
 
-            S_Mcquarie_mono1 = entropia(df_func_part_Mcquarie_sympy_mono1,
-                                        Temp,
-                                        funcao_part_Mcquarie_monomero_sympy(massa1, T, p, gel).evalf(subs={T: Temp}))
+            S_mono1 = entropia(df_func_part_sympy_mono1, Temp,
+                              funcao_part_monomero_sympy(massa1, T, p, gel).evalf(subs={T: Temp}))
 
-            S_Mcquarie_mono2 = entropia(df_func_part_Mcquarie_sympy_mono2,
-                                        Temp,
-                                        funcao_part_Mcquarie_monomero_sympy(massa2, T, p, gel).evalf(subs={T: Temp}))
+            S_mono2 = entropia(df_func_part_sympy_mono2, Temp,
+                              funcao_part_monomero_sympy(massa2, T, p, gel).evalf(subs={T: Temp}))
 
-            delta_S_Mcquarie = S_Mcquarie - (S_Mcquarie_mono1 + S_Mcquarie_mono2)
+            delta_S_Mcquarie = S_Mcquarie - (S_mono1 + S_mono2)
             dados_entropia_Macquarie.append(delta_S_Mcquarie)
             print(f'Variação da Entropia Mcquarie = {delta_S_Mcquarie}')
 
-            G_Mcquarie = energia_Gibbs(H_Mcquarie, S_Mcquarie, Temp)
-            dados_G_Mcquarie.append(G_Mcquarie)
-            print(f'Energia de Gibbs = {G_Mcquarie}')
+            delta_G_Mcquarie = energia_Gibbs(delta_H_Mcquarie, delta_S_Mcquarie, Temp)
+            dados_G_Mcquarie.append(delta_G_Mcquarie)
+            print(f'Energia de Gibbs = {delta_G_Mcquarie}')
 
             print('-'*60)
             print('\n')
 
-            '''
+
             ### Allison Harmonica
 
             func_part_harm_Allison_sympy = funcao_part_harmonica_Allison_sympy(M, T, p, we, wexe,
@@ -964,36 +971,36 @@ if __name__ == '__main__':
             U_Allison_harm = energia_interna(df_func_part_Allison_harm, Temp)
             print(f'Energia interna Allison Harm = {U_Allison_harm}')
 
-            if Temp == Temp_inicial:
-                H_Allison_harm_298 = entalpia(U_Allison_harm, Temp)
-                H_Allison_harm = entalpia(U_Allison_harm, Temp)
-                dados_entalpia_Allison_harm.append(H_Allison_harm - H_Allison_harm_298)
-                print(f'Entalpia Allison Harm = {H_Allison_harm}')
-            else:
-                H_Allison_harm = entalpia(U_Allison_harm, Temp)
-                dados_entalpia_Allison_harm.append(H_Allison_harm - H_Allison_harm_298)
-                print(f'Entalpia Allison Harm = {H_Allison_harm}')
+            delta_U_Allison_harm = U_Allison_harm - (U_mono1 + U_mono2)
+            delta_U_Allison_harm_nao_aval = U_Allison_harm_nao_aval - (U_nao_aval_mono1 + U_nao_aval_mono2)
+
+            H_Allison_harm = entalpia(U_Allison_harm, Temp)
+            delta_H_Allison_harm = H_Allison_harm - (H_mono1 + H_mono2)
+            dados_entalpia_Allison_harm.append(delta_H_Allison_harm)
+            print(f'Entalpia Allison Harm = {delta_H_Allison_harm}')
+
 
             Cp_Allison_harm = diff(entalpia(U_Allison_harm_nao_aval, T)).evalf(subs={T: Temp})
-            dados_cp_Allison_harm.append(Cp_Allison_harm)
-            print(f'Cp Allison Harm. = {Cp_Allison_harm}')
-
+            delta_Cp_Allison_harm = Cp_Allison_harm - (Cp_mono1 + Cp_mono2)
+            dados_cp_Allison_harm.append(delta_Cp_Allison_harm)
+            print(f'Cp Allison Harm. = {delta_Cp_Allison_harm}')
 
             S_Allison_harm = entropia(df_func_part_Allison_harm, Temp,
                                      funcao_part_harmonica_Allison_sympy(M, T, p, we,
                                      wexe, Be, alfa_e, gel, de).evalf(subs={T: Temp}))
-            dados_entropia_Allison_harm.append(S_Allison_harm)
-            print(f'Entropia Allison Harm = {S_Allison_harm}')
+            delta_S_Allison_harm = S_Allison_harm - (S_mono1 + S_mono2)
+            dados_entropia_Allison_harm.append(delta_S_Allison_harm)
+            print(f'Entropia Allison Harm = {delta_S_Allison_harm}')
 
-            G_Allison_harm = energia_Gibbs(H_Allison_harm, S_Allison_harm, Temp)
-            dados_G_Allison_harm.append(G_Allison_harm)
-            print(f'Energia de Gibbs = {G_Allison_harm}')
+            delta_G_Allison_harm = energia_Gibbs(delta_H_Allison_harm, delta_S_Allison_harm, Temp)
+            dados_G_Allison_harm.append(delta_G_Allison_harm)
+            print(f'Energia de Gibbs = {delta_G_Allison_harm}')
 
             print('-'*60)
             print('\n')
 
 
-
+            '''
             ### Allison
 
             func_part_Allison_sympy = func_particao_Allison_sympy(M, T, pressao, we, wexe,
@@ -1220,53 +1227,65 @@ if __name__ == '__main__':
             print(f'{Temp},{Cp_Mcquarie},{Cp_Allison_harm},{Cp_Allison},{Cp_Foglia},{Cp_H_S},{Cp_H_S_trunc},{Cp_H_S_rot_rid}', end='\n', file=f4)
             print(f'{Temp},{G_Mcquarie},{G_Allison_harm},{G_Allison},{G_Foglia},{G_H_S},{G_H_S_trunc},{G_H_S_rot_rig}', end='\n', file=f5)
             '''
-    '''
-    plt.plot(faixa_Temp, dados_entropia_Macquarie, label='Macquarie')
-    plt.plot(faixa_Temp, dados_entropia_Allison_harm, label='Allison - Harm')
-    plt.plot(faixa_Temp, dados_entropia_Allison, label='Allison')
-    plt.plot(faixa_Temp, dados_entropia_Foglia, label='Foglia')
-    plt.plot(faixa_Temp, dados_entropia_H_S, label='Heibbe-Scalabrini')
-    plt.plot(faixa_Temp, dados_entropia_H_S_trunc, label='Heibbe-Scalabrini-Truc')
-    plt.plot(faixa_Temp, dados_entropia_H_S_rot_rig, label='Scalabrini-Rot-Rig')
-    plt.xlabel(r"$Temperatura [K]$")
-    plt.ylabel(r"$Entropia (J/K mol)$")
-    plt.legend()
-    plt.show()
 
-    plt.plot(faixa_Temp, dados_entalpia_Macquarie, label='Macquarie')
+
+    plt.plot(faixa_Temp, dados_entalpia_Macquarie, label=r'$\Delta$Macquarie')
     plt.plot(faixa_Temp, dados_entalpia_Allison_harm, label='Allison - Harm')
-    plt.plot(faixa_Temp, dados_entalpia_Allison, label='Allison')
-    plt.plot(faixa_Temp, dados_entalpia_Foglia, label='Foglia')
-    plt.plot(faixa_Temp, dados_entalpia_H_S, label='Heibbe-Scalabrini')
-    plt.plot(faixa_Temp, dados_entalpia_H_S_trunc, label='Heibbe-Scalabrini-Truc')
-    plt.plot(faixa_Temp, dados_entalpia_H_S_rot_rig, label='Heibbe-Scalabrini-Rot-Rig')
     plt.xlabel(r"$Temperatura$ $[K]$")
     plt.ylabel(r"$Entalpia$ $(J/mol)$")
     plt.legend()
     plt.show()
 
+    '''
+    plt.plot(faixa_Temp, dados_entalpia_Allison, label='Allison')
+    plt.plot(faixa_Temp, dados_entalpia_Foglia, label='Foglia')
+    plt.plot(faixa_Temp, dados_entalpia_H_S, label='Heibbe-Scalabrini')
+    plt.plot(faixa_Temp, dados_entalpia_H_S_trunc, label='Heibbe-Scalabrini-Truc')
+    plt.plot(faixa_Temp, dados_entalpia_H_S_rot_rig, label='Heibbe-Scalabrini-Rot-Rig')
+    '''
+
+    plt.plot(faixa_Temp, dados_entropia_Macquarie, label='Macquarie')
+    plt.plot(faixa_Temp, dados_entropia_Allison_harm, label='Allison - Harm')
+    plt.xlabel(r"$Temperatura [K]$")
+    plt.ylabel(r"$Entropia (J/K mol)$")
+    plt.legend()
+    plt.show()
+
+    '''
+    plt.plot(faixa_Temp, dados_entropia_Allison, label='Allison')
+    plt.plot(faixa_Temp, dados_entropia_Foglia, label='Foglia')
+    plt.plot(faixa_Temp, dados_entropia_H_S, label='Heibbe-Scalabrini')
+    plt.plot(faixa_Temp, dados_entropia_H_S_trunc, label='Heibbe-Scalabrini-Truc')
+    plt.plot(faixa_Temp, dados_entropia_H_S_rot_rig, label='Scalabrini-Rot-Rig')
+    '''
 
     plt.plot(faixa_Temp, dados_cp_Mcquarie, label='Macquarie')
     plt.plot(faixa_Temp, dados_cp_Allison_harm, label='Allison - Harm')
-    plt.plot(faixa_Temp, dados_cp_Allison, label='Allison')
-    plt.plot(faixa_Temp, dados_cp_Foglia, label='Foglia')
-    plt.plot(faixa_Temp, dados_cp_H_S, label='Heibbe-Scalabrini')
-    plt.plot(faixa_Temp, dados_cp_H_S_trunc, label='Heibbe-Scalabrini-Truc')
-    plt.plot(faixa_Temp, dados_cp_H_S_rot_rig, label='Scalabrini-Rot-Rig')
     plt.xlabel(r"$Temperatura [K]$")
     plt.ylabel(r"$Cp$")
     plt.legend()
     plt.show()
 
+    '''
+    plt.plot(faixa_Temp, dados_cp_Allison, label='Allison')
+    plt.plot(faixa_Temp, dados_cp_Foglia, label='Foglia')
+    plt.plot(faixa_Temp, dados_cp_H_S, label='Heibbe-Scalabrini')
+    plt.plot(faixa_Temp, dados_cp_H_S_trunc, label='Heibbe-Scalabrini-Truc')
+    plt.plot(faixa_Temp, dados_cp_H_S_rot_rig, label='Scalabrini-Rot-Rig')
+    '''
+
     plt.plot(faixa_Temp, dados_G_Mcquarie, label='Macquarie')
     plt.plot(faixa_Temp, dados_G_Allison_harm, label='Allison Harm.')
+    plt.xlabel(r"$Temperatura [K]$")
+    plt.ylabel(r"$Energia Gibbs$")
+    plt.legend()
+    plt.show()
+
+    '''
     plt.plot(faixa_Temp, dados_G_Allison, label='Allison')
     plt.plot(faixa_Temp, dados_G_Foglia, label='Foglia')
     plt.plot(faixa_Temp, dados_G_H_S, label='Heibbe-Scalabrini')
     plt.plot(faixa_Temp, dados_G_H_S_trunc, label='Heibbe-Scalabrini-Truc')
     plt.plot(faixa_Temp, dados_G_H_S_rot_rig, label='Heibbe-Scalabrini-Rot-Rig')
-    plt.xlabel(r"$Temperatura [K]$")
-    plt.ylabel(r"$Energia Gibbs$")
-    plt.legend()
-    plt.show()
+
     '''
