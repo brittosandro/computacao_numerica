@@ -8,7 +8,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 def pega_dados():
-    with open('dados_rovib.txt', 'r') as f:
+    with open('input.txt', 'r') as f:
         dados = f.readlines()
     return dados
 
@@ -793,7 +793,7 @@ if __name__ == '__main__':
     #Temp_inicial = 298
     #Temp_final = 6000
     #incr_temp = 600
-    
+
     faixa_Temp = []
 
     dados_entalpia_Macquarie = []
