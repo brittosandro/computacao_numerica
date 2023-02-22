@@ -22,6 +22,15 @@ def pega_dado_como_float(dado):
     '''
     return float(dado.split('=')[1].split('\n')[0].strip())
 
+def pega_dado_como_int(dado):
+    '''
+    Essa função recebe um dado no formato: x = y,
+    trata essa igualdade pegando o elemento y e
+    converte esse valor de string para um dado
+    int, retornando esse valor como int.
+    '''
+    return int(dado.split('=')[1].split('\n')[0].strip())
+
 
 def massa_reduzida(massa1, massa2):
     '''
@@ -670,6 +679,15 @@ if __name__ == '__main__':
     dados = pega_dados()
 
     for dado in dados:
+        if 'temp1' in dado:
+            print(dado)
+            Temp_inicial = pega_dado_como_float(dado)
+        elif 'temp2' in dado:
+            Temp_final = pega_dado_como_float(dado)
+        elif 'intervalo_temp' in dado:
+            incr_temp = pega_dado_como_int(dado)
+
+    for dado in dados:
         if 'm1' in dado:
             massa1 = pega_dado_como_float(dado)
         elif 'm2' in dado:
@@ -682,6 +700,13 @@ if __name__ == '__main__':
             alfa_e = pega_dado_como_float(dado)
         elif 'wexe' in dado:
             wexe = pega_dado_como_float(dado)
+        elif 'temp1' in dado:
+            print(dado)
+            Temp_inicial = pega_dado_como_float(dado)
+        elif 'temp2' in dado:
+            Temp_final = pega_dado_como_float(dado)
+        elif 'intervalo_temp' in dado:
+            incr_temp = pega_dado_como_float(dado)
         elif 'weye' in dado:
             weye = pega_dado_como_float(dado)
         elif 'gama_e' in dado:
@@ -694,6 +719,7 @@ if __name__ == '__main__':
             re = pega_dado_como_float(dado)
         elif 'gel' in dado:
             gel = pega_dado_como_float(dado)
+
 
     print(f'm1 = {massa1} ua')
     print(f'm2 = {massa2} ua')
@@ -764,9 +790,10 @@ if __name__ == '__main__':
     plt.ylabel(r"$E(\nu, j=0)$")
     plt.show()
 
-    Temp_inicial = 298
-    Temp_final = 6000
-
+    #Temp_inicial = 298
+    #Temp_final = 6000
+    #incr_temp = 600
+    
     faixa_Temp = []
 
     dados_entalpia_Macquarie = []
@@ -834,7 +861,7 @@ if __name__ == '__main__':
          print(cabecalho_Cp, end='\n', file=f4)
          print(cabecalho_G, end='\n', file=f5)
 
-         for Temp in range(Temp_inicial, Temp_final, 600):
+         for Temp in np.arange(Temp_inicial, Temp_final, incr_temp):
             faixa_Temp.append(Temp)
             '''
             func_part_Macquarie = funcao_part_Mcquarie(M, Temp, p, theta_rot, we, gel, de)
