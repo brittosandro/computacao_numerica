@@ -715,7 +715,7 @@ if __name__ == '__main__':
             # O valor de entrada da energia de deve ser em joule.
             de = pega_dado_como_float(dado)
         elif 'Re' in dado:
-            # O valor de entrada de re dever ser angstrom.
+            # O valor de entrada de re dever ser dado em metros.
             re = pega_dado_como_float(dado)
         elif 'gel' in dado:
             gel = pega_dado_como_float(dado)
