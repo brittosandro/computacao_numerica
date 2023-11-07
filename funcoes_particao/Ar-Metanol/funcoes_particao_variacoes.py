@@ -79,7 +79,7 @@ def const_rot_eq(massa_reduzida, re):
     # Constante de Avogadro Na em mol-1
     Na = const.Avogadro
 
-    Be = (h * Na) / (8 * np.pi**2 * I * const.c)
+    Be = h / (8 * np.pi**2 * I * const.c)
 
     return Be
 
@@ -105,7 +105,7 @@ def energia_rovib_tot(we, wexe, weye, Be, alfa_e, gama_e, n_quant_vib, j):
     a = vib*we - (vib**2)*wexe + (vib**3)*weye
     b = (Be - vib*alfa_e + (vib**2)*gama_e) * (j*(j+1))
 
-    return np.abs(a + b)
+    return a + b
 
 
 def temperatura_rotacional(massa_reduzida, re):
@@ -142,12 +142,13 @@ def entalpia(energia_interna, Temperatura):
     A função calcula a entalpia do sistema a partir
     da energia interna e temperatura retornando
     o valor da entalpia em joule / mol.
-    H = U + RT + 1084.65x10^3 J/mol
+    H = U + RT
     '''
+
     U = energia_interna
     T = Temperatura
     R = const.gas_constant
-    H = U + R * T + 1084.65e3
+    H = U + R * T
 
     return H
 
@@ -159,10 +160,13 @@ def energia_Gibbs(entalpia, entropia, Temperatura):
     T = Temperatura
     G = entalpia - T * entropia
 
-    return G * 10**-3
+    return G
 
 
 def entropia(derivada, Temperatura, funcao_particao):
+    '''
+    Entropia é retornada em J/mol K
+    '''
     R = const.gas_constant
     T = Temperatura
     S = R * T * derivada + R * funcao_particao
@@ -173,7 +177,7 @@ def entropia(derivada, Temperatura, funcao_particao):
 def funcao_part_Mcquarie(massa_elementos, Temperatura, pressao, temperatura_rotacional,
                          we, gel, de):
     '''
-    Essa é a função de partição de Mcquarie.
+    Essa é a função de partição de Mcquarie.* Na
 
     Parâmetros
     ----------
@@ -246,17 +250,16 @@ def funcao_part_Mcquarie_sympy(massa_elementos, T, pressao, temperatura_rotacion
     return log(Q_Mcquarie)
 
 
-def funcao_part_monomero_sympy(massa_elemento, T, pressao, gel, de=0):
+def funcao_part_monomero_sympy(massa_elemento, T, pressao, gel):
     '''
-    Essa é a função de partição de Mcquarie.
+    Essa é a função de partição dos Monomeros separados.
 
     Parâmetros
     ----------
-    - massa_elementos: A massas dos elementos em Kg.
+    - massa_elementos: A massas dos elementos em ua.
     - Temperatura: A temperatura em K (kelvin).
     - pressao: A pressão em Pa (pascal).
     - gel: degenerescência eletrônica sem dimensão.
-    - de: Joule (j).
 
     Retorno
     --------
@@ -267,13 +270,14 @@ def funcao_part_monomero_sympy(massa_elemento, T, pressao, gel, de=0):
     # Constante de Boltzmann 1.380649x10-23 J K-1
     k = 1.380649e-23
     p = pressao
-    M = massa_elemento
+    convert_ua_to_Kg = 1000 * const.Avogadro
+    M = massa_elemento / convert_ua_to_Kg
 
-    a = ((2 * pi * M * k * T) / h**2) ** (3/2)
-    b = gel * exp(de/(k*T))
-    Q_Mcquarie = a * b
+    a = ((2 * np.pi * M * k * T) / h**2) ** (3/2)
+    b = (k * T) / p
+    Q = a * b * gel
 
-    return log(Q_Mcquarie)
+    return log(Q)
 
 
 def funcao_part_harmonica_Allison(massa_elementos, Temperatura, pressao, we, wexe, Be,
@@ -494,6 +498,12 @@ def funcao_particao_Foglia_sympy(massa_elementos, T, pressao, we, wexe, Be,
 
 def funcao_particao_Heibbe_Scalabrini(massa_elementos, Temperatura, pressao, we,
                                      wexe, weye, Be, alfa_e, gama_e, gel, de, nu):
+
+    '''
+    A função de partição recebe todos os parametros e retorna sendo adimencional
+
+    '''
+
     # Constante de Planck 6.62607015e-34 J Hz^-1
     h = 6.62607015e-34
     # Constante de Boltzmann 1.380649x10-23 J K-1
@@ -504,41 +514,84 @@ def funcao_particao_Heibbe_Scalabrini(massa_elementos, Temperatura, pressao, we,
 
     a = ((2 * np.pi * M * k * T) / h**2) ** (3/2)
     b = (k * T) / p
-    c = 0
+    c = np.exp(-(0.5*we - 0.25*wexe + 0.125*weye) / (const.R * T))
+    d = 0
     for i in range(0, nu):
-        c += (np.exp(-((we - wexe + (3/4)*weye)*i + (-wexe + (2/3)*weye)*i**2 + (weye)*i**3) / (k*T))) * \
-             (1/3 + ((k*T) / (Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2)) + \
-             ((Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2) / (15*k*T)) + \
-             (1/720)*((12*((Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2)**2)) / ((k*T)**2)) - \
-             (1/720)*(((Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2)**3) / ((k*T)**3)))
+        d += (np.exp(-((we - wexe + (3/4)*weye)*i + (-wexe + (2/3)*weye)*i**2 + (weye)*i**3) / (const.R*T))) * \
+             (1/3 + ((const.R*T) / (Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2)) + \
+             ((Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2) / (15*const.R*T)) + \
+             (1/720)*((12*((Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2)**2)) / ((const.R*T)**2)) - \
+             (1/720)*(((Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2)**3) / ((const.R*T)**3)))
 
-    d = gel * np.exp(de/(k*T))
-    Q_HS_tot = a * b * c * d
+    e = gel * np.exp(de/(const.R*T))
+
+    Q_HS_tot = a * b * c * d * e
+    #print(Q_HS_tot)
 
     return Q_HS_tot
 
 
-def funcao_particao_Heibbe_Scalabrini_sympy(massa_elementos, T, pressao, we,
-                                     wexe, weye, Be, alfa_e, gama_e, gel, de, nu):
+def pop_vib_relativa_Heibbe_Scalabrini(massa_elementos, Temperatura, pressao, we,
+                                     wexe, weye, Be, alfa_e, gama_e, gel, de, i,
+                                     Qrovib_HS):
+    '''
+    Essa função calcula a população vibracional relativa considerando a função
+    de partição Heibbe_Scalabrini. E retorna o valor em porcentagem, ou seja,
+    multiplicamos o valor por 100.
+    '''
     # Constante de Planck 6.62607015e-34 J Hz^-1
     h = 6.62607015e-34
     # Constante de Boltzmann 1.380649x10-23 J K-1
     k = 1.380649e-23
+    T = Temperatura
     p = pressao
     M = massa_elementos
 
-    a = ((2 * pi * M * k * T) / h**2) ** (3/2)
+    a = ((2 * np.pi * M * k * T) / h**2) ** (3/2)
     b = (k * T) / p
-    c = 0
-    for i in range(0, nu):
-        c += (exp(-((we - wexe + (3/4)*weye)*i + (-wexe + (2/3)*weye)*i**2 + (weye)*i**3) / (k*T))) * \
-             (1/3 + ((k*T) / (Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2)) + \
-             ((Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2) / (15*k*T)) + \
-             (1/720)*((12*((Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2)**2)) / ((k*T)**2)) - \
-             (1/720)*(((Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2)**3) / ((k*T)**3)))
+    c = np.exp(-(0.5*we - 0.25*wexe + 0.125*weye) / (const.R * T))
+    d = gel * np.exp(de/(const.R*T))
 
-    d = gel * exp(de/(k*T))
-    Q_HS_tot = a * b * c * d
+    num = (np.exp(-((we - wexe + (3/4)*weye)*i + (-wexe + (2/3)*weye)*i**2 + (weye)*i**3) / (const.R*T))) * \
+         (1/3 + ((const.R*T) / (Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2)) + \
+         ((Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2) / (15*const.R*T)) + \
+         (1/720)*((12*((Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2)**2)) / ((const.R*T)**2)) - \
+         (1/720)*(((Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2)**3) / ((const.R*T)**3)))
+
+    f_nu_T = (a * b * c * d * num) / Qrovib_HS
+
+    return f_nu_T * 100
+
+
+def funcao_particao_Heibbe_Scalabrini_sympy(massa_elementos, Temperatura, pressao, we,
+                                     wexe, weye, Be, alfa_e, gama_e, gel, de, nu):
+    '''
+    A função de partição recebe todos os parametros e retorna sendo adimencional
+
+    '''
+
+    # Constante de Planck 6.62607015e-34 J Hz^-1
+    h = 6.62607015e-34
+    # Constante de Boltzmann 1.380649x10-23 J K-1
+    k = 1.380649e-23
+    T = Temperatura
+    p = pressao
+    M = massa_elementos
+
+    a = ((2 * np.pi * M * k * T) / h**2) ** (3/2)
+    b = (k * T) / p
+    c = exp(-(0.5*we - 0.25*wexe + 0.125*weye) / (const.R * T))
+    d = 0
+    for i in range(0, nu):
+        d += (exp(-((we - wexe + (3/4)*weye)*i + (-wexe + (2/3)*weye)*i**2 + (weye)*i**3) / (const.R*T))) * \
+             (1/3 + ((const.R*T) / (Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2)) + \
+             ((Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2) / (15*const.R*T)) + \
+             (1/720)*((12*((Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2)**2)) / ((const.R*T)**2)) - \
+             (1/720)*(((Be - alfa_e/2 + gama_e/4 - alfa_e*i + gama_e*i + gama_e*i**2)**3) / ((const.R*T)**3)))
+
+    e = gel * exp(de/(const.R*T))
+
+    Q_HS_tot = a * b * c * d * e
 
     return log(Q_HS_tot)
 
@@ -601,7 +654,7 @@ def funcao_particao_Scalabrini_Rotor_Rigido(massa_elementos, Temperatura, pressa
     # Constante de Planck 6.62607015e-34 J Hz^-1
     h = 6.62607015e-34
     # Constante de Boltzmann 1.380649x10-23 J K-1
-    k = 1.380649e-23
+    k = 1.380649e-23* Na
     T = Temperatura
     p = pressao
     M = massa_elementos
@@ -610,7 +663,7 @@ def funcao_particao_Scalabrini_Rotor_Rigido(massa_elementos, Temperatura, pressa
     b = (k * T) / p
     c = T / theta_rot
     d = np.exp(-(we/2 - wexe/4 + weye/8) / (k*T))
-    e = 0
+    e = 0* Na
     for i in range(0, nu):
         e += np.exp(-((we - wexe + 3/4*weye)*i + (-wexe + 3/2*weye)*i**2) / (k*T))
     f = gel * np.exp(de/(k*T))
@@ -733,7 +786,8 @@ if __name__ == '__main__':
             gama_e = pega_dado_como_float(dado)
         elif 'De' in dado:
             # O valor de entrada da energia de deve ser em joule.
-            de = pega_dado_como_float(dado)
+            # Converte de Joule para J/mol
+            de = pega_dado_como_float(dado) * const.Avogadro
         elif 'Re' in dado:
             # O valor de entrada de re dever em metros.
             re = pega_dado_como_float(dado)
@@ -751,7 +805,7 @@ if __name__ == '__main__':
     M = soma_de_massas(massa1, massa2)
     print(f'- M = {M} kg')
 
-'''
+
     p = pressao
     print(f'pressão = {pressao} Pa')
     print()
@@ -759,29 +813,30 @@ if __name__ == '__main__':
     print(' --- Dados Espectroscópicos ---')
     print(f'we = {we} cm-1')
     we = convert_cm_to_joule(we)
-    print(f'we = {we} J')
+    print(f'we = {we} J/mol')
     print(f'alfa_e = {alfa_e} cm-1 ')
     alfa_e = convert_cm_to_joule(alfa_e)
-    print(f'alfa_e = {alfa_e} J ')
+    print(f'alfa_e = {alfa_e} J/mol ')
     print(f'wexe = {wexe} cm-1')
     wexe = convert_cm_to_joule(wexe)
-    print(f'wexe = {wexe} J')
+    print(f'wexe = {wexe} J/mol')
     print(f'weye = {weye} cm-1')
-    weye = convert_cm_to_joule(gama_e)
-    print(f'weye = {weye} J')
+    weye = convert_cm_to_joule(weye)
+    print(f'weye = {weye} J/mol')
     print(f'gama_e = {gama_e} cm-1')
     gama_e = convert_cm_to_joule(gama_e)
-    print(f'gama_e = {gama_e} J')
+    print(f'gama_e = {gama_e} J/mol')
     print()
     print('-------------------------------')
 
     theta_rot = temperatura_rotacional(mu, re)
     print(f'Temperatura Rotacional\ntheta_rot = {theta_rot} K')
     Be = const_rot_eq(mu, re)
-    print(f'Be = {Be} J')
+    #Converte Be de 1/m para J/mol
+    Be = Be * 1196.266
+    print(f'Be = {Be} J/mol')
     print('-------------------------------')
     print()
-
 
     gama_e = convert_cm_to_joule(gama_e)
 
@@ -797,6 +852,8 @@ if __name__ == '__main__':
     lista_en_nu_j = []
     # Lista de numeros quanticos vibracionais
     lista_nu = []
+    #print(f'De = {de} | Evj = {energia_rovib_tot(we, wexe, weye, Be, alfa_e, gama_e, nu, j)}')
+
     while (np.abs((en_nu_j - de)) >= np.abs((en_nu1_j - de))):
         en_nu_j = energia_rovib_tot(we, wexe, weye, Be, alfa_e, gama_e, nu, j)
         en_nu1_j = energia_rovib_tot(we, wexe, weye, Be, alfa_e, gama_e, nu1, j)
@@ -822,6 +879,38 @@ if __name__ == '__main__':
     plt.ylabel(r"$E(\nu, j=0)$")
     plt.show()
 
+    Temps = [40, 90, 150]
+    lista_pop_vibracional_rel = []
+
+    print('nu = ', nu)
+
+    for Temp in Temps:
+        pop_vib_rela = []
+
+        Qrovib_HS = funcao_particao_Heibbe_Scalabrini(M, Temp, p, we, wexe,
+                                                      weye, Be, alfa_e,
+                                                      gama_e, gel, de, nu)
+        #print(f'Função de partição total = {Qrovib_HS}')
+
+        for i in range(0, nu):
+            #Calculando população rovibracional relativa
+            fracao = pop_vib_relativa_Heibbe_Scalabrini(
+                                         M, Temp, pressao, we, wexe, weye, Be,
+                                         alfa_e, gama_e, gel, de, i, Qrovib_HS)
+            print(f'F = {fracao} | i = {i} | T = {Temp}')
+            pop_vib_rela.append(fracao)
+        lista_pop_vibracional_rel.append(pop_vib_rela)
+
+    lista_nu = list(range(nu))
+    plt.plot(lista_nu, lista_pop_vibracional_rel[0], '-o', label='40 K')
+    plt.plot(lista_nu, lista_pop_vibracional_rel[1], '-o', label='90 K')
+    plt.plot(lista_nu, lista_pop_vibracional_rel[2], '-o', label='150 K')
+    plt.xlabel('Nivel Vibracional')
+    plt.ylabel('população Vibracional (%)')
+    plt.legend()
+    plt.show()
+
+    '''
     #Temp_inicial = 298
     #Temp_final = 6000
     #incr_temp = 600
@@ -938,6 +1027,7 @@ if __name__ == '__main__':
             func_part_monomero1_sympy = funcao_part_monomero_sympy(massa1, T, p, gel)
             func_part_monomero2_sympy = funcao_part_monomero_sympy(massa2, T, p, gel)
 
+
             # derivadas para as funcoes de particao de Mcquarie não avaliadas
             df_func_part_Mcquarie_sympy_nao_aval = diff(func_part_Mcquarie_sympy, T)
 
@@ -955,47 +1045,47 @@ if __name__ == '__main__':
             df_func_part_sympy_mono1 = diff(func_part_monomero1_sympy, T).evalf(subs={T: Temp})
             df_func_part_sympy_mono2 = diff(func_part_monomero2_sympy, T).evalf(subs={T: Temp})
 
-            print(f'Derivada Mcquarie = {df_func_part_Mcquarie_sympy}')
-            print(f'Derivada Mcquarie Mono 1 = {df_func_part_sympy_mono1}')
-            print(f'Derivada Mcquarie Mono 2 = {df_func_part_sympy_mono2}')
-            print()
+            #print(f'Derivada Mcquarie = {df_func_part_Mcquarie_sympy}')
+            #print(f'Derivada Mcquarie Mono 1 = {df_func_part_sympy_mono1}')
+            #print(f'Derivada Mcquarie Mono 2 = {df_func_part_sympy_mono2}')
+            #print()
 
-            U_Mcquarie = energia_interna(df_func_part_Mcquarie_sympy, Temp)
+            #U_Mcquarie = energia_interna(df_func_part_Mcquarie_sympy, Temp)
             U_mono1 = energia_interna(df_func_part_sympy_mono1, Temp)
             U_mono2 = energia_interna(df_func_part_sympy_mono2, Temp)
 
-            U_Mcquarie_nao_aval =  energia_interna(df_func_part_Mcquarie_sympy_nao_aval, T)
+            #U_Mcquarie_nao_aval =  energia_interna(df_func_part_Mcquarie_sympy_nao_aval, T)
             U_nao_aval_mono1 =  energia_interna(df_func_part_sympy_nao_aval_mono1, T)
             U_nao_aval_mono2 =  energia_interna(df_func_part_sympy_nao_aval_mono2, T)
 
-            delta_U_Mcquarie = U_Mcquarie - (U_mono1 + U_mono2)
+            #delta_U_Mcquarie = U_Mcquarie - (U_mono1 + U_mono2)
 
-            delta_U_Mcquarie_nao_aval = U_Mcquarie_nao_aval - (U_nao_aval_mono1 + U_nao_aval_mono2)
+            #delta_U_Mcquarie_nao_aval = U_Mcquarie_nao_aval - (U_nao_aval_mono1 + U_nao_aval_mono2)
 
             #print(f'Energia interna Mcquarie = {U_Mcquarie}')
             #print(f'Energia interna Mcquarie Mono1 = {U_Mcquarie_mono1}')
             #print(f'Energia interna Mcquarie Mono2 = {U_Mcquarie_mono2}')
-            print(f'Variação Energia interna Mcquarie = {delta_U_Mcquarie}')
+            #print(f'Variação Energia interna Mcquarie = {delta_U_Mcquarie}')
 
-            H_Mcquarie = entalpia(U_Mcquarie, Temp)
+            #H_Mcquarie = entalpia(U_Mcquarie, Temp)
             H_mono1 = entalpia(U_mono1, Temp)
             H_mono2 = entalpia(U_mono2, Temp)
-            delta_H_Mcquarie = H_Mcquarie - (H_mono1 + H_mono2)
+            #delta_H_Mcquarie = H_Mcquarie - (H_mono1 + H_mono2)
 
-            dados_entalpia_Macquarie.append(delta_H_Mcquarie)
+            #dados_entalpia_Macquarie.append(delta_H_Mcquarie)
 
-            print(f'Variação Entalpia Mcquarie = {delta_H_Mcquarie}')
+            #print(f'Variação Entalpia Mcquarie = {delta_H_Mcquarie}')
 
-            Cp_Mcquarie = diff(entalpia(U_Mcquarie_nao_aval, T)).evalf(subs={T: Temp})
+            #Cp_Mcquarie = diff(entalpia(U_Mcquarie_nao_aval, T)).evalf(subs={T: Temp})
             Cp_mono1 = diff(entalpia(U_mono1, T)).evalf(subs={T: Temp})
             Cp_mono2 = diff(entalpia(U_mono2, T)).evalf(subs={T: Temp})
-            delta_Cp_Mcquarie = Cp_Mcquarie - (Cp_mono1 + Cp_mono2)
-            dados_cp_Mcquarie.append(delta_Cp_Mcquarie)
-            print(f'Variação Cp Mcquarie = {delta_Cp_Mcquarie}')
+            #delta_Cp_Mcquarie = Cp_Mcquarie - (Cp_mono1 + Cp_mono2)
+            #dados_cp_Mcquarie.append(delta_Cp_Mcquarie)
+            #print(f'Variação Cp Mcquarie = {delta_Cp_Mcquarie}')
 
-            S_Mcquarie = entropia(df_func_part_Mcquarie_sympy, Temp,
-                                  funcao_part_Mcquarie_sympy(M, T, p, theta_rot,
-                                  we, gel, de).evalf(subs={T: Temp}))
+            #S_Mcquarie = entropia(df_func_part_Mcquarie_sympy, Temp,
+            #                      funcao_part_Mcquarie_sympy(M, T, p, theta_rot,
+            #                      we, gel, de).evalf(subs={T: Temp}))
 
             S_mono1 = entropia(df_func_part_sympy_mono1, Temp,
                               funcao_part_monomero_sympy(massa1, T, p, gel).evalf(subs={T: Temp}))
@@ -1003,16 +1093,16 @@ if __name__ == '__main__':
             S_mono2 = entropia(df_func_part_sympy_mono2, Temp,
                               funcao_part_monomero_sympy(massa2, T, p, gel).evalf(subs={T: Temp}))
 
-            delta_S_Mcquarie = S_Mcquarie - (S_mono1 + S_mono2)
-            dados_entropia_Macquarie.append(delta_S_Mcquarie)
-            print(f'Variação da Entropia Mcquarie = {delta_S_Mcquarie}')
+            #delta_S_Mcquarie = S_Mcquarie - (S_mono1 + S_mono2)
+            #dados_entropia_Macquarie.append(delta_S_Mcquarie)
+            #print(f'Variação da Entropia Mcquarie = {delta_S_Mcquarie}')
 
-            delta_G_Mcquarie = energia_Gibbs(delta_H_Mcquarie, delta_S_Mcquarie, Temp)
-            dados_G_Mcquarie.append(delta_G_Mcquarie)
-            print(f'Energia de Gibbs = {delta_G_Mcquarie}')
+            #delta_G_Mcquarie = energia_Gibbs(delta_H_Mcquarie, delta_S_Mcquarie, Temp)
+            #dados_G_Mcquarie.append(delta_G_Mcquarie)
+            #print(f'Energia de Gibbs = {delta_G_Mcquarie}')
 
-            print('-'*60)
-            print('\n')
+            #print('-'*60)
+            #print('\n')
 
 
             ### Allison Harmonica
@@ -1031,7 +1121,7 @@ if __name__ == '__main__':
             print(f'Energia interna Allison Harm = {U_Allison_harm}')
 
             delta_U_Allison_harm = U_Allison_harm - (U_mono1 + U_mono2)
-            delta_U_Allison_harm_nao_aval = U_Allison_harm_nao_aval - (U_nao_aval_mono1 + U_nao_aval_mono2)
+            delta_U_Allison_harm_nao_aval = U_Allison_harm_nao_avaprint(Q_HS_tot)l - (U_nao_aval_mono1 + U_nao_aval_mono2)
 
             H_Allison_harm = entalpia(U_Allison_harm, Temp)
             delta_H_Allison_harm = H_Allison_harm - (H_mono1 + H_mono2)
@@ -1059,7 +1149,7 @@ if __name__ == '__main__':
             print('\n')
 
             ### Allison
-            func_part_Allison_sympy = func_particao_Allison_sympy(M, T, pressao, we, wexe,
+            func_part_Allison_sympy = func_particao_Allison_sympy(M,Temp T, pressao, we, wexe,
                                                                   Be, alfa_e, gel, de, nu)
             #pprint(func_part_Allison_sympy)
             #print('\n')
@@ -1141,6 +1231,8 @@ if __name__ == '__main__':
             print('-'*60)
             print('\n')
 
+
+
             ### Heibbe Scalabrini
             func_part_H_S = funcao_particao_Heibbe_Scalabrini_sympy(M, T, pressao, we,
                                                  wexe, weye, Be, alfa_e, gama_e, gel,
@@ -1150,10 +1242,11 @@ if __name__ == '__main__':
 
             df_func_part_H_S_nao_aval = diff(func_part_H_S, T)
             df_func_part_H_S = diff(func_part_H_S, T).evalf(subs={T: Temp})
-            print(f'Derivada Heibbe-Scalabrini = {df_func_part_Foglia}')
+            print(f'Derivada Heibbe-Scalabrini = {df_func_part_H_S}')
 
             U_H_S_nao_aval = energia_interna(df_func_part_H_S_nao_aval, T)
             delta_U_H_S_nao_aval = U_H_S_nao_aval - (U_nao_aval_mono1 + U_nao_aval_mono2)
+            #pprint(delta_U_H_S_nao_aval)
 
             U_H_S = energia_interna(df_func_part_H_S, Temp)
             delta_U_H_S = U_H_S - (U_mono1 + U_mono2)
@@ -1163,7 +1256,6 @@ if __name__ == '__main__':
             delta_H_H_S = H_H_S - (H_mono1 + H_mono2)
             dados_entalpia_H_S.append(delta_H_H_S)
             print(f'Variação Entalpia Heibbe-Scalabrini = {delta_H_H_S}')
-
 
             Cp_H_S = diff(entalpia(U_H_S_nao_aval, T)).evalf(subs={T: Temp})
             delta_Cp_H_S = Cp_H_S - (Cp_mono1 + Cp_mono2)
@@ -1178,7 +1270,7 @@ if __name__ == '__main__':
             print(f'Variação Entropia Heibbe-Scalabrini  = {delta_S_H_S}')
 
             delta_G_H_S = energia_Gibbs(delta_H_H_S, delta_S_H_S, Temp)
-            dados_G_H_S.append(delta_G_H_S)
+            dados_G_H_S.append(delta_G_H_S/1000)
             print(f'Variação Energia de Gibbs = {delta_G_H_S}')
 
             print('-'*60)
@@ -1282,51 +1374,51 @@ if __name__ == '__main__':
 
 
 
-    plt.plot(faixa_Temp, dados_entalpia_Macquarie, label=r'Macquarie')
-    plt.plot(faixa_Temp, dados_entalpia_Allison_harm, label=r'Allison - Harm')
-    plt.plot(faixa_Temp, dados_entalpia_Allison, label=r'Allison')
-    plt.plot(faixa_Temp, dados_entalpia_Foglia, label=r'Foglia')
+    #plt.plot(faixa_Temp, dados_entalpia_Macquarie, label=r'Macquarie')
+    #plt.plot(faixa_Temp, dados_entalpia_Allison_harm, label=r'Allison - Harm')
+    #plt.plot(faixa_Temp, dados_entalpia_Allison, label=r'Allison')
+    #plt.plot(faixa_Temp, dados_entalpia_Foglia, label=r'Foglia')
     plt.plot(faixa_Temp, dados_entalpia_H_S, label=r'Heibbe-Scalabrini')
-    plt.plot(faixa_Temp, dados_entalpia_H_S_trunc, label=r'Heibbe-Scalabrini-Truc')
-    plt.plot(faixa_Temp, dados_entalpia_H_S_rot_rig, label=r'Heibbe-Scalabrini-Rot-Rig')
+    #plt.plot(faixa_Temp, dados_entalpia_H_S_trunc, label=r'Heibbe-Scalabrini-Truc')
+    #plt.plot(faixa_Temp, dados_entalpia_H_S_rot_rig, label=r'Heibbe-Scalabrini-Rot-Rig')
     plt.xlabel(r"$Temperatura$ $[K]$")
     plt.ylabel(r"$\Delta H$ $(J/mol)$")
     plt.legend()
     plt.show()
 
-    plt.plot(faixa_Temp, dados_entropia_Macquarie, label=r'Macquarie')
-    plt.plot(faixa_Temp, dados_entropia_Allison_harm, label=r'Allison - Harm')
-    plt.plot(faixa_Temp, dados_entropia_Allison, label=r'Allison')
-    plt.plot(faixa_Temp, dados_entropia_Foglia, label=r'Foglia')
+    #plt.plot(faixa_Temp, dados_entropia_Macquarie, label=r'Macquarie')
+    #plt.plot(faixa_Temp, dados_entropia_Allison_harm, label=r'Allison - Harm')
+    #plt.plot(faixa_Temp, dados_entropia_Allison, label=r'Allison')
+    #plt.plot(faixa_Temp, dados_entropia_Foglia, label=r'Foglia')
     plt.plot(faixa_Temp, dados_entropia_H_S, label=r'Heibbe-Scalabrini')
-    plt.plot(faixa_Temp, dados_entropia_H_S_trunc, label=r'Heibbe-Scalabrini-Truc')
-    plt.plot(faixa_Temp, dados_entropia_H_S_rot_rig, label=r'Scalabrini-Rot-Rig')
+    #plt.plot(faixa_Temp, dados_entropia_H_S_trunc, label=r'Heibbe-Scalabrini-Truc')
+    #plt.plot(faixa_Temp, dados_entropia_H_S_rot_rig, label=r'Scalabrini-Rot-Rig')
     plt.xlabel(r"$Temperatura [K]$")
     plt.ylabel(r"$\Delta S$ $(J/K mol)$")
     plt.legend()
     plt.show()
 
-    plt.plot(faixa_Temp, dados_cp_Mcquarie, label=r'Macquarie')
-    plt.plot(faixa_Temp, dados_cp_Allison_harm, label=r'Allison - Harm')
-    plt.plot(faixa_Temp, dados_cp_Allison, label=r'Allison')
-    plt.plot(faixa_Temp, dados_cp_Foglia, label=r'Foglia')
+    #plt.plot(faixa_Temp, dados_cp_Mcquarie, label=r'Macquarie')
+    #plt.plot(faixa_Temp, dados_cp_Allison_harm, label=r'Allison - Harm')
+    #plt.plot(faixa_Temp, dados_cp_Allison, label=r'Allison')
+    #plt.plot(faixa_Temp, dados_cp_Foglia, label=r'Foglia')
     plt.plot(faixa_Temp, dados_cp_H_S, label=r'Heibbe-Scalabrini')
-    plt.plot(faixa_Temp, dados_cp_H_S_trunc, label=r'Heibbe-Scalabrini-Truc')
-    plt.plot(faixa_Temp, dados_cp_H_S_rot_rig, label=r'Scalabrini-Rot-Rig')
+    #plt.plot(faixa_Temp, dados_cp_H_S_trunc, label=r'Heibbe-Scalabrini-Truc')
+    #plt.plot(faixa_Temp, dados_cp_H_S_rot_rig, label=r'Scalabrini-Rot-Rig')
     plt.xlabel(r"$Temperatura [K]$")
     plt.ylabel(r"$\Delta$ $Cp$")
     plt.legend()
     plt.show()
 
-    plt.plot(faixa_Temp, dados_G_Mcquarie, label=r'Macquarie')
-    plt.plot(faixa_Temp, dados_G_Allison_harm, label=r'Allison Harm.')
-    plt.plot(faixa_Temp, dados_G_Allison, label=r'Allison')
-    plt.plot(faixa_Temp, dados_G_Foglia, label=r'Foglia')
+    #plt.plot(faixa_Temp, dados_G_Mcquarie, label=r'Macquarie')
+    #plt.plot(faixa_Temp, dados_G_Allison_harm, label=r'Allison Harm.')
+    #plt.plot(faixa_Temp, dados_G_Allison, label=r'Allison')
+    #plt.plot(faixa_Temp, dados_G_Foglia, label=r'Foglia')
     plt.plot(faixa_Temp, dados_G_H_S, label=r'Heibbe-Scalabrini')
-    plt.plot(faixa_Temp, dados_G_H_S_trunc, label=r'Heibbe-Scalabrini-Truc')
-    plt.plot(faixa_Temp, dados_G_H_S_rot_rig, label=r'Heibbe-Scalabrini-Rot-Rig')
+    #plt.plot(faixa_Temp, dados_G_H_S_trunc, label=r'Heibbe-Scalabrini-Truc')
+    #plt.plot(faixa_Temp, dados_G_H_S_rot_rig, label=r'Heibbe-Scalabrini-Rot-Rig')
     plt.xlabel(r"$Temperatura [K]$")
-    plt.ylabel(r"$\Delta G$ $(KJ/mol)$")
+    plt.ylabel(r"$\Delta G$ $(J/mol)$")
     plt.legend()
     plt.show()
-'''
+    '''
