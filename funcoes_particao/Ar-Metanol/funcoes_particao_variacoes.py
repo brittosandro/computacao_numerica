@@ -65,11 +65,18 @@ def soma_de_massas(massa1, massa2):
 
 def const_rot_eq(massa_reduzida, re):
     '''
-    Essa função calcula a constante rotacional de equilíbrio,
-    ou seja, calcula o valor de Be. Para calcular Be deve
-    receber o valor da massa reduzida do sistema e a
-    distância de equilíbrio do sistema.
+    Essa função calcula a constante rotacional de equilíbrio,ou seja,
+    calcula o valor de Be. Para calcular Be a função deve receber o
+    valor da massa reduzida do sistema e a distância de equilíbrio do sistema.
+
+    Entrada: Massa Reduzida [Kg]
+    ----------------------------
+
+    Retorno: Be [J/mol]
+    -------------------
     '''
+    # fator de conversão de 1/cm para J/mol
+    fator_conversao = 1196.266
     # Constante de Planck 6.62607015e-34 J Hz^-1
     h = 6.62607015e-34
     # Massa reduzida em Kg
@@ -81,7 +88,7 @@ def const_rot_eq(massa_reduzida, re):
 
     Be = h / (8 * np.pi**2 * I * const.c)
 
-    return Be
+    return Be * fator_conversao
 
 
 def convert_cm_to_joule(medida):
@@ -832,8 +839,7 @@ if __name__ == '__main__':
     theta_rot = temperatura_rotacional(mu, re)
     print(f'Temperatura Rotacional\ntheta_rot = {theta_rot} K')
     Be = const_rot_eq(mu, re)
-    #Converte Be de 1/m para J/mol
-    Be = Be * 1196.266
+    print(f'Constante Rotacional do equilíbrio')
     print(f'Be = {Be} J/mol')
     print('-------------------------------')
     print()
@@ -864,12 +870,14 @@ if __name__ == '__main__':
         nu1 += 1
         #print(nu)
 
+    '''
     with open('Energia_rovib.txt', 'w') as f1, \
          open('niveis_vibracionais.txt', 'w') as f2:
         for energia in lista_en_nu_j:
             print(energia, file=f1)
         for niveis_vib in lista_nu:
             print(niveis_vib, file=f2)
+    '''
     #print(en_nu_j)
     #print(nu)
 
@@ -897,7 +905,7 @@ if __name__ == '__main__':
             fracao = pop_vib_relativa_Heibbe_Scalabrini(
                                          M, Temp, pressao, we, wexe, weye, Be,
                                          alfa_e, gama_e, gel, de, i, Qrovib_HS)
-            print(f'F = {fracao} | i = {i} | T = {Temp}')
+            #print(f'F = {fracao} | i = {i} | T = {Temp}')
             pop_vib_rela.append(fracao)
         lista_pop_vibracional_rel.append(pop_vib_rela)
 
