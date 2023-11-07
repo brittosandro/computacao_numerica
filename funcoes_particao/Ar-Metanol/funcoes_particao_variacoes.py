@@ -140,9 +140,11 @@ def temperatura_rotacional(massa_reduzida, re):
 def cal_quantidade_niveis_vibracionais(de, we, wexe, weye, Be, alfa_e, gama_e):
     '''
     Essa função calcula a quantidade de níveis vibracionais do sistema. Levando
-    em consideração os vários parâmetros rovibracionais. A função retorna o
-    número de níveis vibracionais que estão abaixo de uma condição de corte que
-    é a energia de dissociação, ou seja, somente consideramos os níveis
+    em consideração os vários parâmetros rovibracionais. A função retorna uma
+    tupla com o número de níveis vibracionais, uma lista de energias para cada
+    nível vibracional e uma lista de números vibracionais.
+    Todos os parâmetros de retorno que estão de acordo com a condição de
+    corte que é a energia de dissociação, ou seja, somente consideramos os níveis
     vibracionais que estão abaixo da energia de dissociação.
     '''
 
@@ -174,7 +176,7 @@ def cal_quantidade_niveis_vibracionais(de, we, wexe, weye, Be, alfa_e, gama_e):
     plt.ylabel(r"$E(\nu, j=0)$")
     plt.show()
 
-    return nu
+    return nu, lista_en_nu_j, lista_nu
 
 def energia_interna(derivada, Temperatura):
     R = const.gas_constant
@@ -885,7 +887,7 @@ if __name__ == '__main__':
 
     gama_e = convert_cm_to_joule(gama_e)
 
-    nu = cal_quantidade_niveis_vibracionais(de, we, wexe, weye, Be, alfa_e, gama_e)
+    nu = cal_quantidade_niveis_vibracionais(de, we, wexe, weye, Be, alfa_e, gama_e)[0]
 
     '''
     with open('Energia_rovib.txt', 'w') as f1, \
