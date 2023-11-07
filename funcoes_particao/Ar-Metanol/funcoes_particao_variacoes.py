@@ -138,38 +138,43 @@ def temperatura_rotacional(massa_reduzida, re):
 
 
 def cal_quantidade_niveis_vibracionais(de, we, wexe, weye, Be, alfa_e, gama_e):
+    '''
+    Essa função calcula a quantidade de níveis vibracionais do sistema. Levando
+    em consideração os vários parâmetros rovibracionais. A função retorna o
+    número de níveis vibracionais que estão abaixo de uma condição de corte que
+    é a energia de dissociação, ou seja, somente consideramos os níveis
+    vibracionais que estão abaixo da energia de dissociação.
+    '''
 
-   # Número quântico rotacional
-   j = 0
-   # Números quânticos vibracionais para nu e nu + 1
-   nu = 0
-   nu1 = 1
-   # Energias rovibracionais para nu e nu + 1
-   en_nu_j = 0
-   en_nu1_j = 0
-   # Lista de energias rovibracionais
-   lista_en_nu_j = []
-   # Lista de numeros quanticos vibracionais
-   lista_nu = []
-   #print(f'De = {de} | Evj = {energia_rovib_tot(we, wexe, weye, Be, alfa_e, gama_e, nu, j)}')
+    # Número quântico rotacional
+    j = 0
+    # Números quânticos vibracionais para nu e nu + 1
+    nu = 0
+    nu1 = 1
+    # Energias rovibracionais para nu e nu + 1
+    en_nu_j = 0
+    en_nu1_j = 0
+    # Lista de energias rovibracionais
+    lista_en_nu_j = []
+    # Lista de numeros quanticos vibracionais
+    lista_nu = []
+    #print(f'De = {de} | Evj = {energia_rovib_tot(we, wexe, weye, Be, alfa_e, gama_e, nu, j)}')
 
-   while (np.abs((en_nu_j - de)) >= np.abs((en_nu1_j - de))):
+    while (np.abs((en_nu_j - de)) >= np.abs((en_nu1_j - de))):
        en_nu_j = energia_rovib_tot(we, wexe, weye, Be, alfa_e, gama_e, nu, j)
        en_nu1_j = energia_rovib_tot(we, wexe, weye, Be, alfa_e, gama_e, nu1, j)
        lista_en_nu_j.append(en_nu_j)
        lista_nu.append(nu)
-       #print(en_nu_j)
        nu += 1
        nu1 += 1
-       #print(nu)
 
-   plt.plot(lista_nu, lista_en_nu_j)
-   plt.plot(lista_nu, [de for i in range(len(lista_nu))])
-   plt.xlabel(r"$\nu$")
-   plt.ylabel(r"$E(\nu, j=0)$")
-   plt.show()
+    plt.plot(lista_nu, lista_en_nu_j)
+    plt.plot(lista_nu, [de for i in range(len(lista_nu))])
+    plt.xlabel(r"$\nu$")
+    plt.ylabel(r"$E(\nu, j=0)$")
+    plt.show()
 
-   return nu
+    return nu
 
 def energia_interna(derivada, Temperatura):
     R = const.gas_constant
