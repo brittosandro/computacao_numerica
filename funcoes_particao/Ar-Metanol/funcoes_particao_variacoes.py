@@ -170,13 +170,26 @@ def cal_quantidade_niveis_vibracionais(de, we, wexe, weye, Be, alfa_e, gama_e):
        nu += 1
        nu1 += 1
 
-    plt.plot(lista_nu, lista_en_nu_j)
-    plt.plot(lista_nu, [de for i in range(len(lista_nu))])
+    return nu, lista_en_nu_j, lista_nu
+
+def plota_quant_nu_vib(de, e_j, nu_j):
+
+    plt.plot(nu_j, e_j)
+    plt.plot(nu_j, [de for i in range(len(nu_j))])
     plt.xlabel(r"$\nu$")
     plt.ylabel(r"$E(\nu, j=0)$")
     plt.show()
 
-    return nu, lista_en_nu_j, lista_nu
+
+def gera_arquivo_energia_niveis_vib(e_j, nu_j):
+
+    with open('Energia_rovib.txt', 'w') as f1, \
+         open('niveis_vibracionais.txt', 'w') as f2:
+        for energia in e_j:
+            print(energia, file=f1)
+        for niveis_vib in nu_j:
+            print(niveis_vib, file=f2)
+
 
 def energia_interna(derivada, Temperatura):
     R = const.gas_constant
@@ -888,15 +901,11 @@ if __name__ == '__main__':
     gama_e = convert_cm_to_joule(gama_e)
 
     nu = cal_quantidade_niveis_vibracionais(de, we, wexe, weye, Be, alfa_e, gama_e)[0]
+    e_j = cal_quantidade_niveis_vibracionais(de, we, wexe, weye, Be, alfa_e, gama_e)[1]
+    nu_j = cal_quantidade_niveis_vibracionais(de, we, wexe, weye, Be, alfa_e, gama_e)[2]
 
-    '''
-    with open('Energia_rovib.txt', 'w') as f1, \
-         open('niveis_vibracionais.txt', 'w') as f2:
-        for energia in lista_en_nu_j:
-            print(energia, file=f1)
-        for niveis_vib in lista_nu:
-            print(niveis_vib, file=f2)
-    '''
+    plota_quant_nu_vib(de, e_j, nu_j)
+    gera_arquivo_energia_niveis_vib(e_j, nu_j)
 
     Temps = [40, 90, 150]
     lista_pop_vibracional_rel = []
