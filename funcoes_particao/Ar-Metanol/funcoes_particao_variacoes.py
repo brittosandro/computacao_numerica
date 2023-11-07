@@ -173,6 +173,10 @@ def cal_quantidade_niveis_vibracionais(de, we, wexe, weye, Be, alfa_e, gama_e):
     return nu, lista_en_nu_j, lista_nu
 
 def plota_quant_nu_vib(de, e_j, nu_j):
+    '''
+    Essa função plota um gráfico com a quantidade máxima de números vibracionais
+    que geram energia rovibracional que ficam abaixo da energia de dissociação.
+    '''
 
     plt.plot(nu_j, e_j)
     plt.plot(nu_j, [de for i in range(len(nu_j))])
@@ -182,6 +186,10 @@ def plota_quant_nu_vib(de, e_j, nu_j):
 
 
 def gera_arquivo_energia_niveis_vib(e_j, nu_j):
+    '''
+    A função gera dois arquivos. Um com as energias rovibracionais e outro
+    com a quantidade máxima de niveis vibracionais obtidos.
+    '''
 
     with open('Energia_rovib.txt', 'w') as f1, \
          open('niveis_vibracionais.txt', 'w') as f2:
