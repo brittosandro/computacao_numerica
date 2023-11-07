@@ -1,11 +1,11 @@
 from sympy import *
 import numpy as np
 import matplotlib.pyplot as plt
-import math
 import scipy.constants as const
 import warnings
 # suppress warnings
 warnings.filterwarnings('ignore')
+
 
 def pega_dados():
     with open('input.txt', 'r') as f:
@@ -224,12 +224,12 @@ def entalpia(energia_interna, Temperatura):
 
 def energia_Gibbs(entalpia, entropia, Temperatura):
     '''
-    Essa função retorna a Energia de Gibbs em kJ.
+    Essa função retorna a Energia de Gibbs em kJ/mol.
     '''
     T = Temperatura
     G = entalpia - T * entropia
 
-    return G
+    return G / 1000
 
 
 def entropia(derivada, Temperatura, funcao_particao):
@@ -906,8 +906,6 @@ if __name__ == '__main__':
     print('-------------------------------')
     print()
 
-    gama_e = convert_cm_to_joule(gama_e)
-
     nu = cal_quantidade_niveis_vibracionais(de, we, wexe, weye, Be, alfa_e, gama_e)[0]
     e_j = cal_quantidade_niveis_vibracionais(de, we, wexe, weye, Be, alfa_e, gama_e)[1]
     nu_j = cal_quantidade_niveis_vibracionais(de, we, wexe, weye, Be, alfa_e, gama_e)[2]
@@ -917,8 +915,6 @@ if __name__ == '__main__':
 
     Temps = [40, 90, 150]
     lista_pop_vibracional_rel = []
-
-    print('nu = ', nu)
 
     for Temp in Temps:
         pop_vib_rela = []
@@ -946,10 +942,10 @@ if __name__ == '__main__':
     plt.legend()
     plt.show()
 
-    '''
-    #Temp_inicial = 298
-    #Temp_final = 6000
-    #incr_temp = 600
+
+    #Temp_inicial = 70
+    #Temp_final = 200
+    #incr_temp = 10
 
     faixa_Temp = []
 
@@ -991,25 +987,15 @@ if __name__ == '__main__':
          open('capacidade_calorifica.csv', 'w') as f4, \
          open('energia_de_gibs.csv', 'w') as f5:
 
-         cabecalho_U = 'Temperatura,U_Mcquarie,U_Allison_Harmonica,U_Allison,\
-         U_Foglia,U_Heibbe_Scalabrini,U_Heibbe_Scalabrini_Trunc,\
-         U_Heibbe_Scalabrini_ROTOR-RIG'
+         cabecalho_U = '# Temperatura, delta_U_Heibbe_Scalabrini'
 
-         cabecalho_H = 'Temperatura,H_Mcquarie,H_Allison_Harmonica,H_Allison,\
-         H_Foglia,H_Heibbe_Scalabrini,H_Heibbe_Scalabrini_Trunc,\
-         H_Heibbe_Scalabrini_ROTOR-RIG'
+         cabecalho_H = '# Temperatura, delta_H_Heibbe_Scalabrini'
 
-         cabecalho_S = 'Temperatura,S_Mcquarie,S_Allison_Harmonica,S_Allison,\
-         S_Foglia,S_Heibbe_Scalabrini,S_Heibbe_Scalabrini_Trunc,\
-         S_Heibbe_Scalabrini_ROTOR-RIG'
+         cabecalho_S = '# Temperatura, delta_S_Heibbe_Scalabrini'
 
-         cabecalho_Cp = 'Temperatura,Cp_Mcquarie,Cp_Allison_Harmonica,Cp_Allison,\
-         Cp_Foglia,S_Heibbe_Scalabrini,Cp_Heibbe_Scalabrini_Trunc,\
-         Cp_Heibbe_Scalabrini_ROTOR-RIG'
+         cabecalho_Cp = '# Temperatura, delta_Cp_Heibbe_Scalabrini'
 
-         cabecalho_G = 'Temperatura,G_Mcquarie,G_Allison_Harmonica,G_Allison,\
-         G_Foglia,G_Heibbe_Scalabrini,G_Heibbe_Scalabrini_Trunc,\
-         G_Heibbe_Scalabrini_ROTOR-RIG'
+         cabecalho_G = '# Temperatura, delta_G_Heibbe_Scalabrini'
 
 
          print(cabecalho_U, end='\n', file=f1)
@@ -1140,7 +1126,7 @@ if __name__ == '__main__':
             #print('-'*60)
             #print('\n')
 
-
+            '''
             ### Allison Harmonica
 
             func_part_harm_Allison_sympy = funcao_part_harmonica_Allison_sympy(M, T, p, we, wexe,
@@ -1267,7 +1253,7 @@ if __name__ == '__main__':
             print('-'*60)
             print('\n')
 
-
+            '''
 
             ### Heibbe Scalabrini
             func_part_H_S = funcao_particao_Heibbe_Scalabrini_sympy(M, T, pressao, we,
@@ -1306,13 +1292,20 @@ if __name__ == '__main__':
             print(f'Variação Entropia Heibbe-Scalabrini  = {delta_S_H_S}')
 
             delta_G_H_S = energia_Gibbs(delta_H_H_S, delta_S_H_S, Temp)
-            dados_G_H_S.append(delta_G_H_S/1000)
+            dados_G_H_S.append(delta_G_H_S)
             print(f'Variação Energia de Gibbs = {delta_G_H_S}')
+
+            print(f'{Temp}, {delta_U_H_S}', end='\n', file=f1)
+            print(f'{Temp}, {delta_H_H_S}', end='\n', file=f2)
+            print(f'{Temp}, {delta_Cp_H_S}', end='\n', file=f3)
+            print(f'{Temp}, {delta_S_H_S}', end='\n', file=f4)
+            print(f'{Temp}, {delta_G_H_S}', end='\n', file=f5)
+
 
             print('-'*60)
             print('\n')
 
-
+            '''
             ### Heibbe Scalabrini Truncada
 
             func_part_H_S_trunc = funcao_particao_Heibbe_Scalabrini_truncada_sympy(M, T,
@@ -1407,7 +1400,7 @@ if __name__ == '__main__':
             #print(f'{Temp},{S_Mcquarie},{S_Allison_harm},{S_Allison},{S_Foglia},{S_H_S},{S_H_S_trunc},{S_H_S_rot_rig}', end='\n', file=f3)
             #print(f'{Temp},{Cp_Mcquarie},{Cp_Allison_harm},{Cp_Allison},{Cp_Foglia},{Cp_H_S},{Cp_H_S_trunc},{Cp_H_S_rot_rid}', end='\n', file=f4)
             #print(f'{Temp},{G_Mcquarie},{G_Allison_harm},{G_Allison},{G_Foglia},{G_H_S},{G_H_S_trunc},{G_H_S_rot_rig}', end='\n', file=f5)
-
+            '''
 
 
     #plt.plot(faixa_Temp, dados_entalpia_Macquarie, label=r'Macquarie')
@@ -1454,7 +1447,6 @@ if __name__ == '__main__':
     #plt.plot(faixa_Temp, dados_G_H_S_trunc, label=r'Heibbe-Scalabrini-Truc')
     #plt.plot(faixa_Temp, dados_G_H_S_rot_rig, label=r'Heibbe-Scalabrini-Rot-Rig')
     plt.xlabel(r"$Temperatura [K]$")
-    plt.ylabel(r"$\Delta G$ $(J/mol)$")
+    plt.ylabel(r"$\Delta G$ $(kJ/mol)$")
     plt.legend()
     plt.show()
-    '''
