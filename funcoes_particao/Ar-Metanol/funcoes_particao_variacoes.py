@@ -137,6 +137,40 @@ def temperatura_rotacional(massa_reduzida, re):
     return theta_rot
 
 
+def cal_quantidade_niveis_vibracionais(de, we, wexe, weye, Be, alfa_e, gama_e):
+
+   # Número quântico rotacional
+   j = 0
+   # Números quânticos vibracionais para nu e nu + 1
+   nu = 0
+   nu1 = 1
+   # Energias rovibracionais para nu e nu + 1
+   en_nu_j = 0
+   en_nu1_j = 0
+   # Lista de energias rovibracionais
+   lista_en_nu_j = []
+   # Lista de numeros quanticos vibracionais
+   lista_nu = []
+   #print(f'De = {de} | Evj = {energia_rovib_tot(we, wexe, weye, Be, alfa_e, gama_e, nu, j)}')
+
+   while (np.abs((en_nu_j - de)) >= np.abs((en_nu1_j - de))):
+       en_nu_j = energia_rovib_tot(we, wexe, weye, Be, alfa_e, gama_e, nu, j)
+       en_nu1_j = energia_rovib_tot(we, wexe, weye, Be, alfa_e, gama_e, nu1, j)
+       lista_en_nu_j.append(en_nu_j)
+       lista_nu.append(nu)
+       #print(en_nu_j)
+       nu += 1
+       nu1 += 1
+       #print(nu)
+
+   plt.plot(lista_nu, lista_en_nu_j)
+   plt.plot(lista_nu, [de for i in range(len(lista_nu))])
+   plt.xlabel(r"$\nu$")
+   plt.ylabel(r"$E(\nu, j=0)$")
+   plt.show()
+
+   return nu
+
 def energia_interna(derivada, Temperatura):
     R = const.gas_constant
     T = Temperatura
@@ -846,29 +880,7 @@ if __name__ == '__main__':
 
     gama_e = convert_cm_to_joule(gama_e)
 
-    # Número quântico rotacional
-    j = 0
-    # Números quânticos vibracionais para nu e nu + 1
-    nu = 0
-    nu1 = 1
-    # Energias rovibracionais para nu e nu + 1
-    en_nu_j = 0
-    en_nu1_j = 0
-    # Lista de energias rovibracionais
-    lista_en_nu_j = []
-    # Lista de numeros quanticos vibracionais
-    lista_nu = []
-    #print(f'De = {de} | Evj = {energia_rovib_tot(we, wexe, weye, Be, alfa_e, gama_e, nu, j)}')
-
-    while (np.abs((en_nu_j - de)) >= np.abs((en_nu1_j - de))):
-        en_nu_j = energia_rovib_tot(we, wexe, weye, Be, alfa_e, gama_e, nu, j)
-        en_nu1_j = energia_rovib_tot(we, wexe, weye, Be, alfa_e, gama_e, nu1, j)
-        lista_en_nu_j.append(en_nu_j)
-        lista_nu.append(nu)
-        #print(en_nu_j)
-        nu += 1
-        nu1 += 1
-        #print(nu)
+    nu = cal_quantidade_niveis_vibracionais(de, we, wexe, weye, Be, alfa_e, gama_e)
 
     '''
     with open('Energia_rovib.txt', 'w') as f1, \
@@ -878,14 +890,6 @@ if __name__ == '__main__':
         for niveis_vib in lista_nu:
             print(niveis_vib, file=f2)
     '''
-    #print(en_nu_j)
-    #print(nu)
-
-    plt.plot(lista_nu, lista_en_nu_j)
-    plt.plot(lista_nu, [de for i in range(len(lista_nu))])
-    plt.xlabel(r"$\nu$")
-    plt.ylabel(r"$E(\nu, j=0)$")
-    plt.show()
 
     Temps = [40, 90, 150]
     lista_pop_vibracional_rel = []
